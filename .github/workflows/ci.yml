@@ -1,0 +1,26 @@
+name: Prettier
+on: [push, pull_request]
+
+env:
+    DATABASE_URL: 'https://fake.com'
+    UPLOADTHING_SECRET: '33123'
+    UPLOADTHING_APP_ID: '23123'
+	NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "312312"
+	CLERK_SECRET_KEY: '12312'
+	UPSTASH_REDIS_REST_URL: "12313"
+	UPSTASH_REDIS_REST_TOKEN: "13123"
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+            - name: Install dependencies
+              run: npm install
+            - name: Run Prettier
+              run: npm run prettier
+            - name: Typecheck
+              run: npm run typecheck
+            - name: Lint
+              run: npm run lint
