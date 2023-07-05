@@ -17,6 +17,7 @@
 		"@chakra-ui/react": "^2.7.1",
 		"@clerk/localizations": "^1.22.0",
 		"@clerk/nextjs": "^4.21.13",
+		"@clerk/themes": "^1.7.5",
 		"@emotion/react": "^11.11.1",
 		"@emotion/styled": "^11.11.0",
 		"@prisma/client": "^4.14.0",
