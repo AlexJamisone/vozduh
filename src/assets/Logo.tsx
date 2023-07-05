@@ -5,10 +5,10 @@ const Logo = () => {
 	return (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
-			fill-rule="evenodd"
-			stroke-linejoin="round"
-			stroke-miterlimit="2"
-			clip-rule="evenodd"
+			fillRule="evenodd"
+			strokeLinejoin="round"
+			strokeMiterlimit="2"
+			clipRule="evenodd"
 			viewBox="0 0 390 262"
 			width={175}
 			height={150}
@@ -17,8 +17,8 @@ const Logo = () => {
 			<text
 				x="317.549"
 				y="3025.14"
-				font-family="Helvetica"
-				font-size="12"
+				fontFamily="Helvetica"
+				fontSize="12"
 				transform="matrix(5.35875 0 0 5.35876 -1706.411 -15998.773)"
 			>
 				M
@@ -27,9 +27,9 @@ const Logo = () => {
 				</tspan>
 			</text>
 			<g
-				font-family='"Helvetica-Bold","Helvetica"'
-				font-size="12"
-				font-weight="700"
+				fontFamily='"Helvetica-Bold","Helvetica"'
+				fontSize="12"
+				fontWeight="700"
 			>
 				<text
 					x="317.549"
@@ -62,8 +62,8 @@ const Logo = () => {
 			<text
 				x="317.549"
 				y="3025.14"
-				font-family="Helvetica"
-				font-size="12"
+				fontFamily="Helvetica"
+				fontSize="12"
 				transform="matrix(3.06835 0 0 3.06836 -881.814 -9028.786)"
 			>
 				f
@@ -91,7 +91,7 @@ const Logo = () => {
 					gradientUnits="userSpaceOnUse"
 				>
 					<stop offset="0" />
-					<stop offset="1" stop-opacity="0" />
+					<stop offset="1" stopOpacity="0" />
 				</linearGradient>
 			</defs>
 		</svg>
