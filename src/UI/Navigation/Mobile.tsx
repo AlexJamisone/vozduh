@@ -54,7 +54,10 @@ const Mobile = () => {
 							<ThemeButton />
 							{isSignedIn ? (
 								<Stack mr={12}>
-									<UserButton />
+									<UserButton
+										afterSignOutUrl="/"
+										signInUrl="/signin"
+									/>
 								</Stack>
 							) : (
 								<Link

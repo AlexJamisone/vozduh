@@ -79,7 +79,7 @@ const Desktop = () => {
 			>
 				<ThemeButton />
 				{isSignedIn ? (
-					<UserButton />
+					<UserButton afterSignOutUrl="/" signInUrl="/signin" />
 				) : (
 					<Link
 						_hover={{
