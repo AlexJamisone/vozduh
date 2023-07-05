@@ -2,6 +2,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { ClerkProvider } from '@clerk/nextjs';
 import { type AppType } from 'next/app';
 import Head from 'next/head';
+import Navigation from '~/UI/Navigation/Navigation';
 import { theme } from '~/chakra/theme';
 import { ruRU } from '~/localization/ru';
 import '~/styles/globals.css';
@@ -19,6 +20,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
 					/>
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
+				<Navigation />
 				<Component {...pageProps} />
 			</ClerkProvider>
 		</ChakraProvider>
