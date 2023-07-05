@@ -17,13 +17,10 @@ import { HiOutlineMenu } from 'react-icons/hi';
 import Logo from '~/assets/Logo';
 import ThemeButton from '~/components/ThemeButton';
 import { nav } from '~/constants/nav';
-import { api } from '~/utils/api';
 
 const Mobile = () => {
 	const { isSignedIn } = useAuth();
 	const { isOpen, onClose, onToggle } = useDisclosure();
-	const { data: user } = api.user.get.useQuery();
-	console.log(user);
 	return (
 		<Stack
 			as="nav"

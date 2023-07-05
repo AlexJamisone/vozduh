@@ -11,7 +11,7 @@ import { api } from '~/utils/api';
 const MyApp: AppType = ({ Component, pageProps }) => {
 	return (
 		<ChakraProvider theme={theme}>
-			<ColorModeScript />
+			<ColorModeScript initialColorMode={'system'} />
 			<ClerkProvider localization={ruRU}>
 				<Head>
 					<title>Vozduh | Украшения из серебра</title>

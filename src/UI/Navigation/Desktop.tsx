@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import React from 'react';
 import ThemeButton from '~/components/ThemeButton';
 import { nav } from '~/constants/nav';
+import Cart from '../Cart/Cart';
 const Desktop = () => {
 	const { isSignedIn } = useAuth();
 	return (
@@ -77,6 +78,7 @@ const Desktop = () => {
 					},
 				}}
 			>
+				<Cart />
 				<ThemeButton />
 				{isSignedIn ? (
 					<UserButton afterSignOutUrl="/" signInUrl="/signin" />

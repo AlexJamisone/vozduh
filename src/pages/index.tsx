@@ -1,10 +1,22 @@
-import { api } from '~/utils/api';
+import { Image } from '@chakra-ui/next-js';
+import { Center, useColorMode } from '@chakra-ui/react';
 
 export default function Home() {
-	const { data: user } = api.user.get.useQuery();
+	const { colorMode } = useColorMode();
 	return (
 		<>
-			<main>{user?.role}</main>
+			<Center as="section" w="100%" h="100vh">
+				<Image
+					alt="main"
+					src={
+						colorMode === 'dark'
+							? '/assets/darkbg.jpg'
+							: '/assets/bg.jpg'
+					}
+					fill={true}
+					quality={100}
+				/>
+			</Center>
 		</>
 	);
 }
