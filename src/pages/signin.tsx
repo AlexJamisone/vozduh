@@ -6,7 +6,7 @@ const SigInPage = () => {
 	return (
 		<AnumationLayout
 			container={{
-				mt: 75,
+				mt: [15, 75],
 			}}
 		>
 			<Head>

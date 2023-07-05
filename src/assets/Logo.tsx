@@ -1,4 +1,7 @@
+import { useColorMode } from '@chakra-ui/react';
+
 const Logo = () => {
+	const { colorMode } = useColorMode();
 	return (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
@@ -9,6 +12,7 @@ const Logo = () => {
 			viewBox="0 0 390 262"
 			width={175}
 			height={150}
+			fill={colorMode === 'dark' ? 'white' : ''}
 		>
 			<text
 				x="317.549"

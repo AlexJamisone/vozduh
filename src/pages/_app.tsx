@@ -1,4 +1,4 @@
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
 import { ruRU } from '@clerk/localizations';
 import { ClerkProvider } from '@clerk/nextjs';
 import { type AppType } from 'next/app';
@@ -11,6 +11,7 @@ import { api } from '~/utils/api';
 const MyApp: AppType = ({ Component, pageProps }) => {
 	return (
 		<ChakraProvider theme={theme}>
+			<ColorModeScript />
 			<ClerkProvider localization={ruRU}>
 				<Head>
 					<title>Vozduh | Украшения из серебра</title>
