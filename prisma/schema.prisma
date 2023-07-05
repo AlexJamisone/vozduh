@@ -54,11 +54,11 @@ model Point {
 }
 
 model Category {
-    id          String    @id @unique @default(cuid())
-    title       String    @unique
-    path        String
-    createdById String
-    product     Product[]
+    id      String    @id @unique @default(cuid())
+    title   String    @unique
+    path    String
+    image   String
+    product Product[]
 }
 
 model Product {
