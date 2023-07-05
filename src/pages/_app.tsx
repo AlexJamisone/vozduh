@@ -1,10 +1,10 @@
 import { ChakraProvider } from '@chakra-ui/react';
+import { ruRU } from '@clerk/localizations';
 import { ClerkProvider } from '@clerk/nextjs';
 import { type AppType } from 'next/app';
 import Head from 'next/head';
 import Navigation from '~/UI/Navigation/Navigation';
 import { theme } from '~/chakra/theme';
-import { ruRU } from '~/localization/ru';
 import '~/styles/globals.css';
 import { api } from '~/utils/api';
 
