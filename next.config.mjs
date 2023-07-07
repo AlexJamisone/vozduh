@@ -24,6 +24,9 @@ const config = {
 	eslint: {
 		ignoreDuringBuilds: true
 	},
+	images: {
+		domains: ['placehold.co']
+	},
 	swcMinify: true,
 	experimental: {
 		esmExternals: false
