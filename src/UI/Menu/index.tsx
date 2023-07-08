@@ -10,11 +10,14 @@ import {
 import { useAuth } from '@clerk/nextjs';
 import type { Role } from '@prisma/client';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/router';
 import { menu_link } from '~/constants/menu';
 import { api } from '~/utils/api';
 
 const Menu = () => {
 	const { data: role } = api.user.getRole.useQuery();
+	const { query } = useRouter();
+	const { path: qpath } = query;
 	const { isSignedIn } = useAuth();
 	const { colorMode } = useColorMode();
 	if (!role) return null;
@@ -47,11 +50,15 @@ const Menu = () => {
 						boxShadow={colorMode === 'dark' ? undefined : '2xl'}
 					>
 						{menu_link(role as Role)?.map(
-							({ id, icon, path, title }) => (
+							({ id, icon, path, title, name }) => (
 								<Tooltip key={id} label={title}>
 									<IconButton
 										as={Link}
+										isActive={name === qpath}
 										href={path}
+										_active={{
+											bgColor: 'teal.500',
+										}}
 										variant="outline"
 										aria-label="menu-list"
 										rounded="full"

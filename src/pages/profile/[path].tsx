@@ -1,8 +1,8 @@
-import { UserProfile as UserSettings } from '@clerk/nextjs';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import UserFavorites from '~/UI/User/UserFavorites';
 import UserProfile from '~/UI/User/UserProfile';
+import UserSettings from '~/UI/User/UserSettings';
 import { api } from '~/utils/api';
 
 const ProfileRouter = () => {
@@ -14,7 +14,7 @@ const ProfileRouter = () => {
 	}, []);
 	const handlRouter = () => {
 		switch (path) {
-			case '/':
+			case 'main':
 				return <UserProfile />;
 			case 'favorites':
 				return <UserFavorites />;

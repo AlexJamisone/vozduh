@@ -11,6 +11,7 @@ type MenuActions = {
 	path: string;
 	icon: IconType;
 	title: string;
+	name: string;
 };
 
 export const menu_link = (role: Role): MenuActions[] | undefined => {
@@ -22,39 +23,45 @@ export const menu_link = (role: Role): MenuActions[] | undefined => {
 					path: '/admin/orders',
 					title: 'Заказы',
 					icon: FaRegRectangleList,
+					name: 'orders',
 				},
 				{
 					id: 2,
 					path: '/admin/products',
 					title: 'Товары',
 					icon: LiaRingSolid,
+					name: 'products',
 				},
 				{
 					id: 3,
 					path: '/admin/some_ref',
 					title: 'Посещения',
 					icon: AiOutlineLineChart,
+					name: 'some_ref',
 				},
 			];
 		case 'USER':
 			return [
 				{
 					id: 4,
-					path: '/profile',
+					path: '/profile/main',
 					icon: LiaUserSolid,
 					title: 'Профиль',
+					name: 'main',
 				},
 				{
 					id: 5,
 					path: '/profile/favorites',
 					icon: GoHeart,
 					title: 'Избранное',
+					name: 'favorites',
 				},
 				{
 					id: 6,
 					path: '/profile/settings',
 					icon: SlSettings,
 					title: 'Настройки',
+					name: 'settings',
 				},
 			];
 		default:

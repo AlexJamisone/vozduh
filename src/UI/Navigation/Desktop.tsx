@@ -1,9 +1,10 @@
 import { Link } from '@chakra-ui/next-js';
 import { Box, Center, Icon, Stack } from '@chakra-ui/react';
-import { UserButton, useAuth } from '@clerk/nextjs';
+import { useAuth } from '@clerk/nextjs';
 import { motion } from 'framer-motion';
 import React from 'react';
 import ThemeButton from '~/components/ThemeButton';
+import UserBtn from '~/components/UserBtn';
 import { nav } from '~/constants/nav';
 import Cart from '../Cart/Cart';
 const Desktop = () => {
@@ -81,7 +82,7 @@ const Desktop = () => {
 				<Cart />
 				<ThemeButton />
 				{isSignedIn ? (
-					<UserButton afterSignOutUrl="/" signInUrl="/signin" />
+					<UserBtn />
 				) : (
 					<Link
 						_hover={{

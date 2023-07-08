@@ -12,10 +12,11 @@ import {
 	Text,
 	useDisclosure,
 } from '@chakra-ui/react';
-import { UserButton, useAuth } from '@clerk/nextjs';
+import { useAuth } from '@clerk/nextjs';
 import { HiOutlineMenu } from 'react-icons/hi';
 import Logo from '~/assets/Logo';
 import ThemeButton from '~/components/ThemeButton';
+import UserBtn from '~/components/UserBtn';
 import { nav } from '~/constants/nav';
 
 const Mobile = () => {
@@ -51,10 +52,7 @@ const Mobile = () => {
 							<ThemeButton />
 							{isSignedIn ? (
 								<Stack mr={12}>
-									<UserButton
-										afterSignOutUrl="/"
-										signInUrl="/signin"
-									/>
+									<UserBtn />
 								</Stack>
 							) : (
 								<Link
