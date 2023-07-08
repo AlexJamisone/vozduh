@@ -19,19 +19,19 @@ export const menu_link = (role: Role): MenuActions[] | undefined => {
 			return [
 				{
 					id: 1,
-					path: 'admin/orders',
+					path: '/admin/orders',
 					title: 'Заказы',
 					icon: FaRegRectangleList,
 				},
 				{
 					id: 2,
-					path: 'admin/products',
+					path: '/admin/products',
 					title: 'Товары',
 					icon: LiaRingSolid,
 				},
 				{
 					id: 3,
-					path: 'admin/some_ref',
+					path: '/admin/some_ref',
 					title: 'Посещения',
 					icon: AiOutlineLineChart,
 				},
@@ -40,19 +40,19 @@ export const menu_link = (role: Role): MenuActions[] | undefined => {
 			return [
 				{
 					id: 4,
-					path: 'profile',
+					path: '/profile',
 					icon: LiaUserSolid,
 					title: 'Профиль',
 				},
 				{
 					id: 5,
-					path: 'profile/favorites',
+					path: '/profile/favorites',
 					icon: GoHeart,
 					title: 'Избранное',
 				},
 				{
 					id: 6,
-					path: 'profile/settings',
+					path: '/profile/settings',
 					icon: SlSettings,
 					title: 'Настройки',
 				},
