@@ -14,7 +14,7 @@ const Desktop = () => {
 				as="nav"
 				justifyContent="center"
 				alignItems="center"
-				h={125}
+				h={170}
 				gap={28}
 			>
 				{nav.map(({ src, icon, title, isLogo }) => (
