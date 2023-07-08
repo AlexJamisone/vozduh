@@ -1,5 +1,12 @@
 import { Link } from '@chakra-ui/next-js';
-import { Center, Icon, IconButton, Stack, Tooltip } from '@chakra-ui/react';
+import {
+	Center,
+	Icon,
+	IconButton,
+	Stack,
+	Tooltip,
+	useColorMode,
+} from '@chakra-ui/react';
 import { useAuth } from '@clerk/nextjs';
 import type { Role } from '@prisma/client';
 import { motion } from 'framer-motion';
@@ -9,6 +16,7 @@ import { api } from '~/utils/api';
 const Menu = () => {
 	const { data: role } = api.user.getRole.useQuery();
 	const { isSignedIn } = useAuth();
+	const { colorMode } = useColorMode();
 	if (!role) return null;
 	return (
 		<>
@@ -36,6 +44,7 @@ const Menu = () => {
 						py={3}
 						px={7}
 						roundedTop="2xl"
+						boxShadow={colorMode === 'dark' ? undefined : '2xl'}
 					>
 						{menu_link(role as Role)?.map(
 							({ id, icon, path, title }) => (
