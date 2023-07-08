@@ -1,5 +1,6 @@
 import { Stack, useMediaQuery } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
+import Menu from '../Menu';
 import Desktop from './Desktop';
 import Mobile from './Mobile';
 
@@ -33,6 +34,7 @@ const Navigation = () => {
 			zIndex={20}
 		>
 			{isLowerThan1150 ? <Mobile /> : <Desktop />}
+			{!isLowerThan1150 && <Menu />}
 		</Stack>
 	);
 };

@@ -7,11 +7,7 @@ import AnumationLayout from '~/components/AnumationLayout';
 const SigInPage = () => {
 	const { colorMode } = useColorMode();
 	return (
-		<AnumationLayout
-			container={{
-				mt: [15, 75],
-			}}
-		>
+		<AnumationLayout>
 			<Head>
 				<title>Vozduh | Вход</title>
 			</Head>

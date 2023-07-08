@@ -1,4 +1,5 @@
 import { clerkClient } from '@clerk/nextjs';
+import { TRPCError } from '@trpc/server';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import { filterUserForClient } from '~/server/helpers/filterUserForClient';
 
@@ -30,5 +31,19 @@ export const userRouter = createTRPCRouter({
 				...userDb,
 			};
 		}
+	}),
+	getRole: publicProcedure.query(async ({ ctx }) => {
+		if (!ctx.userId) return null;
+		const user = await ctx.prisma.user.findUnique({
+			where: {
+				id: ctx.userId,
+			},
+		});
+		if (!user)
+			return new TRPCError({
+				code: 'UNAUTHORIZED',
+				message: 'Пользователь не найден',
+			});
+		return user.role;
 	}),
 });
