@@ -55,10 +55,15 @@ const Menu = () => {
 									<IconButton
 										as={Link}
 										isActive={name === qpath}
+										boxShadow={
+											colorMode === 'dark' &&
+											name === qpath
+												? '0 0 10px 0 white'
+												: name === qpath
+												? '0 0 10px 0 black'
+												: undefined
+										}
 										href={path}
-										_active={{
-											bgColor: 'teal.500',
-										}}
 										variant="outline"
 										aria-label="menu-list"
 										rounded="full"

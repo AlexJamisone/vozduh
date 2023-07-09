@@ -1,7 +1,8 @@
+import { Center } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import UserProfile from '~/UI/User/Profile/UserProfile';
 import UserFavorites from '~/UI/User/UserFavorites';
-import UserProfile from '~/UI/User/UserProfile';
 import UserSettings from '~/UI/User/UserSettings';
 import { api } from '~/utils/api';
 
@@ -15,14 +16,20 @@ const ProfileRouter = () => {
 	const handlRouter = () => {
 		switch (path) {
 			case 'main':
-				return <UserProfile />;
+				return (
+					<UserProfile
+						info={<UserProfile.Info />}
+						address={<UserProfile.Address />}
+						orders={<UserProfile.Orders />}
+					/>
+				);
 			case 'favorites':
 				return <UserFavorites />;
 			case 'settings':
 				return <UserSettings />;
 		}
 	};
-	return <>{handlRouter()}</>;
+	return <Center pt={200}>{handlRouter()}</Center>;
 };
 
 export default ProfileRouter;
