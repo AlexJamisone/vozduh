@@ -13,7 +13,7 @@ const PlacemarkPoint = ({ point }: PlacemarkPointProps) => {
 			geometry={[point.latitude, point.longitude]}
 			onClick={() => {
 				dispatchAddress({ type: 'SET_POINT', payload: point });
-				// dispatchAddress({ type: 'SET_PVZ', payload: true });
+				dispatchAddress({ type: 'SET_SELECT_POINT', payload: true });
 			}}
 			fillColor="ff0000"
 			options={{

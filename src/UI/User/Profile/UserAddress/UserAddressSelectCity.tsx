@@ -12,11 +12,11 @@ import { useCreateAddressContext } from '~/context/addressContext';
 import { env } from '~/env.mjs';
 
 const UserAddressSelectCity = () => {
-	const { valueSuggestion, handlPoints, isLoadingCdek } =
+	const { valueSuggestion, handlPoints, isLoadingCdek, address } =
 		useCreateAddressContext();
 	return (
-		<InputGroup position="relative">
-			<FormControl>
+		<InputGroup position="relative" zIndex={99}>
+			<FormControl isDisabled={address.confirmPoint}>
 				<FormLabel>Город</FormLabel>
 				<AddressSuggestions
 					onChange={(sug) => handlPoints(sug)}

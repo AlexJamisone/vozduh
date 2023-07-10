@@ -25,7 +25,6 @@ const UserAddressCard = ({ address, index }: UserAddressCardProps) => {
 	const toast = useToast();
 	return (
 		<Card
-			// w={['100%', '45%']}
 			position="relative"
 			as={motion.div}
 			layout

@@ -46,35 +46,37 @@ export const cdekRouter = createTRPCRouter({
 				},
 			});
 			const data = await response.json();
-			const points: Point[] = data.map(
-				(value: {
-					name: string;
-					work_time: string;
-					phones?: [{ number: string }];
-					email: string;
-					type: string;
-					location: {
-						region: string;
-						city: string;
-						longitude: number;
-						latitude: number;
-						address: string;
-						address_full: string;
-					};
-				}) => ({
-					name: value.name,
-					email: value.email,
-					phone: value?.phones?.[0]?.number,
-					type: value.type,
-					work_time: value.work_time,
-					region: value.location.region,
-					city: value.location.city,
-					longitude: value.location.longitude,
-					latitude: value.location.latitude,
-					addressName: value.location.address,
-					addressFullName: value.location.address_full,
-				})
-			);
+			const points: Point[] = data
+				.filter((value: Point) => value.type !== 'POSTAMAT')
+				.map(
+					(value: {
+						name: string;
+						work_time: string;
+						phones?: [{ number: string }];
+						email: string;
+						type: string;
+						location: {
+							region: string;
+							city: string;
+							longitude: number;
+							latitude: number;
+							address: string;
+							address_full: string;
+						};
+					}) => ({
+						name: value.name,
+						email: value.email,
+						phone: value?.phones?.[0]?.number,
+						type: value.type,
+						work_time: value.work_time,
+						region: value.location.region,
+						city: value.location.city,
+						longitude: value.location.longitude,
+						latitude: value.location.latitude,
+						addressName: value.location.address,
+						addressFullName: value.location.address_full,
+					})
+				);
 			return points;
 		}),
 });

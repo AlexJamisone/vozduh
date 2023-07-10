@@ -4,6 +4,7 @@ import {
 	CardBody,
 	CardHeader,
 	useDisclosure,
+	useToast,
 } from '@chakra-ui/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FaRegAddressCard } from 'react-icons/fa6';
@@ -15,11 +16,28 @@ import UserAddressModal from './UserAddressModal';
 const UserAddress = () => {
 	const { data: address } = api.address.get.useQuery();
 	const { isOpen, onClose, onToggle } = useDisclosure();
+	const toast = useToast();
 	if (!address) return null;
 	return (
 		<Card as={motion.div} layout>
 			<CardHeader>
-				<Button w="100%" onClick={onToggle}>
+				<Button
+					w="100%"
+					onClick={() => {
+						if (address.length >= 3) {
+							toast({
+								description:
+									'Вы можете хранить максимум 3 адреса; если вы хотите добавить новый, удалите старые.',
+								status: 'info',
+								duration: 7000,
+								isClosable: true,
+								position: 'top-right',
+							});
+						} else {
+							onToggle();
+						}
+					}}
+				>
 					Добавить Адрес
 				</Button>
 			</CardHeader>

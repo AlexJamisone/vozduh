@@ -16,6 +16,9 @@ export const addressRouter = createTRPCRouter({
 			include: {
 				point: true,
 			},
+			orderBy: {
+				createdAt: 'desc',
+			},
 		});
 	}),
 	archive: privetProcedure

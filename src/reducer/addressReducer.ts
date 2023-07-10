@@ -6,6 +6,9 @@ export type AddressState = {
 	lastName: string;
 	contactPhone: string;
 	point?: Point;
+	confirmPoint: boolean;
+	errorConfirm: boolean;
+	selectPoint: boolean;
 	map: boolean;
 	edit: boolean;
 };
@@ -38,12 +41,24 @@ interface SetMapAction {
 	type: 'SET_MAP';
 	payload: boolean;
 }
+interface SetSelectPointAction {
+	type: 'SET_SELECT_POINT';
+	payload: boolean;
+}
 interface SetClearAction {
 	type: 'SET_CLEAR';
 }
 interface SetAllAction {
 	type: 'SET_ALL';
 	payload: AddressState;
+}
+interface SetConfirmPointAction {
+	type: 'SET_CONFIRM';
+	payload: boolean;
+}
+interface SetConfirmErrorAction {
+	type: 'SET_CONFIRM_ERROR';
+	payload: boolean;
 }
 
 export type Action =
@@ -55,15 +70,21 @@ export type Action =
 	| SetPointAction
 	| SetEditAction
 	| SetClearAction
-	| SetMapAction;
+	| SetMapAction
+	| SetSelectPointAction
+	| SetConfirmPointAction
+	| SetConfirmErrorAction;
 
 export const initial: AddressState = {
 	id: '',
 	edit: false,
 	map: false,
+	selectPoint: false,
+	confirmPoint: false,
 	contactPhone: '',
 	firstName: '',
 	lastName: '',
+	errorConfirm: false,
 };
 
 export const addressReducer = (
@@ -83,6 +104,12 @@ export const addressReducer = (
 			return { ...state, point: action.payload };
 		case 'SET_MAP':
 			return { ...state, map: action.payload };
+		case 'SET_SELECT_POINT':
+			return { ...state, selectPoint: action.payload };
+		case 'SET_CONFIRM':
+			return { ...state, confirmPoint: action.payload };
+		case 'SET_CONFIRM_ERROR':
+			return { ...state, errorConfirm: action.payload };
 		case 'SET_CLEAR':
 			return {
 				contactPhone: '',
@@ -91,6 +118,9 @@ export const addressReducer = (
 				id: '',
 				lastName: '',
 				map: false,
+				selectPoint: false,
+				confirmPoint: false,
+				errorConfirm: false,
 			};
 		case 'SET_EDIT':
 			return { ...state, edit: action.payload };

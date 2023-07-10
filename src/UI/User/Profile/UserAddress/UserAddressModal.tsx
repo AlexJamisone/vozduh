@@ -15,6 +15,7 @@ import {
 	useToast,
 } from '@chakra-ui/react';
 import type { Point } from '@prisma/client';
+import { motion } from 'framer-motion';
 import { useReducer, useState, type ChangeEvent } from 'react';
 import type {
 	DaDataAddress,
@@ -27,6 +28,7 @@ import { addressInput } from '~/constants/address';
 import AddressContext from '~/context/addressContext';
 import { addressReducer, initial } from '~/reducer/addressReducer';
 import { api } from '~/utils/api';
+import UserAddressPointCard from './UserAddressPointCard';
 import UserAddressSelectCity from './UserAddressSelectCity';
 
 type UserAddressModalProps = {
@@ -95,10 +97,10 @@ const UserAddressModal = ({ isOpen, onClose }: UserAddressModalProps) => {
 					isLoadingCdek,
 				}}
 			>
-				<ModalContent>
+				<ModalContent as={motion.section} layout>
 					<ModalHeader textAlign="center">Новый адрес</ModalHeader>
 					<ModalCloseButton />
-					<ModalBody as={Stack}>
+					<ModalBody as={Stack} gap={3}>
 						{addressInput(address).map(
 							({ name, placeholder, value }) => (
 								<FormControl
@@ -138,43 +140,61 @@ const UserAddressModal = ({ isOpen, onClose }: UserAddressModalProps) => {
 							)
 						)}
 						<UserAddressSelectCity />
-						{address.map && <YandexMap />}
+						<UserAddressPointCard />
+						<YandexMap />
 					</ModalBody>
 					<ModalFooter gap={5}>
 						<Button
 							colorScheme="twitter"
 							isLoading={isLoadingCreate}
-							onClick={() =>
-								create(
-									{
-										firstName: address.firstName,
-										lastName: address.lastName,
-										phone: address.contactPhone,
-										point: address.point as Point,
-									},
-									{
-										onSuccess: ({ message }) => {
-											void ctx.address.invalidate();
-											toast({
-												description: `${message}`,
-												status: 'success',
-												isClosable: true,
-												position: 'top-right',
-											});
-											dispatchAddress({
-												type: 'SET_CLEAR',
-											});
-											onClose();
+							onClick={() => {
+								if (!address.confirmPoint) {
+									dispatchAddress({
+										type: 'SET_CONFIRM_ERROR',
+										payload: true,
+									});
+									toast({
+										description:
+											'Подтвердите Пункт выдачи!',
+										status: 'warning',
+										isClosable: true,
+										position: 'top-right',
+									});
+								} else {
+									create(
+										{
+											firstName: address.firstName,
+											lastName: address.lastName,
+											phone: address.contactPhone,
+											point: address.point as Point,
 										},
-									}
-								)
-							}
+										{
+											onSuccess: ({ message }) => {
+												void ctx.address.invalidate();
+												void ctx.user.invalidate();
+												toast({
+													description: `${message}`,
+													status: 'success',
+													isClosable: true,
+													position: 'top-right',
+												});
+												dispatchAddress({
+													type: 'SET_CLEAR',
+												});
+												setValueSuggestion(undefined);
+												onClose();
+											},
+										}
+									);
+								}
+							}}
 						>
 							Сохранить
 						</Button>
 						<Button
 							onClick={() => {
 								dispatchAddress({ type: 'SET_CLEAR' });
+								setValueSuggestion(undefined);
 								reset();
 								onClose();
 							}}
