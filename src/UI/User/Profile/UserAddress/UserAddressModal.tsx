@@ -1,15 +1,20 @@
 import {
+	Button,
 	FormControl,
+	FormErrorMessage,
 	FormLabel,
 	Input,
 	Modal,
 	ModalBody,
 	ModalCloseButton,
 	ModalContent,
+	ModalFooter,
 	ModalHeader,
 	ModalOverlay,
 	Stack,
+	useToast,
 } from '@chakra-ui/react';
+import type { Point } from '@prisma/client';
 import { useReducer, useState, type ChangeEvent } from 'react';
 import type {
 	DaDataAddress,
@@ -30,8 +35,21 @@ type UserAddressModalProps = {
 };
 const UserAddressModal = ({ isOpen, onClose }: UserAddressModalProps) => {
 	const [address, dispatchAddress] = useReducer(addressReducer, initial);
-	const { mutate: getPoints, data: points } =
-		api.cdek.getPoints.useMutation();
+	const {
+		mutate: getPoints,
+		data: points,
+		isLoading: isLoadingCdek,
+	} = api.cdek.getPoints.useMutation();
+	const {
+		mutate: create,
+		isLoading: isLoadingCreate,
+		isError,
+		error,
+		reset,
+	} = api.address.create.useMutation();
+	const ctx = api.useContext();
+	const toast = useToast();
+
 	const [valueSuggestion, setValueSuggestion] = useState<
 		DaDataAddressSuggestion | undefined
 	>();
@@ -74,15 +92,24 @@ const UserAddressModal = ({ isOpen, onClose }: UserAddressModalProps) => {
 					valueSuggestion,
 					points,
 					handlPoints,
+					isLoadingCdek,
 				}}
 			>
 				<ModalContent>
-					<ModalHeader>Новый адрес</ModalHeader>
+					<ModalHeader textAlign="center">Новый адрес</ModalHeader>
 					<ModalCloseButton />
 					<ModalBody as={Stack}>
 						{addressInput(address).map(
 							({ name, placeholder, value }) => (
-								<FormControl key={name}>
+								<FormControl
+									key={name}
+									isInvalid={
+										isError &&
+										error.data?.zodError?.fieldErrors[
+											name
+										] !== undefined
+									}
+								>
 									<FormLabel>{placeholder}</FormLabel>
 									<Input
 										as={IMaskInput}
@@ -94,15 +121,67 @@ const UserAddressModal = ({ isOpen, onClose }: UserAddressModalProps) => {
 										type="text"
 										value={value}
 										placeholder={placeholder}
-										onChange={(e) => handlInput(e)}
+										onChange={(e) => {
+											handlInput(e);
+											reset();
+										}}
 										name={name}
 									/>
+									<FormErrorMessage fontWeight={600}>
+										{
+											error?.data?.zodError?.fieldErrors[
+												name
+											]
+										}
+									</FormErrorMessage>
 								</FormControl>
 							)
 						)}
 						<UserAddressSelectCity />
 						{address.map && <YandexMap />}
 					</ModalBody>
+					<ModalFooter gap={5}>
+						<Button
+							colorScheme="twitter"
+							isLoading={isLoadingCreate}
+							onClick={() =>
+								create(
+									{
+										firstName: address.firstName,
+										lastName: address.lastName,
+										phone: address.contactPhone,
+										point: address.point as Point,
+									},
+									{
+										onSuccess: ({ message }) => {
+											void ctx.address.invalidate();
+											toast({
+												description: `${message}`,
+												status: 'success',
+												isClosable: true,
+												position: 'top-right',
+											});
+											dispatchAddress({
+												type: 'SET_CLEAR',
+											});
+											onClose();
+										},
+									}
+								)
+							}
+						>
+							Сохранить
+						</Button>
+						<Button
+							onClick={() => {
+								dispatchAddress({ type: 'SET_CLEAR' });
+								reset();
+								onClose();
+							}}
+						>
+							Отмена
+						</Button>
+					</ModalFooter>
 				</ModalContent>
 			</AddressContext.Provider>
 		</Modal>

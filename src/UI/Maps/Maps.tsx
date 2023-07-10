@@ -16,7 +16,7 @@ const Maps = () => {
 				zoom: 11,
 			}}
 			height={isLowerThen900 ? '250px' : '400px'}
-			width={isLowerThen900 ? '300px' : '600px'}
+			width={isLowerThen900 ? '300px' : '400px'}
 		>
 			{points?.map((point, index) => (
 				<PlacemarkPoint key={index} point={point} />

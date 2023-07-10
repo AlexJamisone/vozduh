@@ -15,6 +15,7 @@ export interface CreateAddressContext {
 	handlPoints: (
 		suggestion: DaDataSuggestion<DaDataAddress> | undefined
 	) => void;
+	isLoadingCdek: boolean;
 }
 
 const AddressContext = createContext<CreateAddressContext | null>(null);

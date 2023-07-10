@@ -1,13 +1,21 @@
-import { FormControl, FormLabel, Input, InputGroup } from '@chakra-ui/react';
+import {
+	FormControl,
+	FormLabel,
+	Input,
+	InputGroup,
+	InputRightElement,
+	Spinner,
+} from '@chakra-ui/react';
 import { AddressSuggestions } from 'react-dadata';
 import 'react-dadata/dist/react-dadata.css';
 import { useCreateAddressContext } from '~/context/addressContext';
 import { env } from '~/env.mjs';
 
 const UserAddressSelectCity = () => {
-	const { valueSuggestion, handlPoints } = useCreateAddressContext();
+	const { valueSuggestion, handlPoints, isLoadingCdek } =
+		useCreateAddressContext();
 	return (
-		<InputGroup>
+		<InputGroup position="relative">
 			<FormControl>
 				<FormLabel>Город</FormLabel>
 				<AddressSuggestions
@@ -24,6 +32,9 @@ const UserAddressSelectCity = () => {
 					renderOption={(sug) => sug.data.city}
 					value={valueSuggestion}
 				/>
+				<InputRightElement position="absolute" top="45%" right={3}>
+					{isLoadingCdek && <Spinner size="sm" />}
+				</InputRightElement>
 			</FormControl>
 		</InputGroup>
 	);
