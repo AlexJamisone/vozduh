@@ -1,3 +1,4 @@
+import { Center } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import AdminOrders from '~/UI/Admin/AdminOrders';
@@ -15,10 +16,16 @@ const AdminRouter = () => {
 			case 'orders':
 				return <AdminOrders />;
 			case 'products':
-				return <AdminProducts />;
+				return (
+					<AdminProducts
+						product={<AdminProducts.Product />}
+						size={<AdminProducts.Size />}
+						category={<AdminProducts.Category />}
+					/>
+				);
 		}
 	};
-	return <>{handlRouter()}</>;
+	return <Center pt={200}>{handlRouter()}</Center>;
 };
 
 export default AdminRouter;

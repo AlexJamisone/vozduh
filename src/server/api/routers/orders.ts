@@ -29,7 +29,7 @@ export const ordersRouter = createTRPCRouter({
 			},
 		});
 	}),
-	getIncomeOrder: adminProcedure.query(async ({ ctx }) => {
+	getIncomeOrder: privetProcedure.query(async ({ ctx }) => {
 		const orders = await ctx.prisma.order.findMany({
 			where: {
 				viewed: false,
