@@ -12,9 +12,13 @@ type MenuActions = {
 	icon: IconType;
 	title: string;
 	name: string;
+	income?: number;
 };
 
-export const menu_link = (role: Role): MenuActions[] | undefined => {
+export const menu_link = (
+	role: Role,
+	income?: number
+): MenuActions[] | undefined => {
 	switch (role) {
 		case 'ADMIN':
 			return [
@@ -24,6 +28,7 @@ export const menu_link = (role: Role): MenuActions[] | undefined => {
 					title: 'Заказы',
 					icon: FaRegRectangleList,
 					name: 'orders',
+					income,
 				},
 				{
 					id: 2,

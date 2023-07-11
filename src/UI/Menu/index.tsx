@@ -4,6 +4,7 @@ import {
 	Icon,
 	IconButton,
 	Stack,
+	Text,
 	Tooltip,
 	useColorMode,
 } from '@chakra-ui/react';
@@ -16,6 +17,7 @@ import { api } from '~/utils/api';
 
 const Menu = () => {
 	const { data: role } = api.user.getRole.useQuery();
+	const { data: ordersIncome } = api.order.getIncomeOrder.useQuery();
 	const { query } = useRouter();
 	const { path: qpath } = query;
 	const { isSignedIn } = useAuth();
@@ -49,27 +51,45 @@ const Menu = () => {
 						roundedTop="2xl"
 						boxShadow={colorMode === 'dark' ? undefined : '2xl'}
 					>
-						{menu_link(role as Role)?.map(
-							({ id, icon, path, title, name }) => (
-								<Tooltip key={id} label={title}>
-									<IconButton
-										as={Link}
-										isActive={name === qpath}
-										boxShadow={
-											colorMode === 'dark' &&
-											name === qpath
-												? '0 0 10px 0 white'
-												: name === qpath
-												? '0 0 10px 0 black'
-												: undefined
-										}
-										href={path}
-										variant="outline"
-										aria-label="menu-list"
-										rounded="full"
-										icon={<Icon as={icon} />}
-									/>
-								</Tooltip>
+						{menu_link(role as Role, ordersIncome)?.map(
+							({ id, icon, path, title, name, income }) => (
+								<Stack key={id} position="relative">
+									<Tooltip label={title}>
+										<IconButton
+											as={Link}
+											isActive={name === qpath}
+											boxShadow={
+												colorMode === 'dark' &&
+												name === qpath
+													? '0 0 10px 0 white'
+													: name === qpath
+													? '0 0 10px 0 black'
+													: undefined
+											}
+											href={path}
+											variant="outline"
+											aria-label="menu-list"
+											rounded="full"
+											icon={<Icon as={icon} />}
+										/>
+									</Tooltip>
+									{income && (
+										<Stack
+											position="absolute"
+											border="1px solid"
+											px={2}
+											rounded="full"
+											bottom={-2}
+											right={-4}
+											fontSize={11}
+											py={0.5}
+											cursor="default"
+											bgColor="Menu"
+										>
+											<Text>{income}</Text>
+										</Stack>
+									)}
+								</Stack>
 							)
 						)}
 					</Stack>
