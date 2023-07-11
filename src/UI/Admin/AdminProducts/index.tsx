@@ -1,5 +1,7 @@
-import { Button, Icon, Stack } from '@chakra-ui/react';
+import { Button, Icon, IconButton, Stack } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
 import { useReducer, type ReactNode } from 'react';
+import { IoIosArrowBack } from 'react-icons/io';
 import { RiAddFill } from 'react-icons/ri';
 import { productControllButton } from '~/constants/productControlButton';
 import ProductContext from '~/context/productContext';
@@ -54,7 +56,29 @@ const AdminProducts = ({ category, product, size }: AdminProductsProps) => {
 	};
 	return (
 		<Stack>
-			<Stack direction="row">
+			<Stack direction="row" as={motion.div} layout>
+				{(state.controlView.category ||
+					state.controlView.product ||
+					state.controlView.size) && (
+					<IconButton
+						aria-label="back"
+						icon={<Icon as={IoIosArrowBack} />}
+						as={motion.button}
+						initial={{ opacity: 0, x: 25 }}
+						animate={{ opacity: 1, x: 0 }}
+						onClick={() =>
+							dispatch({
+								type: 'SET_VIEW',
+								payload: {
+									...state.controlView,
+									category: false,
+									product: false,
+									size: false,
+								},
+							})
+						}
+					/>
+				)}
 				{productControllButton({
 					stateView: [
 						state.controlView.product,

@@ -1,3 +1,12 @@
+export type Product = {
+	id: string;
+	name: string;
+	description: string;
+	price: string;
+	category: string;
+	image: string[];
+};
+
 export type ProductState = {
 	controlView: {
 		product: boolean;
@@ -7,14 +16,7 @@ export type ProductState = {
 		editSize: boolean;
 		editCategory: boolean;
 	};
-	product: {
-		id: string;
-		name: string;
-		description: string;
-		price: string;
-		category: string;
-		image: string[];
-	};
+	product: Product;
 	size: {
 		value: string;
 	};
@@ -38,14 +40,7 @@ interface SetViewAction {
 
 interface SetProductAction {
 	type: 'SET_PRODUCT';
-	payload: {
-		id: string;
-		name: string;
-		description: string;
-		price: string;
-		category: string;
-		image: string[];
-	};
+	payload: Product;
 }
 
 interface SetSizeAction {
