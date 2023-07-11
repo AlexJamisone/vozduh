@@ -12,7 +12,11 @@ type UserProfileProps = {
 
 const UserProfile = ({ info, address, orders }: UserProfileProps) => {
 	return (
-		<Stack direction={['column', null, 'row']}>
+		<Stack
+			direction={['column', 'column', 'column', 'row']}
+			w="90%"
+			justifyContent="center"
+		>
 			<Stack>
 				{info}
 				{address}

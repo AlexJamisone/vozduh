@@ -29,7 +29,11 @@ const ProfileRouter = () => {
 				return <UserSettings />;
 		}
 	};
-	return <Center pt={200}>{handlRouter()}</Center>;
+	return (
+		<Center pt={200} w="100%">
+			{handlRouter()}
+		</Center>
+	);
 };
 
 export default ProfileRouter;

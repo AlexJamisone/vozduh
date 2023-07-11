@@ -5,11 +5,7 @@ import AnimataedLayout from '~/components/AnumationLayout';
 const UserSettings = () => {
 	const { colorMode } = useColorMode();
 	return (
-		<AnimataedLayout
-			container={{
-				pt: 200,
-			}}
-		>
+		<AnimataedLayout>
 			<UserProfile
 				appearance={{
 					baseTheme: colorMode === 'dark' ? dark : undefined,

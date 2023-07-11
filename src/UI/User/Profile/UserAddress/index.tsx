@@ -19,7 +19,12 @@ const UserAddress = () => {
 	const toast = useToast();
 	if (!address) return null;
 	return (
-		<Card as={motion.div} layout>
+		<Card
+			as={motion.div}
+			layout
+			justifyContent="center"
+			alignItems="center"
+		>
 			<CardHeader>
 				<Button
 					w="100%"

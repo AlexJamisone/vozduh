@@ -4,6 +4,7 @@ import {
 	CardBody,
 	HStack,
 	Input,
+	Skeleton,
 	Stack,
 	Text,
 	useToast,
@@ -14,7 +15,7 @@ import { api } from '~/utils/api';
 
 const UserInfo = () => {
 	const { user: userClerk } = useClerk();
-	const { data: user } = api.user.get.useQuery();
+	const { data: user, isLoading } = api.user.get.useQuery();
 
 	const toast = useToast();
 	const handlAvatar = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -38,6 +39,16 @@ const UserInfo = () => {
 			}
 		}
 	};
+	if (isLoading)
+		return (
+			<Stack direction="row">
+				<Stack>
+					<Skeleton w={400} h={100} />
+					<Skeleton w={400} h={390} />
+				</Stack>
+				<Skeleton w={620} h={500} />
+			</Stack>
+		);
 	return (
 		<Card>
 			<CardBody>

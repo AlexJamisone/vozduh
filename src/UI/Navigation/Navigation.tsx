@@ -10,7 +10,7 @@ const Navigation = () => {
 
 	useEffect(() => {
 		const handlScroll = () => {
-			if (window.scrollY >= 150) {
+			if (window.scrollY >= 100) {
 				setShowBg(true);
 			} else {
 				setShowBg(false);
