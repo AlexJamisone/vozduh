@@ -5,6 +5,7 @@ export type Product = {
 	price: string;
 	category: string;
 	image: string[];
+	size: string[];
 };
 
 export type ProductState = {
@@ -87,6 +88,7 @@ export const initial: ProductState = {
 		image: [],
 		name: '',
 		price: '',
+		size: [],
 	},
 	size: {
 		value: '',
@@ -110,7 +112,16 @@ export const productReducer = (
 					size: action.payload.size,
 				},
 			};
-		case 'SET_PRODUCT':
+		case 'SET_PRODUCT': {
+			const newSizeArray = [...state.product.size];
+			action.payload.size.forEach((size) => {
+				const sizeIndex = newSizeArray.indexOf(size);
+				if (sizeIndex === -1) {
+					newSizeArray.push(size);
+				} else {
+					newSizeArray.splice(sizeIndex, 1);
+				}
+			});
 			return {
 				...state,
 				product: {
@@ -120,8 +131,10 @@ export const productReducer = (
 					name: action.payload.name,
 					price: action.payload.price,
 					id: action.payload.id,
+					size: newSizeArray,
 				},
 			};
+		}
 		case 'SET_CATEGORY':
 			return {
 				...state,

@@ -10,6 +10,8 @@ import { productCreate } from '~/constants/productCreate';
 import { useProductContext } from '~/context/productContext';
 import CardWithImage from './CardWithImage';
 import ImageUploader from './ImageUploader';
+import SelectCategory from './SelectCategory';
+import SelectSize from './SelectSize';
 
 const AdminCreateProduct = () => {
 	const { state, dispatch } = useProductContext();
@@ -62,6 +64,8 @@ const AdminCreateProduct = () => {
 			</Stack>
 			<ImageUploader />
 			<CardWithImage />
+			<SelectCategory />
+			<SelectSize />
 		</Stack>
 	);
 };
