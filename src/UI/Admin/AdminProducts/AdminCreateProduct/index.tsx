@@ -8,6 +8,7 @@ import {
 import type { ChangeEvent } from 'react';
 import { productCreate } from '~/constants/productCreate';
 import { useProductContext } from '~/context/productContext';
+import CardWithImage from './CardWithImage';
 import ImageUploader from './ImageUploader';
 
 const AdminCreateProduct = () => {
@@ -60,6 +61,7 @@ const AdminCreateProduct = () => {
 				)}
 			</Stack>
 			<ImageUploader />
+			<CardWithImage />
 		</Stack>
 	);
 };

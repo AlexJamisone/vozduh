@@ -25,7 +25,7 @@ const config = {
 		ignoreDuringBuilds: true
 	},
 	images: {
-		domains: ['placehold.co']
+		domains: ['placehold.co', 'utfs.io']
 	},
 	swcMinify: true,
 	experimental: {
