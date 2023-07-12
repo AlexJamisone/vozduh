@@ -1,10 +1,11 @@
-import { Progress, useToast } from '@chakra-ui/react';
+import { Progress, Stack, useToast } from '@chakra-ui/react';
 import { UploadDropzone } from '@uploadthing/react';
 import '@uploadthing/react/styles.css';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useProductContext } from '~/context/productContext';
 import type { OurFileRouter } from '~/server/uploadthing';
+
 const ImageUploader = () => {
 	const { state, dispatch } = useProductContext();
 	const toast = useToast();
@@ -13,7 +14,7 @@ const ImageUploader = () => {
 		value: 0,
 	});
 	return (
-		<>
+		<Stack>
 			<UploadDropzone<OurFileRouter>
 				endpoint="imageUploader"
 				onUploadProgress={(value) => {
@@ -66,7 +67,7 @@ const ImageUploader = () => {
 					borderRadius="2xl"
 				/>
 			)}
-		</>
+		</Stack>
 	);
 };
 

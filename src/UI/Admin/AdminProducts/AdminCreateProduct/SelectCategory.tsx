@@ -6,7 +6,6 @@ const SelectCategory = () => {
 	const { dispatch, state } = useProductContext();
 	const { data: categorys } = api.categorys.get.useQuery();
 	if (!categorys) return null;
-	console.log(state.product);
 	return (
 		<Select
 			placeholder="Выбери категорию"

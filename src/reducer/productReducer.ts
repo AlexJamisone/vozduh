@@ -6,6 +6,13 @@ export type Product = {
 	category: string;
 	image: string[];
 	size: string[];
+	serviceAvailability: AdditionalService[];
+};
+
+type AdditionalService = {
+	id: string;
+	title: string;
+	price: string;
 };
 
 export type ProductState = {
@@ -61,12 +68,37 @@ interface SetAllAction {
 	payload: ProductState;
 }
 
+interface SetAddServiceAction {
+	type: 'ADD_SERVICE';
+	payload: AdditionalService;
+}
+interface SetUpdateServiceAction {
+	type: 'UPDATE_SERVICE';
+	payload: {
+		index: number;
+		title?: string;
+		price?: string;
+	};
+}
+interface SetRemoveServicesAction {
+	type: 'REMOVE_SERVICE';
+	payload: number;
+}
+
+interface SetClearAction {
+	type: 'CLEAR';
+}
+
 export type Action =
 	| SetCategoryAction
 	| SetProductAction
 	| SetViewAction
 	| SetSizeAction
-	| SetAllAction;
+	| SetAllAction
+	| SetAddServiceAction
+	| SetUpdateServiceAction
+	| SetRemoveServicesAction
+	| SetClearAction;
 
 export const initial: ProductState = {
 	controlView: {
@@ -89,6 +121,7 @@ export const initial: ProductState = {
 		name: '',
 		price: '',
 		size: [],
+		serviceAvailability: [],
 	},
 	size: {
 		value: '',
@@ -112,6 +145,56 @@ export const productReducer = (
 					size: action.payload.size,
 				},
 			};
+		case 'ADD_SERVICE': {
+			const newService: AdditionalService = {
+				id: action.payload.id,
+				price: action.payload.price,
+				title: action.payload.title,
+			};
+			return {
+				...state,
+				product: {
+					...state.product,
+					serviceAvailability: [
+						...state.product.serviceAvailability,
+						newService,
+					],
+				},
+			};
+		}
+		case 'UPDATE_SERVICE': {
+			const updateServices = state.product.serviceAvailability.map(
+				(service, index) => {
+					if (index === action.payload.index) {
+						return {
+							...service,
+							title: action.payload.title ?? service.title,
+							price: action.payload.price ?? service.price,
+						};
+					}
+					return service;
+				}
+			);
+			return {
+				...state,
+				product: {
+					...state.product,
+					serviceAvailability: updateServices,
+				},
+			};
+		}
+		case 'REMOVE_SERVICE': {
+			const updateServices = state.product.serviceAvailability.filter(
+				(_, index) => index !== action.payload
+			);
+			return {
+				...state,
+				product: {
+					...state.product,
+					serviceAvailability: updateServices,
+				},
+			};
+		}
 		case 'SET_PRODUCT': {
 			const newSizeArray = [...state.product.size];
 			action.payload.size.forEach((size) => {
@@ -122,6 +205,7 @@ export const productReducer = (
 					newSizeArray.splice(sizeIndex, 1);
 				}
 			});
+
 			return {
 				...state,
 				product: {
@@ -132,6 +216,7 @@ export const productReducer = (
 					price: action.payload.price,
 					id: action.payload.id,
 					size: newSizeArray,
+					serviceAvailability: [...state.product.serviceAvailability],
 				},
 			};
 		}
@@ -152,6 +237,8 @@ export const productReducer = (
 			};
 		case 'SET_ALL':
 			return { ...state, ...action.payload };
+		case 'CLEAR':
+			return initial;
 		default:
 			return state;
 	}

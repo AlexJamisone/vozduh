@@ -8,7 +8,9 @@ import {
 import type { ChangeEvent } from 'react';
 import { productCreate } from '~/constants/productCreate';
 import { useProductContext } from '~/context/productContext';
+import AdditionalService from './AdditionalService';
 import CardWithImage from './CardWithImage';
+import CreateProductAction from './CreateProductAction';
 import ImageUploader from './ImageUploader';
 import SelectCategory from './SelectCategory';
 import SelectSize from './SelectSize';
@@ -46,10 +48,10 @@ const AdminCreateProduct = () => {
 	return (
 		<Stack
 			gap={3}
-			maxW={630}
+			maxW={650}
 			maxH={630}
 			overflowY="auto"
-			pr={3}
+			px={10}
 			sx={{
 				'::-webkit-scrollbar': {
 					width: '5px',
@@ -80,6 +82,7 @@ const AdminCreateProduct = () => {
 								value={value}
 								placeholder={placeholder}
 								onChange={handlChange}
+								h={textarea ? '200px' : undefined}
 							/>
 						</FormControl>
 					)
@@ -89,6 +92,8 @@ const AdminCreateProduct = () => {
 			<CardWithImage />
 			<SelectCategory />
 			<SelectSize />
+			<AdditionalService />
+			<CreateProductAction />
 		</Stack>
 	);
 };

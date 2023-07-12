@@ -64,18 +64,27 @@ model Category {
 }
 
 model Product {
-    id            String                @id @default(cuid())
-    name          String
-    description   String
-    image         String[]
-    archived      Boolean               @default(false)
-    comments      Comment[]
-    category      Category?             @relation(fields: [categoryTitle], references: [title])
-    categoryTitle String?
-    orders        OrderItem[]
-    priceHistory  ProductPriceHistory[]
-    size          Size[]
-    favorites     Favorites[]
+    id                 String                @id @default(cuid())
+    name               String
+    description        String
+    image              String[]
+    archived           Boolean               @default(false)
+    comments           Comment[]
+    category           Category?             @relation(fields: [categoryTitle], references: [title])
+    categoryTitle      String?
+    orders             OrderItem[]
+    priceHistory       ProductPriceHistory[]
+    size               Size[]
+    favorites          Favorites[]
+    additionalServices AdditionalService[]
+}
+
+model AdditionalService {
+    id        String  @id @default(cuid())
+    title     String
+    price     String
+    product   Product @relation(fields: [productId], references: [id])
+    productId String
 }
 
 model Size {
