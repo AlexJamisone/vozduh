@@ -32,6 +32,7 @@ const AdminProducts = ({ category, product, size }: AdminProductsProps) => {
 	const { data: products } = api.product.getForAdmin.useQuery();
 	const ctx = api.useContext();
 	const toast = useToast();
+	console.log(state.product);
 	const handlCreateProduct = () => {
 		create(
 			{
@@ -157,7 +158,9 @@ const AdminProducts = ({ category, product, size }: AdminProductsProps) => {
 						resetProduct,
 					}}
 				>
-					{state.controlView.product && product}
+					{(state.controlView.product ||
+						state.controlView.editProduct) &&
+						product}
 					{state.controlView.size && size}
 					{state.controlView.category && category}
 				</ProductContext.Provider>
@@ -181,6 +184,8 @@ const AdminProducts = ({ category, product, size }: AdminProductsProps) => {
 								image={<ProductCard.Image />}
 								role="ADMIN"
 								index={index}
+								dispatch={dispatch}
+								state={state}
 							/>
 						))}
 					</Stack>

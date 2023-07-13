@@ -2,7 +2,8 @@ import { Button, Stack } from '@chakra-ui/react';
 import { useProductContext } from '~/context/productContext';
 
 const CreateProductAction = () => {
-	const { isLoadingProduct, handlCreateProduct } = useProductContext();
+	const { isLoadingProduct, handlCreateProduct, state, dispatch } =
+		useProductContext();
 	return (
 		<Stack>
 			<Button
@@ -11,8 +12,22 @@ const CreateProductAction = () => {
 				onClick={handlCreateProduct}
 				colorScheme="telegram"
 			>
-				Создать товар
+				{state.controlView.editProduct
+					? 'Обновить Товар'
+					: 'Создать Товар'}
 			</Button>
+			{state.controlView.editProduct && (
+				<Button
+					colorScheme="red"
+					onClick={() => {
+						dispatch({
+							type: 'CLEAR',
+						});
+					}}
+				>
+					Отмена
+				</Button>
+			)}
 		</Stack>
 	);
 };

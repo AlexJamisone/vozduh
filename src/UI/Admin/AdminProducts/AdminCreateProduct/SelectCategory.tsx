@@ -26,6 +26,7 @@ const SelectCategory = () => {
 						},
 					});
 				}}
+				value={state.product.category}
 			>
 				{categorys?.map(({ id, title }) => (
 					<option key={id} value={title}>

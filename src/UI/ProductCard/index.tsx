@@ -1,20 +1,92 @@
-import { Card, CardBody, CardHeader, Stack, Tag, Text } from '@chakra-ui/react';
-import type { Product, ProductPriceHistory, Role } from '@prisma/client';
+import {
+	Card,
+	CardBody,
+	CardHeader,
+	Icon,
+	IconButton,
+	Stack,
+	Tag,
+	Text,
+	useToast,
+} from '@chakra-ui/react';
+import type {
+	AdditionalService,
+	Product,
+	ProductPriceHistory,
+	Role,
+	Size,
+} from '@prisma/client';
 import { motion } from 'framer-motion';
-import type { ReactNode } from 'react';
+import type { Dispatch, ReactNode } from 'react';
+import { BsArchive } from 'react-icons/bs';
+import Overlay from '~/components/Overlay';
 import ProductCardContext from '~/context/productCardContext';
+import type { Action, ProductState } from '~/reducer/productReducer';
+import { api } from '~/utils/api';
 import ProductCardImg from './ProductCardImg';
 
 type ProductCardProps = {
 	product: Product & {
 		priceHistory: ProductPriceHistory[];
+		size: Size[];
+		additionalServices: AdditionalService[];
 	};
 	role?: Role;
 	image?: ReactNode;
 	index: number;
+	dispatch?: Dispatch<Action>;
+	state?: ProductState;
 };
 
-const ProductCard = ({ product, role, index, image }: ProductCardProps) => {
+const ProductCard = ({
+	product,
+	role,
+	index,
+	image,
+	dispatch,
+	state,
+}: ProductCardProps) => {
+	const { mutate: archive, isLoading } = api.product.archive.useMutation();
+	const ctx = api.useContext();
+	const toast = useToast();
+	const handlClickOnCard = () => {
+		if (role === 'ADMIN' && dispatch !== undefined && state !== undefined) {
+			product.additionalServices.map((serv) =>
+				dispatch({
+					type: 'ADD_SERVICE',
+					payload: {
+						id: serv.id,
+						price: serv.price,
+						title: serv.title,
+					},
+				})
+			);
+			dispatch({
+				type: 'SET_PRODUCT',
+				payload: {
+					id: product.id,
+					name: product.name,
+					category: product.categoryTitle as string,
+					description: product.description,
+					image: product.image,
+					price: product.priceHistory[0]?.price.toString() as string,
+					size: product.size.map((size) => size.id),
+					serviceAvailability: state.product.serviceAvailability,
+				},
+			});
+			dispatch({
+				type: 'SET_VIEW',
+				payload: {
+					editProduct: true,
+					category: false,
+					editCategory: false,
+					editSize: false,
+					product: false,
+					size: false,
+				},
+			});
+		}
+	};
 	return (
 		<Card
 			size={['sm', null, null, 'md']}
@@ -30,19 +102,64 @@ const ProductCard = ({ product, role, index, image }: ProductCardProps) => {
 					delay: 0.2 * index,
 				},
 			}}
+			rounded="2xl"
+			cursor="pointer"
+			onClick={handlClickOnCard}
 		>
+			{product.archived && <Overlay />}
 			<ProductCardContext.Provider
 				value={{
 					product,
 				}}
 			>
 				<CardHeader position="relative">{image}</CardHeader>
-				<CardBody>
+				<CardBody position="relative">
 					<Stack gap={5} alignItems="center">
 						<Text>{product.name}</Text>
 						{role === 'ADMIN' && <Tag>{product.categoryTitle}</Tag>}
 						<Text>{product.priceHistory[0]?.price} ₽</Text>
 					</Stack>
+					{role === 'ADMIN' && (
+						<IconButton
+							size="sm"
+							colorScheme="telegram"
+							icon={<Icon as={BsArchive} />}
+							variant="solid"
+							aria-label="archive"
+							position="absolute"
+							zIndex={25}
+							right={3}
+							bottom={3}
+							isLoading={isLoading}
+							onClick={() =>
+								archive(
+									{
+										archive: !product.archived,
+										id: product.id,
+									},
+									{
+										onSuccess: () => {
+											void ctx.product.invalidate();
+											toast({
+												description: `Товар ${
+													product.name
+												} успешно ${
+													product.archived
+														? 'разархивирован'
+														: 'архивирован'
+												}`,
+												status: product.archived
+													? 'loading'
+													: 'info',
+												isClosable: true,
+												position: 'top-right',
+											});
+										},
+									}
+								)
+							}
+						/>
+					)}
 				</CardBody>
 			</ProductCardContext.Provider>
 		</Card>

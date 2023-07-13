@@ -7,6 +7,8 @@ export const productRouter = createTRPCRouter({
 		return await ctx.prisma.product.findMany({
 			include: {
 				priceHistory: true,
+				size: true,
+				additionalServices: true,
 			},
 		});
 	}),
@@ -86,6 +88,23 @@ export const productRouter = createTRPCRouter({
 							data: services ?? [],
 						},
 					},
+				},
+			});
+		}),
+	archive: adminProcedure
+		.input(
+			z.object({
+				archive: z.boolean(),
+				id: z.string(),
+			})
+		)
+		.mutation(async ({ ctx, input }) => {
+			return await ctx.prisma.product.update({
+				where: {
+					id: input.id,
+				},
+				data: {
+					archived: input.archive,
 				},
 			});
 		}),
