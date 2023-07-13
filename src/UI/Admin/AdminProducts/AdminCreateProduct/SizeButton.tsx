@@ -6,19 +6,25 @@ type SizeButtonProps = {
 };
 
 const SizeButton = ({ size }: SizeButtonProps) => {
-	const { dispatch, state } = useProductContext();
+	const { dispatch, state, productError, isErrorProduct, resetProduct } =
+		useProductContext();
+	const error =
+		isErrorProduct && productError?.fieldErrors.size !== undefined;
 	return (
 		<Button
 			isActive={state.product.size.includes(size.id)}
-			onClick={() =>
+			border={error ? '1px solid' : undefined}
+			borderColor={error ? 'red.300' : undefined}
+			onClick={() => {
+				resetProduct();
 				dispatch({
 					type: 'SET_PRODUCT',
 					payload: {
 						...state.product,
 						size: [size.id],
 					},
-				})
-			}
+				});
+			}}
 		>
 			{size.value}
 		</Button>

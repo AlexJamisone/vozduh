@@ -1,9 +1,15 @@
 import { createContext, useContext, type Dispatch } from 'react';
+import type { typeToFlattenedError } from 'zod';
 import type { Action, ProductState } from '~/reducer/productReducer';
 
 export interface ProductContext {
 	state: ProductState;
 	dispatch: Dispatch<Action>;
+	productError?: typeToFlattenedError<any, string> | null;
+	handlCreateProduct: () => void;
+	isErrorProduct: boolean;
+	isLoadingProduct: boolean;
+	resetProduct: () => void;
 }
 
 const ProductContext = createContext<ProductContext | null>(null);

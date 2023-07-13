@@ -25,7 +25,7 @@ const AdminRouter = () => {
 				);
 		}
 	};
-	return <Center pt={150}>{handlRouter()}</Center>;
+	return <Center pt={175}>{handlRouter()}</Center>;
 };
 
 export default AdminRouter;

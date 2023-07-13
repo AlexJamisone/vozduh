@@ -1,4 +1,9 @@
-import { Progress, Stack, useToast } from '@chakra-ui/react';
+import {
+	FormControl,
+	FormErrorMessage,
+	Progress,
+	useToast,
+} from '@chakra-ui/react';
 import { UploadDropzone } from '@uploadthing/react';
 import '@uploadthing/react/styles.css';
 import { motion } from 'framer-motion';
@@ -7,14 +12,23 @@ import { useProductContext } from '~/context/productContext';
 import type { OurFileRouter } from '~/server/uploadthing';
 
 const ImageUploader = () => {
-	const { state, dispatch } = useProductContext();
+	const { state, dispatch, productError, isErrorProduct, resetProduct } =
+		useProductContext();
 	const toast = useToast();
 	const [progress, setProgress] = useState({
 		show: false,
 		value: 0,
 	});
+	const error =
+		isErrorProduct && productError?.fieldErrors.image !== undefined;
 	return (
-		<Stack>
+		<FormControl
+			as={motion.div}
+			layout
+			isInvalid={error}
+			border={error ? '1px dashed' : undefined}
+			borderColor={error ? 'red.300' : undefined}
+		>
 			<UploadDropzone<OurFileRouter>
 				endpoint="imageUploader"
 				onUploadProgress={(value) => {
@@ -32,6 +46,7 @@ const ImageUploader = () => {
 					});
 				}}
 				onClientUploadComplete={(res) => {
+					resetProduct();
 					setProgress({
 						show: false,
 						value: 0,
@@ -67,7 +82,10 @@ const ImageUploader = () => {
 					borderRadius="2xl"
 				/>
 			)}
-		</Stack>
+			<FormErrorMessage display="flex" justifyContent="center" mb={3}>
+				{productError?.fieldErrors.image}
+			</FormErrorMessage>
+		</FormControl>
 	);
 };
 

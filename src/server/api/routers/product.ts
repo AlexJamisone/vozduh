@@ -1,6 +1,5 @@
 import { utapi } from 'uploadthing/server';
 import { z } from 'zod';
-import type { Product } from '~/reducer/productReducer';
 import { adminProcedure, createTRPCRouter } from '~/server/api/trpc';
 
 export const productRouter = createTRPCRouter({
@@ -16,27 +15,60 @@ export const productRouter = createTRPCRouter({
 	create: adminProcedure
 		.input(
 			z.object({
-				product: z.custom<Product>(),
+				name: z.string().nonempty({
+					message: 'Пожалуйста, укажите название товара.',
+				}),
+				description: z.string().nonempty({
+					message: 'Обязательно заполните описание товара',
+				}),
+				price: z
+					.string()
+					.nonempty({ message: 'Пожалуйста, укажите цену товара.' }),
+				image: z
+					.array(
+						z
+							.string()
+							.nonempty({ message: 'Пожалуйста загрузи фото' })
+					)
+					.min(1, { message: 'Загрузи хотя бы 1 фото' }),
+				category: z.string().nonempty('Выбери категорию.'),
+				size: z
+					.array(z.string().nonempty({ message: 'Выбери размеры' }))
+					.min(1, { message: 'Выбери хотя бы 1 размер' }),
+				service: z
+					.array(
+						z.object({
+							title: z.string().nonempty({
+								message: 'Укажи название доп операции',
+							}),
+							price: z.string().nonempty({
+								message:
+									'Укажи цену за доп услугу, либо поставь 0',
+							}),
+						})
+					)
+					.optional(),
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
-			const sizeId = input.product.size.map((id) => ({ id }));
-			const services = input.product.serviceAvailability.map(
-				({ price, title }) => ({ price, title })
-			);
+			const sizeId = input.size.map((id) => ({ id }));
+			const services = input.service?.map(({ price, title }) => ({
+				price,
+				title,
+			}));
 			return await ctx.prisma.product.create({
 				data: {
-					name: input.product.name,
-					description: input.product.description,
-					image: input.product.image,
+					name: input.name,
+					description: input.description,
+					image: input.image,
 					priceHistory: {
 						create: {
-							price: Number(input.product.price),
+							price: Number(input.price),
 						},
 					},
 					category: {
 						connect: {
-							title: input.product.category,
+							title: input.category,
 						},
 					},
 					size: {
@@ -44,7 +76,7 @@ export const productRouter = createTRPCRouter({
 					},
 					additionalServices: {
 						createMany: {
-							data: services,
+							data: services ?? [],
 						},
 					},
 				},

@@ -1,4 +1,4 @@
-import { Button, Icon, IconButton, Stack } from '@chakra-ui/react';
+import { Button, Icon, IconButton, Stack, useToast } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { useReducer, type ReactNode } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
@@ -7,9 +7,11 @@ import { productControllButton } from '~/constants/productControlButton';
 import ProductContext from '~/context/productContext';
 import { actionString } from '~/helpers/actionString';
 import { initial, productReducer } from '~/reducer/productReducer';
+import { api } from '~/utils/api';
 import AdminCreateCategory from './AdminCreateCategory';
 import AdminCreateProduct from './AdminCreateProduct';
 import AdminCreateSize from './AdminCreateSize';
+
 type AdminProductsProps = {
 	product?: ReactNode;
 	size?: ReactNode;
@@ -18,7 +20,45 @@ type AdminProductsProps = {
 
 const AdminProducts = ({ category, product, size }: AdminProductsProps) => {
 	const [state, dispatch] = useReducer(productReducer, initial);
-	const handlClick = (value: string) => {
+	const {
+		mutate: create,
+		isLoading: isLoadingProduct,
+		reset: resetProduct,
+		error: productError,
+		isError: isErrorProduct,
+	} = api.product.create.useMutation();
+
+	const ctx = api.useContext();
+	const toast = useToast();
+	const handlCreateProduct = () => {
+		create(
+			{
+				name: state.product.name,
+				description: state.product.description,
+				category: state.product.category,
+				image: state.product.image,
+				price: state.product.price,
+				size: state.product.size,
+				service: state.product.serviceAvailability,
+			},
+			{
+				onSuccess: () => {
+					void ctx.product.invalidate();
+					toast({
+						description: `Товар ${state.product.name} успешно создан!`,
+						position: 'top-right',
+						status: 'success',
+						isClosable: true,
+					});
+					dispatch({
+						type: 'CLEAR',
+					});
+				},
+			}
+		);
+	};
+
+	const handlControl = (value: string) => {
 		switch (value) {
 			case 'Товар':
 				dispatch({
@@ -54,6 +94,7 @@ const AdminProducts = ({ category, product, size }: AdminProductsProps) => {
 				});
 		}
 	};
+
 	return (
 		<Stack>
 			<Stack direction="row" as={motion.div} layout>
@@ -96,7 +137,7 @@ const AdminProducts = ({ category, product, size }: AdminProductsProps) => {
 						leftIcon={<Icon as={RiAddFill} boxSize={6} />}
 						variant="outline"
 						isActive={stateView}
-						onClick={() => handlClick(value)}
+						onClick={() => handlControl(value)}
 					>
 						{actionString(stateEdit)} {value}
 					</Button>
@@ -107,6 +148,11 @@ const AdminProducts = ({ category, product, size }: AdminProductsProps) => {
 					value={{
 						dispatch,
 						state,
+						productError: productError?.data?.zodError,
+						handlCreateProduct,
+						isErrorProduct,
+						isLoadingProduct,
+						resetProduct,
 					}}
 				>
 					{state.controlView.product && product}
