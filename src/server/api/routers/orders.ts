@@ -2,6 +2,7 @@ import {
 	adminProcedure,
 	createTRPCRouter,
 	privetProcedure,
+	publicProcedure,
 } from '~/server/api/trpc';
 
 export const ordersRouter = createTRPCRouter({
@@ -29,7 +30,7 @@ export const ordersRouter = createTRPCRouter({
 			},
 		});
 	}),
-	getIncomeOrder: privetProcedure.query(async ({ ctx }) => {
+	getIncomeOrder: publicProcedure.query(async ({ ctx }) => {
 		const orders = await ctx.prisma.order.findMany({
 			where: {
 				viewed: false,

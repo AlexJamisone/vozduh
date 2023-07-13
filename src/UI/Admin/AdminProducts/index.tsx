@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useReducer, type ReactNode } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
 import { RiAddFill } from 'react-icons/ri';
+import ProductCard from '~/UI/ProductCard';
 import { productControllButton } from '~/constants/productControlButton';
 import ProductContext from '~/context/productContext';
 import { actionString } from '~/helpers/actionString';
@@ -28,6 +29,7 @@ const AdminProducts = ({ category, product, size }: AdminProductsProps) => {
 		isError: isErrorProduct,
 	} = api.product.create.useMutation();
 
+	const { data: products } = api.product.getForAdmin.useQuery();
 	const ctx = api.useContext();
 	const toast = useToast();
 	const handlCreateProduct = () => {
@@ -96,7 +98,7 @@ const AdminProducts = ({ category, product, size }: AdminProductsProps) => {
 	};
 
 	return (
-		<Stack>
+		<Stack alignItems="center">
 			<Stack direction="row" as={motion.div} layout>
 				{(state.controlView.category ||
 					state.controlView.product ||
@@ -160,6 +162,29 @@ const AdminProducts = ({ category, product, size }: AdminProductsProps) => {
 					{state.controlView.category && category}
 				</ProductContext.Provider>
 			</Stack>
+			{!state.controlView.product &&
+				!state.controlView.category &&
+				!state.controlView.size &&
+				!state.controlView.editCategory &&
+				!state.controlView.editProduct &&
+				!state.controlView.editSize && (
+					<Stack
+						direction="row"
+						justifyContent="center"
+						flexWrap="wrap"
+						gap={5}
+					>
+						{products?.map((product, index) => (
+							<ProductCard
+								key={product.id}
+								product={product}
+								image={<ProductCard.Image />}
+								role="ADMIN"
+								index={index}
+							/>
+						))}
+					</Stack>
+				)}
 		</Stack>
 	);
 };

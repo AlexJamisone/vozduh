@@ -3,6 +3,13 @@ import { z } from 'zod';
 import { adminProcedure, createTRPCRouter } from '~/server/api/trpc';
 
 export const productRouter = createTRPCRouter({
+	getForAdmin: adminProcedure.query(async ({ ctx }) => {
+		return await ctx.prisma.product.findMany({
+			include: {
+				priceHistory: true,
+			},
+		});
+	}),
 	deletSinglImg: adminProcedure
 		.input(
 			z.object({
