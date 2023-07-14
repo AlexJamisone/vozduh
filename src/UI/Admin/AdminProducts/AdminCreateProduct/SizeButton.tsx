@@ -18,11 +18,8 @@ const SizeButton = ({ size }: SizeButtonProps) => {
 			onClick={() => {
 				resetProduct();
 				dispatch({
-					type: 'SET_PRODUCT',
-					payload: {
-						...state.product,
-						size: [size.id],
-					},
+					type: 'SET_PRODUCT_SIZE',
+					payload: [size.id],
 				});
 			}}
 		>

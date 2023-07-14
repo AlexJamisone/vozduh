@@ -10,6 +10,7 @@ export interface ProductContext {
 	isErrorProduct: boolean;
 	isLoadingProduct: boolean;
 	resetProduct: () => void;
+	isLoadingUpdate: boolean;
 }
 
 const ProductContext = createContext<ProductContext | null>(null);

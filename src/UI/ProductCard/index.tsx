@@ -61,6 +61,9 @@ const ProductCard = ({
 					},
 				})
 			);
+			product.size.map((size) =>
+				dispatch({ type: 'SET_PRODUCT_SIZE', payload: [size.id] })
+			);
 			dispatch({
 				type: 'SET_PRODUCT',
 				payload: {
@@ -70,7 +73,7 @@ const ProductCard = ({
 					description: product.description,
 					image: product.image,
 					price: product.priceHistory[0]?.price.toString() as string,
-					size: product.size.map((size) => size.id),
+					size: state.product.size,
 					serviceAvailability: state.product.serviceAvailability,
 				},
 			});

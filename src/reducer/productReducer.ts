@@ -88,6 +88,10 @@ interface SetRemoveServicesAction {
 interface SetClearAction {
 	type: 'CLEAR';
 }
+interface SetProductSizeAction {
+	type: 'SET_PRODUCT_SIZE';
+	payload: string[];
+}
 
 export type Action =
 	| SetCategoryAction
@@ -98,7 +102,8 @@ export type Action =
 	| SetAddServiceAction
 	| SetUpdateServiceAction
 	| SetRemoveServicesAction
-	| SetClearAction;
+	| SetClearAction
+	| SetProductSizeAction;
 
 export const initial: ProductState = {
 	controlView: {
@@ -196,16 +201,6 @@ export const productReducer = (
 			};
 		}
 		case 'SET_PRODUCT': {
-			const newSizeArray = [...state.product.size];
-			action.payload.size.forEach((size) => {
-				const sizeIndex = newSizeArray.indexOf(size);
-				if (sizeIndex === -1) {
-					newSizeArray.push(size);
-				} else {
-					newSizeArray.splice(sizeIndex, 1);
-				}
-			});
-
 			return {
 				...state,
 				product: {
@@ -215,8 +210,26 @@ export const productReducer = (
 					name: action.payload.name,
 					price: action.payload.price,
 					id: action.payload.id,
-					size: newSizeArray,
+					size: [...state.product.size],
 					serviceAvailability: [...state.product.serviceAvailability],
+				},
+			};
+		}
+		case 'SET_PRODUCT_SIZE': {
+			const newSizeArray = [...state.product.size];
+			action.payload.forEach((size) => {
+				const sizeIndex = newSizeArray.indexOf(size);
+				if (sizeIndex === -1) {
+					newSizeArray.push(size);
+				} else {
+					newSizeArray.splice(sizeIndex, 1);
+				}
+			});
+			return {
+				...state,
+				product: {
+					...state.product,
+					size: newSizeArray,
 				},
 			};
 		}

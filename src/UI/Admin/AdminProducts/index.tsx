@@ -29,38 +29,67 @@ const AdminProducts = ({ category, product, size }: AdminProductsProps) => {
 		isError: isErrorProduct,
 	} = api.product.create.useMutation();
 
+	const { mutate: update, isLoading: isLoadingUpdate } =
+		api.product.update.useMutation();
+
 	const { data: products } = api.product.getForAdmin.useQuery();
 	const ctx = api.useContext();
 	const toast = useToast();
-	console.log(state.product);
 	const handlCreateProduct = () => {
-		create(
-			{
-				name: state.product.name,
-				description: state.product.description,
-				category: state.product.category,
-				image: state.product.image,
-				price: state.product.price,
-				size: state.product.size,
-				service: state.product.serviceAvailability,
-			},
-			{
-				onSuccess: () => {
-					void ctx.product.invalidate();
-					toast({
-						description: `Товар ${state.product.name} успешно создан!`,
-						position: 'top-right',
-						status: 'success',
-						isClosable: true,
-					});
-					dispatch({
-						type: 'CLEAR',
-					});
+		if (state.controlView.editProduct) {
+			update(
+				{
+					name: state.product.name,
+					description: state.product.description,
+					category: state.product.category,
+					price: state.product.price,
+					image: state.product.image,
+					size: state.product.size,
+					service: state.product.serviceAvailability,
+					producId: state.product.id,
 				},
-			}
-		);
+				{
+					onSuccess: () => {
+						void ctx.product.invalidate();
+						toast({
+							description: `Товар ${state.product.name} успешно обновлён`,
+							isClosable: true,
+							position: 'top-right',
+							status: 'info',
+						});
+						dispatch({ type: 'CLEAR' });
+					},
+				}
+			);
+		} else {
+			create(
+				{
+					name: state.product.name,
+					description: state.product.description,
+					category: state.product.category,
+					image: state.product.image,
+					price: state.product.price,
+					size: state.product.size,
+					service: state.product.serviceAvailability,
+				},
+				{
+					onSuccess: () => {
+						void ctx.product.invalidate();
+						toast({
+							description: `Товар ${state.product.name} успешно создан!`,
+							position: 'top-right',
+							status: 'success',
+							isClosable: true,
+						});
+						dispatch({
+							type: 'CLEAR',
+						});
+					},
+				}
+			);
+		}
 	};
-
+	console.log(state.product);
 	const handlControl = (value: string) => {
 		switch (value) {
 			case 'Товар':
@@ -156,6 +185,7 @@ const AdminProducts = ({ category, product, size }: AdminProductsProps) => {
 						isErrorProduct,
 						isLoadingProduct,
 						resetProduct,
+						isLoadingUpdate,
 					}}
 				>
 					{(state.controlView.product ||
