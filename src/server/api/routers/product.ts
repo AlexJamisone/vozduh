@@ -58,10 +58,18 @@ export const productRouter = createTRPCRouter({
 							title: z.string().nonempty({
 								message: 'Укажи название доп операции',
 							}),
-							price: z.string().nonempty({
-								message:
-									'Укажи цену за доп услугу, либо поставь 0',
-							}),
+							additionalOptions: z
+								.array(
+									z.object({
+										name: z.string().nonempty({
+											message: 'Придумай имя доп опции',
+										}),
+										price: z.string().nonempty({
+											message: 'Установи цену доп опции',
+										}),
+									})
+								)
+								.min(1, { message: 'Создай опции!' }),
 						})
 					)
 					.optional(),
@@ -69,10 +77,6 @@ export const productRouter = createTRPCRouter({
 		)
 		.mutation(async ({ ctx, input }) => {
 			const sizeId = input.size.map((id) => ({ id }));
-			const services = input.service?.map(({ price, title }) => ({
-				price,
-				title,
-			}));
 			return await ctx.prisma.product.create({
 				data: {
 					name: input.name,
@@ -92,9 +96,19 @@ export const productRouter = createTRPCRouter({
 						connect: sizeId,
 					},
 					additionalServices: {
-						createMany: {
-							data: services ?? [],
-						},
+						create: input.service?.map((service) => ({
+							additionalServicesOption: {
+								createMany: {
+									data: service.additionalOptions.map(
+										(option) => ({
+											name: option.name,
+											price: option.price,
+										})
+									),
+								},
+							},
+							title: service.title,
+						})),
 					},
 				},
 			});

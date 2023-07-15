@@ -26,7 +26,6 @@ const AdditionalService = () => {
 		productError?.fieldErrors.service?.includes(
 			'Укажи цену за доп услугу, либо поставь 0'
 		);
-	console.log(state.product.serviceAvailability);
 	return (
 		<Stack>
 			{state.product.serviceAvailability.map(

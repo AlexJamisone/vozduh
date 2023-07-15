@@ -38,6 +38,31 @@ const AdminProducts = ({ category, product, size }: AdminProductsProps) => {
 	const ctx = api.useContext();
 	const toast = useToast();
 	const handlCreateProduct = () => {
+		create(
+			{
+				name: state.product.name,
+				description: state.product.description,
+				category: state.product.category,
+				image: state.product.image,
+				price: state.product.price,
+				size: state.product.size,
+				service: state.product.serviceAvailability,
+			},
+			{
+				onSuccess: () => {
+					void ctx.product.invalidate();
+					toast({
+						description: `Товар ${state.product.name} успешно создан!`,
+						position: 'top-right',
+						status: 'success',
+						isClosable: true,
+					});
+					dispatch({
+						type: 'CLEAR',
+					});
+				},
+			}
+		);
 		// if (state.controlView.editProduct) {
 		// 	update(
 		// 		{
@@ -64,31 +89,6 @@ const AdminProducts = ({ category, product, size }: AdminProductsProps) => {
 		// 		}
 		// 	);
 		// } else {
-		// 	create(
-		// 		{
-		// 			name: state.product.name,
-		// 			description: state.product.description,
-		// 			category: state.product.category,
-		// 			image: state.product.image,
-		// 			price: state.product.price,
-		// 			size: state.product.size,
-		// 			service: state.product.serviceAvailability,
-		// 		},
-		// 		{
-		// 			onSuccess: () => {
-		// 				void ctx.product.invalidate();
-		// 				toast({
-		// 					description: `Товар ${state.product.name} успешно создан!`,
-		// 					position: 'top-right',
-		// 					status: 'success',
-		// 					isClosable: true,
-		// 				});
-		// 				dispatch({
-		// 					type: 'CLEAR',
-		// 				});
-		// 			},
-		// 		}
-		// 	);
 		// }
 	};
 	const handlControl = (value: string) => {
