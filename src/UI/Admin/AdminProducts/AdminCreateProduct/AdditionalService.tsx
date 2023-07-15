@@ -1,13 +1,16 @@
 import {
 	Button,
-	FormControl,
-	FormErrorMessage,
+	Divider,
+	Editable,
+	EditableInput,
+	EditablePreview,
 	Icon,
 	IconButton,
 	Input,
 	Stack,
 } from '@chakra-ui/react';
-import { AiOutlineDelete } from 'react-icons/ai';
+import { AiFillDelete } from 'react-icons/ai';
+import { RxCross2 } from 'react-icons/rx';
 import { useProductContext } from '~/context/productContext';
 
 const AdditionalService = () => {
@@ -23,72 +26,113 @@ const AdditionalService = () => {
 		productError?.fieldErrors.service?.includes(
 			'Укажи цену за доп услугу, либо поставь 0'
 		);
+	console.log(state.product.serviceAvailability);
 	return (
 		<Stack>
 			{state.product.serviceAvailability.map(
-				({ price, title }, index) => (
-					<Stack key={index} direction="row">
-						<FormControl isInvalid={errorTitle}>
-							<Input
-								type="text"
-								placeholder="Придумай название"
-								value={title}
-								onChange={(e) => {
-									resetProduct();
+				({ title, additionalOptions }, serviceIndex) => (
+					<Stack key={serviceIndex} justifyContent="center">
+						<Stack direction="row">
+							<Editable
+								defaultValue={title ?? ''}
+								placeholder="Придумай заголовок"
+								w="100%"
+								textAlign="center"
+								fontSize="2xl"
+							>
+								<EditablePreview />
+								<EditableInput
+									value={title}
+									onChange={(e) => {
+										dispatch({
+											type: 'UPDATE_SERVICE',
+											payload: {
+												title: e.target.value,
+												index: serviceIndex,
+											},
+										});
+									}}
+								/>
+							</Editable>
+							<IconButton
+								aria-label="remove-service"
+								icon={<Icon as={AiFillDelete} />}
+								colorScheme="red"
+								onClick={() =>
 									dispatch({
-										type: 'UPDATE_SERVICE',
-										payload: {
-											index,
-											title: e.target.value,
-										},
-									});
-								}}
+										type: 'REMOVE_SERVICE',
+										payload: serviceIndex,
+									})
+								}
 							/>
-							<FormErrorMessage>
-								{productError?.fieldErrors.service?.filter(
-									(service) =>
-										service.includes(
-											'Укажи название доп операции'
-										)
-								)}
-							</FormErrorMessage>
-						</FormControl>
-						<FormControl isInvalid={errorPrice}>
-							<Input
-								type="text"
-								placeholder="Введи цену в ₽"
-								value={price}
-								onChange={(e) => {
-									resetProduct();
-									dispatch({
-										type: 'UPDATE_SERVICE',
-										payload: {
-											index,
-											price: e.target.value,
-										},
-									});
-								}}
-							/>
-							<FormErrorMessage>
-								{productError?.fieldErrors.service?.filter(
-									(service) =>
-										service.includes(
-											'Укажи цену за доп услугу, либо поставь 0'
-										)
-								)}
-							</FormErrorMessage>
-						</FormControl>
-						<IconButton
-							aria-label="remove-options"
-							icon={<Icon as={AiOutlineDelete} />}
-							colorScheme="red"
+						</Stack>
+						<Stack>
+							{additionalOptions.map(
+								({ name, price }, optionIndex) => (
+									<Stack
+										direction="row"
+										key={optionIndex + 1}
+									>
+										<Input
+											placeholder="Придумай название опции"
+											value={name}
+											onChange={(e) =>
+												dispatch({
+													type: 'UPDATE_OPTIONS',
+													payload: {
+														name: e.target.value,
+														serviceIndex,
+														optionIndex,
+													},
+												})
+											}
+										/>
+										<Input
+											placeholder="Цена опции в ₽"
+											value={price}
+											onChange={(e) =>
+												dispatch({
+													type: 'UPDATE_OPTIONS',
+													payload: {
+														serviceIndex,
+														optionIndex,
+														price: e.target.value,
+													},
+												})
+											}
+										/>
+										<IconButton
+											aria-label="remove-option"
+											icon={<Icon as={RxCross2} />}
+											colorScheme="red"
+											onClick={() =>
+												dispatch({
+													type: 'REMOVE_OPTIONS',
+													payload: {
+														optionIndex,
+														serviceIndex,
+													},
+												})
+											}
+										/>
+									</Stack>
+								)
+							)}
+						</Stack>
+						<Button
 							onClick={() =>
 								dispatch({
-									type: 'REMOVE_SERVICE',
-									payload: index,
+									type: 'ADD_OPTION',
+									payload: {
+										serviceIndex,
+									},
 								})
 							}
-						/>
+							colorScheme="green"
+						>
+							Добавить вариант
+						</Button>
+						<Divider />
 					</Stack>
 				)
 			)}
@@ -97,8 +141,10 @@ const AdditionalService = () => {
 					dispatch({
 						type: 'ADD_SERVICE',
 						payload: {
-							id: '',
+							name: '',
+							optionsId: '',
 							price: '',
+							serviceId: '',
 							title: '',
 						},
 					})

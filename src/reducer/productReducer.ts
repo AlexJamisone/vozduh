@@ -12,6 +12,12 @@ export type Product = {
 type AdditionalService = {
 	id: string;
 	title: string;
+	additionalOptions: AdditionalServiceOption[];
+};
+
+type AdditionalServiceOption = {
+	id: string;
+	name: string;
 	price: string;
 };
 
@@ -55,6 +61,10 @@ interface SetSizeAction {
 	type: 'SET_SIZE';
 	payload: string;
 }
+interface SetIncomeServiceAction {
+	type: 'INCOME_SERVICE';
+	payload: AdditionalService[];
+}
 
 interface SetCategoryAction {
 	type: 'SET_CATEGORY';
@@ -68,29 +78,58 @@ interface SetAllAction {
 	payload: ProductState;
 }
 
-interface SetAddServiceAction {
-	type: 'ADD_SERVICE';
-	payload: AdditionalService;
-}
-interface SetUpdateServiceAction {
-	type: 'UPDATE_SERVICE';
-	payload: {
-		index: number;
-		title?: string;
-		price?: string;
-	};
-}
-interface SetRemoveServicesAction {
-	type: 'REMOVE_SERVICE';
-	payload: number;
-}
-
 interface SetClearAction {
 	type: 'CLEAR';
 }
 interface SetProductSizeAction {
 	type: 'SET_PRODUCT_SIZE';
 	payload: string[];
+}
+
+//Service
+
+interface SetAddOptionAction {
+	type: 'ADD_OPTION';
+	payload: {
+		serviceIndex: number;
+	};
+}
+interface SetUpdateOptionsActions {
+	type: 'UPDATE_OPTIONS';
+	payload: {
+		serviceIndex: number;
+		optionIndex: number;
+		name?: string;
+		price?: string;
+	};
+}
+interface SetRemoveOptionsAction {
+	type: 'REMOVE_OPTIONS';
+	payload: {
+		serviceIndex: number;
+		optionIndex: number;
+	};
+}
+interface SetAddServiceAction {
+	type: 'ADD_SERVICE';
+	payload: {
+		serviceId: string;
+		title: string;
+		optionsId: string;
+		name: string;
+		price: string;
+	};
+}
+interface SetUpdateServiceAction {
+	type: 'UPDATE_SERVICE';
+	payload: {
+		index: number;
+		title?: string;
+	};
+}
+interface SetRemoveServicesAction {
+	type: 'REMOVE_SERVICE';
+	payload: number;
 }
 
 export type Action =
@@ -103,7 +142,11 @@ export type Action =
 	| SetUpdateServiceAction
 	| SetRemoveServicesAction
 	| SetClearAction
-	| SetProductSizeAction;
+	| SetProductSizeAction
+	| SetRemoveOptionsAction
+	| SetUpdateOptionsActions
+	| SetAddOptionAction
+	| SetIncomeServiceAction;
 
 export const initial: ProductState = {
 	controlView: {
@@ -150,41 +193,147 @@ export const productReducer = (
 					size: action.payload.size,
 				},
 			};
-		case 'ADD_SERVICE': {
-			const newService: AdditionalService = {
-				id: action.payload.id,
-				price: action.payload.price,
-				title: action.payload.title,
+		case 'INCOME_SERVICE': {
+			return {
+				...state,
+				product: {
+					...state.product,
+					serviceAvailability: action.payload,
+				},
 			};
+		}
+		case 'ADD_SERVICE': {
 			return {
 				...state,
 				product: {
 					...state.product,
 					serviceAvailability: [
 						...state.product.serviceAvailability,
-						newService,
+						{
+							id: action.payload.serviceId,
+							title: action.payload.title,
+							additionalOptions: [
+								{
+									id: action.payload.optionsId,
+									name: action.payload.name,
+									price: action.payload.price,
+								},
+							],
+						},
 					],
 				},
 			};
 		}
 		case 'UPDATE_SERVICE': {
-			const updateServices = state.product.serviceAvailability.map(
-				(service, index) => {
-					if (index === action.payload.index) {
-						return {
-							...service,
-							title: action.payload.title ?? service.title,
-							price: action.payload.price ?? service.price,
-						};
-					}
-					return service;
-				}
-			);
 			return {
 				...state,
 				product: {
 					...state.product,
-					serviceAvailability: updateServices,
+					serviceAvailability: state.product.serviceAvailability.map(
+						(service, index) => {
+							if (index === action.payload.index) {
+								return {
+									...service,
+									title:
+										action.payload.title ?? service.title,
+								};
+							}
+							return service;
+						}
+					),
+				},
+			};
+		}
+		case 'UPDATE_OPTIONS': {
+			return {
+				...state,
+				product: {
+					...state.product,
+					serviceAvailability: state.product.serviceAvailability.map(
+						(service, serviceIndex) => {
+							if (serviceIndex === action.payload.serviceIndex) {
+								return {
+									...service,
+									additionalOptions:
+										service.additionalOptions.map(
+											(option, optionIndex) => {
+												if (
+													optionIndex ===
+													action.payload.optionIndex
+												) {
+													return {
+														...option,
+														name:
+															action.payload
+																.name ??
+															option.name,
+														price:
+															action.payload
+																.price ??
+															option.price,
+													};
+												}
+												return option;
+											}
+										),
+								};
+							}
+							return service;
+						}
+					),
+				},
+			};
+		}
+		case 'ADD_OPTION': {
+			return {
+				...state,
+				product: {
+					...state.product,
+					serviceAvailability: state.product.serviceAvailability.map(
+						(service, index) => {
+							if (index === action.payload.serviceIndex) {
+								return {
+									...service,
+									additionalOptions: [
+										...service.additionalOptions,
+										{
+											id: '',
+											name: '',
+											price: '',
+										},
+									],
+								};
+							}
+							return service;
+						}
+					),
+				},
+			};
+		}
+		case 'REMOVE_OPTIONS': {
+			return {
+				...state,
+				product: {
+					...state.product,
+					serviceAvailability: state.product.serviceAvailability.map(
+						(service, serviceIndex) => {
+							if (serviceIndex === action.payload.serviceIndex) {
+								return {
+									...service,
+									additionalOptions:
+										service.additionalOptions.filter(
+											(option, optionIndex) => {
+												return (
+													optionIndex !==
+													action.payload.optionIndex
+												);
+											}
+										),
+								};
+							}
+							return service;
+						}
+					),
 				},
 			};
 		}

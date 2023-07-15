@@ -80,11 +80,19 @@ model Product {
 }
 
 model AdditionalService {
-    id        String  @id @default(cuid())
-    title     String
-    price     String
-    product   Product @relation(fields: [productId], references: [id])
-    productId String
+    id                       String                    @id @default(cuid())
+    title                    String
+    additionalServicesOption AdditionalServiceOption[]
+    product                  Product                   @relation(fields: [productId], references: [id], onDelete: Cascade)
+    productId                String
+}
+
+model AdditionalServiceOption {
+    id                 String            @id @default(cuid())
+    name               String
+    price              String
+    additionalServices AdditionalService @relation(fields: [addServId], references: [id], onDelete: Cascade)
+    addServId          String
 }
 
 model Size {

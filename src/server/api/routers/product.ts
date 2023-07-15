@@ -12,7 +12,11 @@ export const productRouter = createTRPCRouter({
 					},
 				},
 				size: true,
-				additionalServices: true,
+				additionalServices: {
+					include: {
+						additionalServicesOption: true,
+					},
+				},
 			},
 		});
 	}),

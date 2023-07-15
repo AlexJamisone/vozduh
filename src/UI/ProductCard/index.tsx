@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 import type {
 	AdditionalService,
+	AdditionalServiceOption,
 	Product,
 	ProductPriceHistory,
 	Role,
@@ -25,11 +26,15 @@ import type { Action, ProductState } from '~/reducer/productReducer';
 import { api } from '~/utils/api';
 import ProductCardImg from './ProductCardImg';
 
+type AdditionalServiceWithOption = AdditionalService & {
+	additionalServicesOption: AdditionalServiceOption[];
+};
+
 type ProductCardProps = {
 	product: Product & {
 		priceHistory: ProductPriceHistory[];
 		size: Size[];
-		additionalServices: AdditionalService[];
+		additionalServices: AdditionalServiceWithOption[];
 	};
 	role?: Role;
 	image?: ReactNode;
@@ -51,16 +56,14 @@ const ProductCard = ({
 	const toast = useToast();
 	const handlClickOnCard = () => {
 		if (role === 'ADMIN' && dispatch !== undefined && state !== undefined) {
-			product.additionalServices.map((serv) =>
-				dispatch({
-					type: 'ADD_SERVICE',
-					payload: {
-						id: serv.id,
-						price: serv.price,
-						title: serv.title,
-					},
-				})
-			);
+			dispatch({
+				type: 'INCOME_SERVICE',
+				payload: product.additionalServices.map((service) => ({
+					id: service.id,
+					title: service.title,
+					additionalOptions: service.additionalServicesOption,
+				})),
+			});
 			product.size.map((size) =>
 				dispatch({ type: 'SET_PRODUCT_SIZE', payload: [size.id] })
 			);

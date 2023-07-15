@@ -2,8 +2,10 @@ import { Button, Icon, IconButton, Stack, useToast } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { useReducer, type ReactNode } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
+import { LiaRingSolid } from 'react-icons/lia';
 import { RiAddFill } from 'react-icons/ri';
 import ProductCard from '~/UI/ProductCard';
+import NoData from '~/components/NoData';
 import { productControllButton } from '~/constants/productControlButton';
 import ProductContext from '~/context/productContext';
 import { actionString } from '~/helpers/actionString';
@@ -36,60 +38,59 @@ const AdminProducts = ({ category, product, size }: AdminProductsProps) => {
 	const ctx = api.useContext();
 	const toast = useToast();
 	const handlCreateProduct = () => {
-		if (state.controlView.editProduct) {
-			update(
-				{
-					name: state.product.name,
-					description: state.product.description,
-					category: state.product.category,
-					price: state.product.price,
-					image: state.product.image,
-					size: state.product.size,
-					service: state.product.serviceAvailability,
-					producId: state.product.id,
-				},
-				{
-					onSuccess: () => {
-						void ctx.product.invalidate();
-						toast({
-							description: `Товар ${state.product.name} успешно обновлён`,
-							isClosable: true,
-							position: 'top-right',
-							status: 'info',
-						});
-						dispatch({ type: 'CLEAR' });
-					},
-				}
-			);
-		} else {
-			create(
-				{
-					name: state.product.name,
-					description: state.product.description,
-					category: state.product.category,
-					image: state.product.image,
-					price: state.product.price,
-					size: state.product.size,
-					service: state.product.serviceAvailability,
-				},
-				{
-					onSuccess: () => {
-						void ctx.product.invalidate();
-						toast({
-							description: `Товар ${state.product.name} успешно создан!`,
-							position: 'top-right',
-							status: 'success',
-							isClosable: true,
-						});
-						dispatch({
-							type: 'CLEAR',
-						});
-					},
-				}
-			);
-		}
+		// if (state.controlView.editProduct) {
+		// 	update(
+		// 		{
+		// 			name: state.product.name,
+		// 			description: state.product.description,
+		// 			category: state.product.category,
+		// 			price: state.product.price,
+		// 			image: state.product.image,
+		// 			size: state.product.size,
+		// 			service: state.product.serviceAvailability,
+		// 			producId: state.product.id,
+		// 		},
+		// 		{
+		// 			onSuccess: () => {
+		// 				void ctx.product.invalidate();
+		// 				toast({
+		// 					description: `Товар ${state.product.name} успешно обновлён`,
+		// 					isClosable: true,
+		// 					position: 'top-right',
+		// 					status: 'info',
+		// 				});
+		// 				dispatch({ type: 'CLEAR' });
+		// 			},
+		// 		}
+		// 	);
+		// } else {
+		// 	create(
+		// 		{
+		// 			name: state.product.name,
+		// 			description: state.product.description,
+		// 			category: state.product.category,
+		// 			image: state.product.image,
+		// 			price: state.product.price,
+		// 			size: state.product.size,
+		// 			service: state.product.serviceAvailability,
+		// 		},
+		// 		{
+		// 			onSuccess: () => {
+		// 				void ctx.product.invalidate();
+		// 				toast({
+		// 					description: `Товар ${state.product.name} успешно создан!`,
+		// 					position: 'top-right',
+		// 					status: 'success',
+		// 					isClosable: true,
+		// 				});
+		// 				dispatch({
+		// 					type: 'CLEAR',
+		// 				});
+		// 			},
+		// 		}
+		// 	);
+		// }
 	};
-	console.log(state.product);
 	const handlControl = (value: string) => {
 		switch (value) {
 			case 'Товар':
@@ -207,6 +208,9 @@ const AdminProducts = ({ category, product, size }: AdminProductsProps) => {
 						flexWrap="wrap"
 						gap={5}
 					>
+						{products?.length === 0 && (
+							<NoData icon={LiaRingSolid} title="Нет товаров" />
+						)}
 						{products?.map((product, index) => (
 							<ProductCard
 								key={product.id}
