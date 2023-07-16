@@ -144,10 +144,19 @@ export const productRouter = createTRPCRouter({
 							title: z.string().nonempty({
 								message: 'Укажи название доп операции',
 							}),
-							price: z.string().nonempty({
-								message:
-									'Укажи цену за доп услугу, либо поставь 0',
-							}),
+							additionalOptions: z
+								.array(
+									z.object({
+										id: z.string(),
+										name: z.string().nonempty({
+											message: 'Придумай имя доп опции',
+										}),
+										price: z.string().nonempty({
+											message: 'Установи цену доп опции',
+										}),
+									})
+								)
+								.min(1, { message: 'Создай опции!' }),
 						})
 					)
 					.optional(),
@@ -158,7 +167,6 @@ export const productRouter = createTRPCRouter({
 			const existingServiceIds = input.service
 				?.filter((service) => service.id !== '')
 				.map((service) => service.id);
-			console.log(sizeId);
 			const prevPrice = await ctx.prisma.product.findUnique({
 				where: {
 					id: input.producId,
@@ -186,7 +194,7 @@ export const productRouter = createTRPCRouter({
 							},
 						},
 						size: {
-							connect: sizeId,
+							set: sizeId,
 						},
 						additionalServices: {
 							deleteMany: {
@@ -195,14 +203,49 @@ export const productRouter = createTRPCRouter({
 								},
 							},
 							upsert: input.service?.map((service) => ({
-								where: { id: service.id },
-								create: {
-									title: service.title,
-									price: service.price,
+								where: {
+									id: service.id,
 								},
 								update: {
 									title: service.title,
-									price: service.price,
+									additionalServicesOption: {
+										upsert: service.additionalOptions.map(
+											(option) => ({
+												where: {
+													id: option.id,
+												},
+												update: {
+													name: option.name,
+													price: option.price,
+												},
+												create: {
+													name: option.name,
+													price: option.price,
+												},
+											})
+										),
+										deleteMany: {
+											id: {
+												notIn: service.additionalOptions
+													.filter(
+														(option) =>
+															option.id !== ''
+													)
+													.map((option) => option.id),
+											},
+										},
+									},
+								},
+								create: {
+									additionalServicesOption: {
+										create: service.additionalOptions.map(
+											(option) => ({
+												name: option.name,
+												price: option.price,
+											})
+										),
+									},
+									title: service.title,
 								},
 							})),
 						},
@@ -222,24 +265,64 @@ export const productRouter = createTRPCRouter({
 								title: input.category,
 							},
 						},
-						size: {
-							connect: sizeId,
-						},
 						priceHistory: {
 							create: {
 								price: Number(input.price),
 							},
 						},
+						size: {
+							connect: sizeId,
+						},
 						additionalServices: {
+							deleteMany: {
+								id: {
+									notIn: existingServiceIds as string[],
+								},
+							},
 							upsert: input.service?.map((service) => ({
-								where: { id: service.id },
-								create: {
-									title: service.title,
-									price: service.price,
+								where: {
+									id: service.id,
 								},
 								update: {
 									title: service.title,
-									price: service.price,
+									additionalServicesOption: {
+										upsert: service.additionalOptions.map(
+											(option) => ({
+												where: {
+													id: option.id,
+												},
+												update: {
+													name: option.name,
+													price: option.price,
+												},
+												create: {
+													name: option.name,
+													price: option.price,
+												},
+											})
+										),
+										deleteMany: {
+											id: {
+												notIn: service.additionalOptions
+													.filter(
+														(option) =>
+															option.id !== ''
+													)
+													.map((option) => option.id),
+											},
+										},
+									},
+								},
+								create: {
+									additionalServicesOption: {
+										create: service.additionalOptions.map(
+											(option) => ({
+												name: option.name,
+												price: option.price,
+											})
+										),
+									},
+									title: service.title,
 								},
 							})),
 						},

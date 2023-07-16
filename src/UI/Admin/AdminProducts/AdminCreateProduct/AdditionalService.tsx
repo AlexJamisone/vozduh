@@ -145,7 +145,10 @@ const AdditionalService = () => {
 											icon={<Icon as={RxCross2} />}
 											colorScheme="red"
 											onClick={() => {
-												if (optionIndex === 0) {
+												if (
+													additionalOptions.length ===
+													1
+												) {
 													dispatch({
 														type: 'REMOVE_SERVICE',
 														payload: serviceIndex,
