@@ -1,5 +1,5 @@
 import { Image } from '@chakra-ui/next-js';
-import { Skeleton, Stack } from '@chakra-ui/react';
+import { Skeleton, Stack, useBreakpoint } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useProductCardContext } from '~/context/productCardContext';
@@ -8,9 +8,16 @@ const ProductCardImg = () => {
 	const { product } = useProductCardContext();
 	const [isLoadedImg, setIsLoadedImg] = useState(false);
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
+	const point = useBreakpoint({ ssr: true });
+	console.log(point);
 	return (
-		<Stack w={260} h={270} position="relative">
+		<Stack
+			w={[130, 260]}
+			h={[100, 270]}
+			position="relative"
+			justifyContent="center"
+			alignItems="center"
+		>
 			{product.image.map((src, index) => (
 				<Skeleton
 					position="absolute"
@@ -40,8 +47,8 @@ const ProductCardImg = () => {
 				>
 					<Image
 						borderRadius="2xl"
-						width={260}
-						height={270}
+						width={point === 'base' ? 130 : 260}
+						height={point === 'base' ? 100 : 270}
 						alt={`product:${src}`}
 						src={`https://utfs.io/f/${src}`}
 						quality={100}

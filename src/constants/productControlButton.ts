@@ -27,7 +27,7 @@ export const productControllButton = ({
 		},
 		{
 			id: 3,
-			value: 'Категория',
+			value: 'Категорию',
 			stateView: stateView[2] as boolean,
 			stateEdit: stateEdit[2] as boolean,
 		},
