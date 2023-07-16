@@ -43,9 +43,13 @@ const AdditionalService = () => {
 									w="100%"
 									textAlign="center"
 									fontSize="2xl"
-									border="1px solid"
+									border={
+										errorTitle ? '1px solid' : undefined
+									}
 									rounded="base"
-									borderColor="red.300"
+									borderColor={
+										errorTitle ? 'red.300' : undefined
+									}
 								>
 									<EditablePreview />
 									<EditableInput
@@ -140,15 +144,22 @@ const AdditionalService = () => {
 											aria-label="remove-option"
 											icon={<Icon as={RxCross2} />}
 											colorScheme="red"
-											onClick={() =>
-												dispatch({
-													type: 'REMOVE_OPTIONS',
-													payload: {
-														optionIndex,
-														serviceIndex,
-													},
-												})
-											}
+											onClick={() => {
+												if (optionIndex === 0) {
+													dispatch({
+														type: 'REMOVE_SERVICE',
+														payload: serviceIndex,
+													});
+												} else {
+													dispatch({
+														type: 'REMOVE_OPTIONS',
+														payload: {
+															optionIndex,
+															serviceIndex,
+														},
+													});
+												}
+											}}
 										/>
 									</Stack>
 								)
