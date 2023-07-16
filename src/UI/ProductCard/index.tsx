@@ -127,7 +127,7 @@ const ProductCard = ({
 					</Stack>
 					{role === 'ADMIN' && (
 						<IconButton
-							size="sm"
+							size={['xs', 'sm']}
 							colorScheme="telegram"
 							icon={<Icon as={BsArchive} />}
 							variant="solid"

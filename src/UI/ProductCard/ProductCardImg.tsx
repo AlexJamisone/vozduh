@@ -9,7 +9,6 @@ const ProductCardImg = () => {
 	const [isLoadedImg, setIsLoadedImg] = useState(false);
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
 	const point = useBreakpoint({ ssr: true });
-	console.log(point);
 	return (
 		<Stack
 			w={[130, 260]}
