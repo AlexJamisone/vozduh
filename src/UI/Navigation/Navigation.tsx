@@ -1,6 +1,5 @@
 import { Stack, useMediaQuery } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import Menu from '../Menu';
 import Desktop from './Desktop';
 import Mobile from './Mobile';
 
@@ -10,7 +9,7 @@ const Navigation = () => {
 
 	useEffect(() => {
 		const handlScroll = () => {
-			if (window.scrollY >= 100) {
+			if (window.scrollY >= 50) {
 				setShowBg(true);
 			} else {
 				setShowBg(false);
@@ -34,7 +33,6 @@ const Navigation = () => {
 			zIndex={20}
 		>
 			{isLowerThan1150 ? <Mobile /> : <Desktop />}
-			{!isLowerThan1150 && <Menu />}
 		</Stack>
 	);
 };

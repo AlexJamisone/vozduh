@@ -21,11 +21,16 @@ const AdminRouter = () => {
 						product={<AdminProducts.Product />}
 						size={<AdminProducts.Size />}
 						category={<AdminProducts.Category />}
+						menu={<AdminProducts.Menu />}
 					/>
 				);
 		}
 	};
-	return <Center pt={175}>{handlRouter()}</Center>;
+	return (
+		<Center pt={175} mb={75}>
+			{handlRouter()}
+		</Center>
+	);
 };
 
 export default AdminRouter;

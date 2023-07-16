@@ -12,7 +12,7 @@ const AdminCreateProduct = () => {
 		<Stack
 			gap={3}
 			minW={[300, 500, 600]}
-			maxW={650}
+			maxW={[650]}
 			maxH={630}
 			overflowY="auto"
 			px={10}
