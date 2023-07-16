@@ -4,6 +4,8 @@ import {
 	Editable,
 	EditableInput,
 	EditablePreview,
+	FormControl,
+	FormErrorMessage,
 	Icon,
 	IconButton,
 	Input,
@@ -12,6 +14,7 @@ import {
 import { AiFillDelete } from 'react-icons/ai';
 import { RxCross2 } from 'react-icons/rx';
 import { useProductContext } from '~/context/productContext';
+import productErrorFilter from '~/helpers/productErrorFilter';
 
 const AdditionalService = () => {
 	const { dispatch, state, isErrorProduct, productError, resetProduct } =
@@ -19,40 +22,53 @@ const AdditionalService = () => {
 	const errorTitle =
 		isErrorProduct &&
 		productError?.fieldErrors.service?.includes(
-			'Укажи название доп операции'
+			'Укажи заголовок доп операции'
 		);
 	const errorPrice =
 		isErrorProduct &&
-		productError?.fieldErrors.service?.includes(
-			'Укажи цену за доп услугу, либо поставь 0'
-		);
+		productError?.fieldErrors.service?.includes('Установи цену доп опции');
+	const errorName =
+		isErrorProduct &&
+		productError?.fieldErrors.service?.includes('Придумай имя доп опции');
 	return (
 		<Stack>
 			{state.product.serviceAvailability.map(
 				({ title, additionalOptions }, serviceIndex) => (
 					<Stack key={serviceIndex} justifyContent="center">
 						<Stack direction="row">
-							<Editable
-								defaultValue={title ?? ''}
-								placeholder="Придумай заголовок"
-								w="100%"
-								textAlign="center"
-								fontSize="2xl"
-							>
-								<EditablePreview />
-								<EditableInput
-									value={title}
-									onChange={(e) => {
-										dispatch({
-											type: 'UPDATE_SERVICE',
-											payload: {
-												title: e.target.value,
-												index: serviceIndex,
-											},
-										});
-									}}
-								/>
-							</Editable>
+							<FormControl isInvalid={errorTitle}>
+								<Editable
+									defaultValue={title ?? ''}
+									placeholder="Придумай заголовок"
+									w="100%"
+									textAlign="center"
+									fontSize="2xl"
+									border="1px solid"
+									rounded="base"
+									borderColor="red.300"
+								>
+									<EditablePreview />
+									<EditableInput
+										value={title}
+										onChange={(e) => {
+											resetProduct();
+											dispatch({
+												type: 'UPDATE_SERVICE',
+												payload: {
+													title: e.target.value,
+													index: serviceIndex,
+												},
+											});
+										}}
+									/>
+								</Editable>
+								<FormErrorMessage justifyContent="center">
+									{productErrorFilter(
+										'Укажи заголовок доп операции',
+										productError
+									)}
+								</FormErrorMessage>
+							</FormControl>
 							<IconButton
 								aria-label="remove-service"
 								icon={<Icon as={AiFillDelete} />}
@@ -72,34 +88,54 @@ const AdditionalService = () => {
 										direction="row"
 										key={optionIndex + 1}
 									>
-										<Input
-											placeholder="Придумай название опции"
-											value={name}
-											onChange={(e) =>
-												dispatch({
-													type: 'UPDATE_OPTIONS',
-													payload: {
-														name: e.target.value,
-														serviceIndex,
-														optionIndex,
-													},
-												})
-											}
-										/>
-										<Input
-											placeholder="Цена опции в ₽"
-											value={price}
-											onChange={(e) =>
-												dispatch({
-													type: 'UPDATE_OPTIONS',
-													payload: {
-														serviceIndex,
-														optionIndex,
-														price: e.target.value,
-													},
-												})
-											}
-										/>
+										<FormControl isInvalid={errorName}>
+											<Input
+												placeholder="Придумай название опции"
+												value={name}
+												onChange={(e) => {
+													resetProduct();
+													dispatch({
+														type: 'UPDATE_OPTIONS',
+														payload: {
+															name: e.target
+																.value,
+															serviceIndex,
+															optionIndex,
+														},
+													});
+												}}
+											/>
+											<FormErrorMessage>
+												{productErrorFilter(
+													'Придумай имя доп опции',
+													productError
+												)}
+											</FormErrorMessage>
+										</FormControl>
+										<FormControl isInvalid={errorPrice}>
+											<Input
+												placeholder="Цена опции в ₽"
+												value={price}
+												onChange={(e) => {
+													resetProduct();
+													dispatch({
+														type: 'UPDATE_OPTIONS',
+														payload: {
+															serviceIndex,
+															optionIndex,
+															price: e.target
+																.value,
+														},
+													});
+												}}
+											/>
+											<FormErrorMessage>
+												{productErrorFilter(
+													'Установи цену доп опции',
+													productError
+												)}
+											</FormErrorMessage>
+										</FormControl>
 										<IconButton
 											aria-label="remove-option"
 											icon={<Icon as={RxCross2} />}

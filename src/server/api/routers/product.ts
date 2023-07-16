@@ -56,7 +56,7 @@ export const productRouter = createTRPCRouter({
 					.array(
 						z.object({
 							title: z.string().nonempty({
-								message: 'Укажи название доп операции',
+								message: 'Укажи заголовок доп операции',
 							}),
 							additionalOptions: z
 								.array(
