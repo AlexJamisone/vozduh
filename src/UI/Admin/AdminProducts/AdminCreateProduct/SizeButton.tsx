@@ -6,10 +6,10 @@ type SizeButtonProps = {
 };
 
 const SizeButton = ({ size }: SizeButtonProps) => {
-	const { dispatch, state, productError, isErrorProduct, resetProduct } =
+	const { dispatch, state, errorProduct, isErrorProduct, resetProduct } =
 		useProductContext();
 	const error =
-		isErrorProduct && productError?.fieldErrors.size !== undefined;
+		isErrorProduct && errorProduct?.fieldErrors.size !== undefined;
 	return (
 		<Button
 			isActive={state.product.size.includes(size.id)}

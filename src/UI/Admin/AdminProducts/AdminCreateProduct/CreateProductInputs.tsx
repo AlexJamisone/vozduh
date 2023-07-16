@@ -11,7 +11,7 @@ import { productCreate } from '~/constants/productCreate';
 import { useProductContext } from '~/context/productContext';
 
 const CreateProductInputs = () => {
-	const { dispatch, state, productError, isErrorProduct, resetProduct } =
+	const { dispatch, state, errorProduct, isErrorProduct, resetProduct } =
 		useProductContext();
 	const handlChange = (e: ChangeEvent<HTMLInputElement>) => {
 		resetProduct();
@@ -50,7 +50,7 @@ const CreateProductInputs = () => {
 						key={name}
 						isInvalid={
 							isErrorProduct &&
-							productError?.fieldErrors[name] !== undefined
+							errorProduct?.fieldErrors[name] !== undefined
 						}
 					>
 						<FormLabel>{label}</FormLabel>
@@ -63,7 +63,7 @@ const CreateProductInputs = () => {
 							onChange={handlChange}
 						/>
 						<FormErrorMessage>
-							{productError?.fieldErrors[name]}
+							{errorProduct?.fieldErrors[name]}
 						</FormErrorMessage>
 					</FormControl>
 				)

@@ -2,18 +2,13 @@ import { Button, Stack } from '@chakra-ui/react';
 import { useProductContext } from '~/context/productContext';
 
 const CreateProductAction = () => {
-	const {
-		isLoadingProduct,
-		handlCreateProduct,
-		state,
-		dispatch,
-		isLoadingUpdate,
-	} = useProductContext();
+	const { isLoadingProduct, handlCreateProduct, state, dispatch } =
+		useProductContext();
 	return (
 		<Stack>
 			<Button
-				isLoading={isLoadingProduct || isLoadingUpdate}
-				isDisabled={isLoadingProduct || isLoadingUpdate}
+				isLoading={isLoadingProduct}
+				isDisabled={isLoadingProduct}
 				onClick={handlCreateProduct}
 				colorScheme="telegram"
 			>

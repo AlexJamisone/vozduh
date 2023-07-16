@@ -25,14 +25,18 @@ const AdminProducts = ({ category, product, size }: AdminProductsProps) => {
 	const [state, dispatch] = useReducer(productReducer, initial);
 	const {
 		mutate: create,
-		isLoading: isLoadingProduct,
+		isLoading: isLoadingCreateProduct,
 		reset: resetProduct,
-		error: productError,
-		isError: isErrorProduct,
+		error: errorCreateProduct,
+		isError: isErrorCreateProduct,
 	} = api.product.create.useMutation();
 
-	const { mutate: update, isLoading: isLoadingUpdate } =
-		api.product.update.useMutation();
+	const {
+		mutate: update,
+		isLoading: isLoadingUpdate,
+		error: errorUpdateProduct,
+		isError: isErrorUpdateProduct,
+	} = api.product.update.useMutation();
 
 	const { data: products } = api.product.getForAdmin.useQuery();
 	const ctx = api.useContext();
@@ -181,12 +185,15 @@ const AdminProducts = ({ category, product, size }: AdminProductsProps) => {
 					value={{
 						dispatch,
 						state,
-						productError: productError?.data?.zodError,
+						errorProduct:
+							errorCreateProduct?.data?.zodError ||
+							errorUpdateProduct?.data?.zodError,
 						handlCreateProduct,
-						isErrorProduct,
-						isLoadingProduct,
+						isErrorProduct:
+							isErrorCreateProduct || isErrorUpdateProduct,
+						isLoadingProduct:
+							isLoadingCreateProduct || isLoadingUpdate,
 						resetProduct,
-						isLoadingUpdate,
 					}}
 				>
 					{(state.controlView.product ||

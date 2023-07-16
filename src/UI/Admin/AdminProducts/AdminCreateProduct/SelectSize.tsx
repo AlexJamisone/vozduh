@@ -10,11 +10,11 @@ import SizeButton from './SizeButton';
 
 const SelectSize = () => {
 	const { data: sizes } = api.size.get.useQuery();
-	const { isErrorProduct, productError } = useProductContext();
+	const { isErrorProduct, errorProduct } = useProductContext();
 	return (
 		<FormControl
 			isInvalid={
-				isErrorProduct && productError?.fieldErrors.size !== undefined
+				isErrorProduct && errorProduct?.fieldErrors.size !== undefined
 			}
 		>
 			<FormLabel>Выбери размеры</FormLabel>
@@ -24,7 +24,7 @@ const SelectSize = () => {
 				))}
 			</Stack>
 			<FormErrorMessage display="flex" justifyContent="center">
-				{productError?.fieldErrors.size}
+				{errorProduct?.fieldErrors.size}
 			</FormErrorMessage>
 		</FormControl>
 	);

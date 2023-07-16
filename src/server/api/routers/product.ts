@@ -271,7 +271,7 @@ export const productRouter = createTRPCRouter({
 							},
 						},
 						size: {
-							connect: sizeId,
+							set: sizeId,
 						},
 						additionalServices: {
 							deleteMany: {

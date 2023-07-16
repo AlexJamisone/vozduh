@@ -12,7 +12,7 @@ import { useProductContext } from '~/context/productContext';
 import type { OurFileRouter } from '~/server/uploadthing';
 
 const ImageUploader = () => {
-	const { state, dispatch, productError, isErrorProduct, resetProduct } =
+	const { state, dispatch, errorProduct, isErrorProduct, resetProduct } =
 		useProductContext();
 	const toast = useToast();
 	const [progress, setProgress] = useState({
@@ -20,7 +20,7 @@ const ImageUploader = () => {
 		value: 0,
 	});
 	const error =
-		isErrorProduct && productError?.fieldErrors.image !== undefined;
+		isErrorProduct && errorProduct?.fieldErrors.image !== undefined;
 	return (
 		<FormControl
 			as={motion.div}
@@ -83,7 +83,7 @@ const ImageUploader = () => {
 				/>
 			)}
 			<FormErrorMessage display="flex" justifyContent="center" mb={3}>
-				{productError?.fieldErrors.image}
+				{errorProduct?.fieldErrors.image}
 			</FormErrorMessage>
 		</FormControl>
 	);

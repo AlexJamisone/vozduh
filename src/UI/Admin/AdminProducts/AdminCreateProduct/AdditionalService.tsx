@@ -17,19 +17,19 @@ import { useProductContext } from '~/context/productContext';
 import productErrorFilter from '~/helpers/productErrorFilter';
 
 const AdditionalService = () => {
-	const { dispatch, state, isErrorProduct, productError, resetProduct } =
+	const { dispatch, state, isErrorProduct, errorProduct, resetProduct } =
 		useProductContext();
 	const errorTitle =
 		isErrorProduct &&
-		productError?.fieldErrors.service?.includes(
+		errorProduct?.fieldErrors.service?.includes(
 			'Укажи заголовок доп операции'
 		);
 	const errorPrice =
 		isErrorProduct &&
-		productError?.fieldErrors.service?.includes('Установи цену доп опции');
+		errorProduct?.fieldErrors.service?.includes('Установи цену доп опции');
 	const errorName =
 		isErrorProduct &&
-		productError?.fieldErrors.service?.includes('Придумай имя доп опции');
+		errorProduct?.fieldErrors.service?.includes('Придумай имя доп опции');
 	return (
 		<Stack>
 			{state.product.serviceAvailability.map(
@@ -69,7 +69,7 @@ const AdditionalService = () => {
 								<FormErrorMessage justifyContent="center">
 									{productErrorFilter(
 										'Укажи заголовок доп операции',
-										productError
+										errorProduct
 									)}
 								</FormErrorMessage>
 							</FormControl>
@@ -112,7 +112,7 @@ const AdditionalService = () => {
 											<FormErrorMessage>
 												{productErrorFilter(
 													'Придумай имя доп опции',
-													productError
+													errorProduct
 												)}
 											</FormErrorMessage>
 										</FormControl>
@@ -136,7 +136,7 @@ const AdditionalService = () => {
 											<FormErrorMessage>
 												{productErrorFilter(
 													'Установи цену доп опции',
-													productError
+													errorProduct
 												)}
 											</FormErrorMessage>
 										</FormControl>

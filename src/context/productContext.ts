@@ -5,12 +5,11 @@ import type { Action, ProductState } from '~/reducer/productReducer';
 export interface ProductContext {
 	state: ProductState;
 	dispatch: Dispatch<Action>;
-	productError?: typeToFlattenedError<any, string> | null;
+	errorProduct?: typeToFlattenedError<any, string> | null;
 	handlCreateProduct: () => void;
 	isErrorProduct: boolean;
 	isLoadingProduct: boolean;
 	resetProduct: () => void;
-	isLoadingUpdate: boolean;
 }
 
 const ProductContext = createContext<ProductContext | null>(null);

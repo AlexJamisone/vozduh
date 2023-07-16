@@ -3,7 +3,7 @@ import { useProductContext } from '~/context/productContext';
 import { api } from '~/utils/api';
 
 const SelectCategory = () => {
-	const { dispatch, state, isErrorProduct, productError, resetProduct } =
+	const { dispatch, state, isErrorProduct, errorProduct, resetProduct } =
 		useProductContext();
 	const { data: categorys } = api.categorys.get.useQuery();
 	if (!categorys) return null;
@@ -11,7 +11,7 @@ const SelectCategory = () => {
 		<FormControl
 			isInvalid={
 				isErrorProduct &&
-				productError?.fieldErrors.category !== undefined
+				errorProduct?.fieldErrors.category !== undefined
 			}
 		>
 			<Select
@@ -35,7 +35,7 @@ const SelectCategory = () => {
 				))}
 			</Select>
 			<FormErrorMessage>
-				{productError?.fieldErrors.category}
+				{errorProduct?.fieldErrors.category}
 			</FormErrorMessage>
 		</FormControl>
 	);
