@@ -6,6 +6,7 @@ export type ProductDitailsState = {
 type AdditionalServiceDitails = {
 	serviceId: string;
 	optionId: string;
+	price: number;
 };
 
 interface SetSizeAction {
@@ -42,7 +43,7 @@ export const productDitailsReducer = (
 				(serv) => serv.serviceId === action.payload.serviceId
 			);
 			if (exitsitng) {
-				if (action.payload.optionId !== '') {
+				if (action.payload.optionId === '') {
 					return {
 						...state,
 						additionalServ: state.additionalServ.filter(
@@ -55,7 +56,11 @@ export const productDitailsReducer = (
 						...state,
 						additionalServ: state.additionalServ.map((serv) =>
 							serv.serviceId === action.payload.serviceId
-								? { ...serv, optionId: action.payload.optionId }
+								? {
+										...serv,
+										optionId: action.payload.optionId,
+										price: action.payload.price,
+								  }
 								: serv
 						),
 					};
@@ -68,6 +73,7 @@ export const productDitailsReducer = (
 						{
 							optionId: action.payload.optionId,
 							serviceId: action.payload.serviceId,
+							price: action.payload.price,
 						},
 					],
 				};

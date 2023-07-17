@@ -3,14 +3,24 @@ import { useProductDitalsContext } from '~/context/productDitailsContext';
 import ProductDitalsAction from './ProductDitalsAction';
 
 const ProductDitalsInfo = () => {
-	const { product } = useProductDitalsContext();
-
+	const { product, dispatch, state } = useProductDitalsContext();
 	return (
 		<Stack>
 			<Text fontSize="2xl">{product.name}</Text>
 			<Stack direction="row">
 				{product.size.map(({ id, value }) => (
-					<Button key={id}>{value}</Button>
+					<Button
+						key={id}
+						isActive={state.sizeId === id}
+						onClick={() =>
+							dispatch({
+								type: 'SIZE',
+								payload: state.sizeId === id ? '' : id,
+							})
+						}
+					>
+						{value}
+					</Button>
 				))}
 			</Stack>
 			<Stack>
@@ -18,7 +28,27 @@ const ProductDitalsInfo = () => {
 					({ id, additionalServicesOption, title }) => (
 						<Stack key={id}>
 							<FormLabel>{title}</FormLabel>
-							<Select placeholder="Стандарт">
+							<Select
+								placeholder="Стандарт"
+								onChange={(e) => {
+									const selectedOption =
+										additionalServicesOption.find(
+											(option) =>
+												option.id === e.target.value
+										);
+									const price = selectedOption
+										? selectedOption.price
+										: 0;
+									dispatch({
+										type: 'SERVICE',
+										payload: {
+											serviceId: id,
+											optionId: e.target.value,
+											price: Number(price),
+										},
+									});
+								}}
+							>
 								{additionalServicesOption.map(
 									({ id, name, price }) => (
 										<option key={id} value={id}>

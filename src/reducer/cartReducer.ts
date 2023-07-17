@@ -8,7 +8,10 @@ type CartItems = {
 	sizeId: string;
 	price: number;
 	quantity: number;
-	additionalOptionsId?: string;
+	additionalOptionsId?: {
+		optionId: string;
+		price: number;
+	};
 };
 
 interface SetAddAction {
@@ -59,7 +62,10 @@ export function cartReducer(state: CartState, action: Action): CartState {
 				return {
 					...state,
 					items: [...state.items, newItems],
-					totalSum: state.totalSum + action.payload.price,
+					totalSum:
+						state.totalSum +
+						action.payload.price +
+						(action.payload.additionalOptionsId?.price || 0),
 				};
 			} else {
 				const updatedItems = [...state.items];
@@ -73,7 +79,10 @@ export function cartReducer(state: CartState, action: Action): CartState {
 					return {
 						...state,
 						items: updatedItems,
-						totalSum: state.totalSum + action.payload.price,
+						totalSum:
+							state.totalSum +
+							action.payload.price +
+							(action.payload.additionalOptionsId?.price || 0),
 					};
 				}
 			}
@@ -108,19 +117,22 @@ export function cartReducer(state: CartState, action: Action): CartState {
 				(item) =>
 					item.id !== action.payload.id &&
 					item.sizeId !== action.payload.sizeId &&
-					item.additionalOptionsId !==
+					item.additionalOptionsId?.optionId !==
 						action.payload.additionalOptionsId
 			);
 			const removeItem = state.items.find(
 				(item) =>
 					item.id === action.payload.id &&
 					item.sizeId === action.payload.sizeId &&
-					item.additionalOptionsId ===
+					item.additionalOptionsId?.optionId ===
 						action.payload.additionalOptionsId
 			);
 			const updatedTotalSum =
 				state.totalSum -
-				(removeItem?.price || 0) * (removeItem?.quantity || 0);
+				(removeItem?.price || 0) *
+					((removeItem?.quantity || 0) +
+						(removeItem?.additionalOptionsId?.price || 0));
+
 			return {
 				...state,
 				items: updatedItems,

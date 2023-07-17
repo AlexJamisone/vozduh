@@ -1,5 +1,7 @@
+import ImageSlider from './ImageSlider';
+
 const ProductDitalsPhoto = () => {
-	return <div>ProductDitalsPhoto</div>;
+	return <ImageSlider />;
 };
 
 export default ProductDitalsPhoto;
