@@ -18,7 +18,7 @@ const CategoryCard = ({ category }: CategoryCardProps) => {
 			overflow="hidden"
 			as={Link}
 			cursor="pointer"
-			href={category.path}
+			href={`category/${category.path}`}
 		>
 			<Text
 				position="absolute"

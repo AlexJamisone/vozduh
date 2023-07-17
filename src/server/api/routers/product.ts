@@ -1,8 +1,69 @@
 import { utapi } from 'uploadthing/server';
 import { z } from 'zod';
-import { adminProcedure, createTRPCRouter } from '~/server/api/trpc';
+import {
+	adminProcedure,
+	createTRPCRouter,
+	publicProcedure,
+} from '~/server/api/trpc';
 
 export const productRouter = createTRPCRouter({
+	getProductByCategory: publicProcedure
+		.input(
+			z.object({
+				path: z.string(),
+			})
+		)
+		.query(async ({ ctx, input }) => {
+			return await ctx.prisma.product.findMany({
+				where: {
+					category: {
+						path: input.path,
+					},
+					NOT: {
+						archived: true,
+					},
+				},
+				include: {
+					priceHistory: {
+						orderBy: {
+							effectiveFrom: 'desc',
+						},
+					},
+					size: true,
+					additionalServices: {
+						include: {
+							additionalServicesOption: true,
+						},
+					},
+				},
+			});
+		}),
+	getSinglProduct: publicProcedure
+		.input(
+			z.object({
+				id: z.string(),
+			})
+		)
+		.query(async ({ ctx, input }) => {
+			return await ctx.prisma.product.findUnique({
+				where: {
+					id: input.id,
+				},
+				include: {
+					priceHistory: {
+						orderBy: {
+							effectiveFrom: 'desc',
+						},
+					},
+					size: true,
+					additionalServices: {
+						include: {
+							additionalServicesOption: true,
+						},
+					},
+				},
+			});
+		}),
 	getForAdmin: adminProcedure.query(async ({ ctx }) => {
 		return await ctx.prisma.product.findMany({
 			include: {
