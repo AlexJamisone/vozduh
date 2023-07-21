@@ -1,23 +1,104 @@
-import { Image, Skeleton, Stack } from '@chakra-ui/react';
+import { Icon, IconButton, Image, Skeleton, Stack } from '@chakra-ui/react';
 import useEmblaCarousel from 'embla-carousel-react';
+import { useCallback, useEffect, useState } from 'react';
+import {
+	MdOutlineKeyboardArrowLeft,
+	MdOutlineKeyboardArrowRight,
+} from 'react-icons/md';
 import { useProductDitalsContext } from '~/context/productDitailsContext';
 const ImageSlider = () => {
 	const { product } = useProductDitalsContext();
-	const [emblaRef] = useEmblaCarousel({
+	const [selectedIndex, setSelectedIndex] = useState(0);
+	const [emblaRef, emblaApi] = useEmblaCarousel({
 		startIndex: 0,
 	});
+	const [emblaThumbRef, emblaThumbApi] = useEmblaCarousel({
+		dragFree: true,
+		containScroll: 'keepSnaps',
+	});
+	const onThumbClick = useCallback(
+		(index: number) => {
+			if (!emblaApi || !emblaThumbApi) return;
+			emblaApi.scrollTo(index);
+		},
+		[emblaApi, emblaThumbApi]
+	);
+	const onSelect = useCallback(() => {
+		if (!emblaApi || !emblaThumbApi) return;
+		setSelectedIndex(emblaApi.selectedScrollSnap());
+		emblaThumbApi.scrollTo(emblaApi.selectedScrollSnap());
+	}, [emblaApi, emblaThumbApi, setSelectedIndex]);
+	useEffect(() => {
+		if (!emblaApi) return;
+		onSelect();
+		emblaApi.on('select', onSelect);
+		emblaApi.on('reInit', onSelect);
+	}, [emblaApi, onSelect]);
+
 	return (
-		<Stack w={600} h="100%" ref={emblaRef} overflow="hidden">
-			<Stack direction="row">
+		<Stack w="100%" alignContent="center">
+			<Stack ref={emblaRef} overflow="hidden" position="relative">
+				<Stack direction="row">
+					{product.image.map((src, index) => (
+						<Image
+							key={index}
+							alt={`${src}`}
+							src={`https://utfs.io/f/${src}`}
+							fallback={<Skeleton w={600} h="100%" />}
+							flex="0 0 100%"
+						/>
+					))}
+				</Stack>
+				<IconButton
+					position="absolute"
+					variant="ghost"
+					aria-label="prev"
+					icon={
+						<Icon
+							as={MdOutlineKeyboardArrowLeft}
+							boxSize={7}
+							fill="whiteAlpha.800"
+						/>
+					}
+					top="40%"
+					left={0}
+					rounded="full"
+					onClick={() => emblaApi?.scrollPrev()}
+				/>
+				<IconButton
+					position="absolute"
+					variant="ghost"
+					aria-label="next"
+					icon={
+						<Icon
+							as={MdOutlineKeyboardArrowRight}
+							boxSize={7}
+							fill="whiteAlpha.800"
+						/>
+					}
+					top="40%"
+					right={0}
+					rounded="full"
+					onClick={() => emblaApi?.scrollNext()}
+				/>
+			</Stack>
+			<Stack
+				ref={emblaThumbRef}
+				direction="row"
+				justifyContent="center"
+				overflow="hidden"
+			>
 				{product.image.map((src, index) => (
 					<Image
-						key={index}
 						alt={`${src}`}
 						src={`https://utfs.io/f/${src}`}
-						width={100}
-						height={300}
-						fallback={<Skeleton />}
-						flex="0 0 100%"
+						key={src}
+						w={100}
+						h={90}
+						cursor="pointer"
+						onClick={() => onThumbClick(index)}
+						opacity={index === selectedIndex ? 1 : 0.2}
+						transition="opacity .2s ease-in-out"
 					/>
 				))}
 			</Stack>

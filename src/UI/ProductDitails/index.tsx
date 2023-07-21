@@ -10,7 +10,7 @@ type ProductDitailsProps = {
 
 const ProductDitails = ({ info, photo }: ProductDitailsProps) => {
 	return (
-		<Stack direction="row">
+		<Stack direction={['column', 'row']}>
 			{photo}
 			{info}
 		</Stack>
