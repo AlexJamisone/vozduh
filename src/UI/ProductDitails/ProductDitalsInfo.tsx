@@ -5,25 +5,43 @@ import ProductDitalsAction from './ProductDitalsAction';
 const ProductDitalsInfo = () => {
 	const { product, dispatch, state } = useProductDitalsContext();
 	return (
-		<Stack>
+		<Stack
+			w={['100%', '50%']}
+			alignItems="center"
+			textAlign="center"
+			gap={5}
+			maxW={[null, 350]}
+			px={[5, null]}
+		>
 			<Text fontSize="2xl">{product.name}</Text>
-			<Stack direction="row">
+			<Stack
+				direction="row"
+				flexWrap="wrap"
+				justifyContent="center"
+				maxW={300}
+			>
 				{product.size.map(({ id, value }) => (
 					<Button
+						border={
+							state.size.errorSelect ? '1px solid' : undefined
+						}
+						borderColor={
+							state.size.errorSelect ? 'orange.300' : undefined
+						}
 						key={id}
-						isActive={state.sizeId === id}
-						onClick={() =>
+						isActive={state.size.id === id}
+						onClick={() => {
 							dispatch({
 								type: 'SIZE',
-								payload: state.sizeId === id ? '' : id,
-							})
-						}
+								payload: state.size.id === id ? '' : id,
+							});
+						}}
 					>
 						{value}
 					</Button>
 				))}
 			</Stack>
-			<Stack>
+			<Stack w={['90%', '100%']}>
 				{product.additionalServices?.map(
 					({ id, additionalServicesOption, title }) => (
 						<Stack key={id}>
@@ -61,9 +79,11 @@ const ProductDitalsInfo = () => {
 					)
 				)}
 			</Stack>
-			<Stack>
-				<ProductDitalsAction />
-			</Stack>
+			<Text fontSize="2xl" fontWeight={600}>
+				{product.priceHistory[0]?.price} ₽
+			</Text>
+			<ProductDitalsAction />
+			<Text>{product.description}</Text>
 		</Stack>
 	);
 };

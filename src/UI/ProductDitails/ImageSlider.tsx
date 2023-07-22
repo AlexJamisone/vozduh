@@ -36,7 +36,7 @@ const ImageSlider = () => {
 	}, [emblaApi, onSelect]);
 
 	return (
-		<Stack w="100%" alignContent="center">
+		<Stack w="100%">
 			<Stack ref={emblaRef} overflow="hidden" position="relative">
 				<Stack direction="row">
 					{product.image.map((src, index) => (
@@ -46,6 +46,7 @@ const ImageSlider = () => {
 							src={`https://utfs.io/f/${src}`}
 							fallback={<Skeleton w={600} h="100%" />}
 							flex="0 0 100%"
+							w={['100%', 300]}
 						/>
 					))}
 				</Stack>
@@ -60,7 +61,7 @@ const ImageSlider = () => {
 							fill="whiteAlpha.800"
 						/>
 					}
-					top="40%"
+					top="45%"
 					left={0}
 					rounded="full"
 					onClick={() => emblaApi?.scrollPrev()}
@@ -76,7 +77,7 @@ const ImageSlider = () => {
 							fill="whiteAlpha.800"
 						/>
 					}
-					top="40%"
+					top="45%"
 					right={0}
 					rounded="full"
 					onClick={() => emblaApi?.scrollNext()}

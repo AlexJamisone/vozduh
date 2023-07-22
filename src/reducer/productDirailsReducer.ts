@@ -1,5 +1,9 @@
 export type ProductDitailsState = {
-	sizeId: string;
+	size: {
+		id: string;
+		isSelected: boolean;
+		errorSelect: boolean;
+	};
 	additionalServ: AdditionalServiceDitails[];
 };
 
@@ -14,19 +18,33 @@ interface SetSizeAction {
 	payload: string;
 }
 
-interface SetService {
+interface SetServiceAction {
 	type: 'SERVICE';
 	payload: AdditionalServiceDitails;
 }
 
-interface SetClear {
+interface SetSizeErrorSelectAction {
+	type: 'SIZE_ERROR';
+	payload: boolean;
+}
+
+interface SetClearAction {
 	type: 'CLEAR';
 }
-export type Action = SetClear | SetService | SetSizeAction;
+
+export type Action =
+	| SetClearAction
+	| SetServiceAction
+	| SetSizeAction
+	| SetSizeErrorSelectAction;
 
 export const initial: ProductDitailsState = {
 	additionalServ: [],
-	sizeId: '',
+	size: {
+		id: '',
+		isSelected: false,
+		errorSelect: false,
+	},
 };
 
 export const productDitailsReducer = (
@@ -37,7 +55,34 @@ export const productDitailsReducer = (
 		case 'CLEAR':
 			return initial;
 		case 'SIZE':
-			return { ...state, sizeId: action.payload };
+			if (action.payload === '') {
+				return {
+					...state,
+					size: {
+						id: '',
+						isSelected: false,
+						errorSelect: false,
+					},
+				};
+			} else {
+				return {
+					...state,
+					size: {
+						id: action.payload,
+						isSelected: true,
+						errorSelect: false,
+					},
+				};
+			}
+		case 'SIZE_ERROR': {
+			return {
+				...state,
+				size: {
+					...state.size,
+					errorSelect: action.payload,
+				},
+			};
+		}
 		case 'SERVICE': {
 			const exitsitng = state.additionalServ.find(
 				(serv) => serv.serviceId === action.payload.serviceId
@@ -79,5 +124,7 @@ export const productDitailsReducer = (
 				};
 			}
 		}
+		default:
+			return state;
 	}
 };
