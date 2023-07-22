@@ -5,15 +5,19 @@ import {
 	IconButton,
 	useToast,
 } from '@chakra-ui/react';
+import { SignedIn } from '@clerk/nextjs';
 import { GoHeart } from 'react-icons/go';
 import { useCart } from '~/context/cartContext';
 import { useProductDitalsContext } from '~/context/productDitailsContext';
+import { api } from '~/utils/api';
 
 const ProductDitalsAction = () => {
 	const { cart, dispatchCart } = useCart();
 	const { product, state, dispatch } = useProductDitalsContext();
+	const { data: userFav } = api.favorites.get.useQuery();
+	const { mutate: addOrRemove } = api.favorites.addOrRemove.useMutation();
 	const toast = useToast();
-	console.log(cart);
+	const ctx = api.useContext();
 	return (
 		<ButtonGroup isAttached w="100%" gap={1}>
 			<Button
@@ -44,6 +48,7 @@ const ProductDitalsAction = () => {
 							description: `Товар ${product.name} была добавлен в корзину`,
 							isClosable: true,
 							status: 'success',
+							position: 'top-right',
 						});
 						dispatch({
 							type: 'CLEAR',
@@ -55,7 +60,42 @@ const ProductDitalsAction = () => {
 			>
 				Добавить в корзину
 			</Button>
-			<IconButton aria-label="favorites" icon={<Icon as={GoHeart} />} />
+			<SignedIn>
+				<IconButton
+					aria-label="favorites"
+					icon={
+						<Icon
+							as={GoHeart}
+							boxSize={6}
+							color={
+								userFav?.favorites.some(
+									({ productId }) => productId === product.id
+								)
+									? 'red.400'
+									: undefined
+							}
+							transition="color .3s linear"
+						/>
+					}
+					onClick={() =>
+						addOrRemove(
+							{ id: product.id },
+							{
+								onSuccess: () => {
+									void ctx.favorites.invalidate();
+									toast({
+										description: 'Успешно',
+										isClosable: true,
+										position: 'top-right',
+										status: 'loading',
+										duration: 1000,
+									});
+								},
+							}
+						)
+					}
+				/>
+			</SignedIn>
 		</ButtonGroup>
 	);
 };
