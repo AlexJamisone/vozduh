@@ -1,16 +1,21 @@
 export type CartState = {
-	items: CartItems[];
+	items: CartItem[];
 	totalSum: number;
 };
 
-type CartItems = {
+export type CartItem = {
 	id: string;
-	sizeId: string;
+	size: {
+		id: string;
+		value: string;
+	};
 	name: string;
 	image: string;
 	price: number;
 	quantity: number;
 	additionalOptions?: {
+		optionTitle: string;
+		serviceTitle: string;
 		optionId: string;
 		price: number;
 	}[];
@@ -18,7 +23,7 @@ type CartItems = {
 
 interface SetAddAction {
 	type: 'ADD';
-	payload: CartItems;
+	payload: CartItem;
 }
 
 interface SetRemoveAction {
@@ -27,6 +32,8 @@ interface SetRemoveAction {
 		id: string;
 		sizeId: string;
 		additionalOptions?: {
+			optionTitle: string;
+			serviceTitle: string;
 			optionId: string;
 			price: number;
 		}[];
@@ -35,7 +42,7 @@ interface SetRemoveAction {
 
 interface SetUpdateAction {
 	type: 'UPDATE';
-	payload: CartItems;
+	payload: CartItem;
 }
 
 interface SetClearAction {
@@ -59,7 +66,7 @@ export function cartReducer(state: CartState, action: Action): CartState {
 			const itemIndex = state.items.findIndex(
 				(item) =>
 					item.id === action.payload.id &&
-					item.sizeId === action.payload.sizeId &&
+					item.size.id === action.payload.size.id &&
 					item.additionalOptions?.length ===
 						action.payload.additionalOptions?.length &&
 					item.additionalOptions?.every(
@@ -69,7 +76,7 @@ export function cartReducer(state: CartState, action: Action): CartState {
 					)
 			);
 			if (itemIndex === -1) {
-				const newItems: CartItems = {
+				const newItems: CartItem = {
 					...action.payload,
 					quantity: 1,
 				};
@@ -108,56 +115,84 @@ export function cartReducer(state: CartState, action: Action): CartState {
 			}
 		}
 		case 'UPDATE': {
+			const { id, size, additionalOptions, quantity } = action.payload;
+
 			const updatedItems = state.items.map((item) => {
+				// Check if the item matches the ID, size ID, and additional options
 				if (
-					item.id === action.payload.id &&
-					item.sizeId === action.payload.sizeId &&
-					item.additionalOptions === action.payload.additionalOptions
+					item.id === id &&
+					item.size.id === size.id &&
+					areAdditionalOptionsEqual(
+						item.additionalOptions,
+						additionalOptions
+					)
 				) {
+					// Update the quantity and additional options of the item
 					return {
 						...item,
-						quantity: action.payload.quantity,
+						quantity: quantity,
+						additionalOptions: additionalOptions || [],
 					};
 				}
 				return item;
 			});
+
+			// Calculate the total sum for the updated items
 			const updatedTotalSum = updatedItems.reduce(
-				(sum, item) => sum + item.price * (item.quantity || 0),
+				(sum, item) =>
+					sum +
+					item.price * (item.quantity || 0) +
+					(item.additionalOptions || []).reduce(
+						(optionSum, option) => optionSum + option.price,
+						0
+					),
 				0
 			);
+
 			return {
 				...state,
 				items: updatedItems,
 				totalSum: updatedTotalSum,
 			};
 		}
+
 		case 'REMOVE': {
 			const { id, sizeId, additionalOptions } = action.payload;
 
+			// Initialize the reduction to zero
+			let reduction = 0;
+
 			const updatedItems = state.items.filter((item) => {
-				if (
+				// Check if the item matches the ID, size ID, and additional options
+				const isMatchingItem =
 					item.id === id &&
-					item.sizeId === sizeId &&
+					item.size.id === sizeId &&
 					areAdditionalOptionsEqual(
 						item.additionalOptions,
 						additionalOptions
-					)
-				) {
-					// Calculate the reduction in the totalSum for the removed item
-					const reduction =
-						item.price *
-						(item.quantity || 0) *
-						(item.additionalOptions?.length || 1);
+					);
 
-					// Subtract the reduction from the totalSum
-					return (state.totalSum -= reduction);
+				// Calculate the reduction for the matching item
+				if (isMatchingItem) {
+					reduction =
+						item.price * (item.quantity || 0) +
+						(item.additionalOptions || []).reduce(
+							(optionSum, option) => optionSum + option.price,
+							0
+						);
 				}
-				return true;
+
+				// Return true to keep items that don't match the criteria
+				return !isMatchingItem;
 			});
+
+			// Calculate the updated totalSum
+			const updatedTotalSum = state.totalSum - reduction;
 
 			return {
 				...state,
 				items: updatedItems,
+				totalSum: updatedTotalSum,
 			};
 		}
 		case 'CLEAR':
@@ -168,8 +203,8 @@ export function cartReducer(state: CartState, action: Action): CartState {
 }
 
 function areAdditionalOptionsEqual(
-	options1: CartItems['additionalOptions'] | undefined,
-	options2: CartItems['additionalOptions'] | undefined
+	options1: CartItem['additionalOptions'] | undefined,
+	options2: CartItem['additionalOptions'] | undefined
 ): boolean {
 	if (!options1 && !options2) {
 		return true;

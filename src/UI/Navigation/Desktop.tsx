@@ -6,7 +6,7 @@ import React from 'react';
 import ThemeButton from '~/components/ThemeButton';
 import UserBtn from '~/components/UserBtn';
 import { nav } from '~/constants/nav';
-import Cart from '../Cart/Cart';
+import Cart from '../Cart';
 const Desktop = () => {
 	const { isSignedIn } = useAuth();
 	return (

@@ -12,7 +12,7 @@ import { useProductDitalsContext } from '~/context/productDitailsContext';
 import { api } from '~/utils/api';
 
 const ProductDitalsAction = () => {
-	const { cart, dispatchCart } = useCart();
+	const { dispatchCart } = useCart();
 	const { product, state, dispatch } = useProductDitalsContext();
 	const { data: userFav } = api.favorites.get.useQuery();
 	const { mutate: addOrRemove } = api.favorites.addOrRemove.useMutation();
@@ -39,7 +39,10 @@ const ProductDitalsAction = () => {
 								image: product.image[0] ?? '',
 								name: product.name,
 								price: product.priceHistory[0]?.price ?? 0,
-								sizeId: state.size.id,
+								size: {
+									id: state.size.id,
+									value: state.size.value,
+								},
 								quantity: 1,
 								additionalOptions: state.additionalServ,
 							},

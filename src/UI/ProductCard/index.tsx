@@ -20,7 +20,6 @@ import type {
 } from '@prisma/client';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import type { Dispatch, ReactNode } from 'react';
 import { BsArchive } from 'react-icons/bs';
 import Overlay from '~/components/Overlay';
@@ -57,11 +56,6 @@ const ProductCard = ({
 	const { mutate: archive, isLoading } = api.product.archive.useMutation();
 	const ctx = api.useContext();
 	const toast = useToast();
-	const router = useRouter();
-	const producDitailUrl = router.asPath.replace(
-		'/profile',
-		`product/${product.id}`
-	);
 	const CardContainer = chakra(motion.div);
 
 	const handlClickOnCard = () => {

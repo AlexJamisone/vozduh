@@ -4,6 +4,7 @@ import ProductDitalsAction from './ProductDitalsAction';
 
 const ProductDitalsInfo = () => {
 	const { product, dispatch, state } = useProductDitalsContext();
+	console.log(state.additionalServ);
 	return (
 		<Stack
 			w={['100%', '50%']}
@@ -33,7 +34,10 @@ const ProductDitalsInfo = () => {
 						onClick={() => {
 							dispatch({
 								type: 'SIZE',
-								payload: state.size.id === id ? '' : id,
+								payload: {
+									id: state.size.id === id ? '' : id,
+									value,
+								},
 							});
 						}}
 					>
@@ -43,7 +47,7 @@ const ProductDitalsInfo = () => {
 			</Stack>
 			<Stack w={['90%', '100%']}>
 				{product.additionalServices?.map(
-					({ id, additionalServicesOption, title }) => (
+					({ id, additionalServicesOption, title }, index) => (
 						<Stack key={id}>
 							<FormLabel>{title}</FormLabel>
 							<Select
@@ -57,15 +61,23 @@ const ProductDitalsInfo = () => {
 									const price = selectedOption
 										? selectedOption.price
 										: 0;
+									const name = selectedOption
+										? selectedOption.name
+										: '';
 									dispatch({
 										type: 'SERVICE',
 										payload: {
 											serviceId: id,
 											optionId: e.target.value,
 											price: Number(price),
+											serviceTitle: title,
+											optionTitle: name,
 										},
 									});
 								}}
+								value={
+									state.additionalServ[index]?.optionId ?? ''
+								}
 							>
 								{additionalServicesOption.map(
 									({ id, name, price }) => (

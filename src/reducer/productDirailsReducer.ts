@@ -1,6 +1,7 @@
 export type ProductDitailsState = {
 	size: {
 		id: string;
+		value: string;
 		isSelected: boolean;
 		errorSelect: boolean;
 	};
@@ -8,6 +9,8 @@ export type ProductDitailsState = {
 };
 
 type AdditionalServiceDitails = {
+	serviceTitle: string;
+	optionTitle: string;
 	serviceId: string;
 	optionId: string;
 	price: number;
@@ -15,7 +18,10 @@ type AdditionalServiceDitails = {
 
 interface SetSizeAction {
 	type: 'SIZE';
-	payload: string;
+	payload: {
+		id: string;
+		value: string;
+	};
 }
 
 interface SetServiceAction {
@@ -42,6 +48,7 @@ export const initial: ProductDitailsState = {
 	additionalServ: [],
 	size: {
 		id: '',
+		value: '',
 		isSelected: false,
 		errorSelect: false,
 	},
@@ -55,11 +62,12 @@ export const productDitailsReducer = (
 		case 'CLEAR':
 			return initial;
 		case 'SIZE':
-			if (action.payload === '') {
+			if (action.payload.id === '') {
 				return {
 					...state,
 					size: {
 						id: '',
+						value: '',
 						isSelected: false,
 						errorSelect: false,
 					},
@@ -68,7 +76,8 @@ export const productDitailsReducer = (
 				return {
 					...state,
 					size: {
-						id: action.payload,
+						id: action.payload.id,
+						value: action.payload.value,
 						isSelected: true,
 						errorSelect: false,
 					},
@@ -119,6 +128,8 @@ export const productDitailsReducer = (
 							optionId: action.payload.optionId,
 							serviceId: action.payload.serviceId,
 							price: action.payload.price,
+							optionTitle: action.payload.optionTitle,
+							serviceTitle: action.payload.serviceTitle,
 						},
 					],
 				};
