@@ -27,6 +27,34 @@ export const favoritesRouter = createTRPCRouter({
 			},
 		});
 	}),
+	favoritesProducts: privetProcedure.query(async ({ ctx }) => {
+		return ctx.prisma.user.findUnique({
+			where: {
+				id: ctx.userId,
+			},
+			select: {
+				favorites: {
+					select: {
+						product: {
+							include: {
+								priceHistory: {
+									orderBy: {
+										effectiveFrom: 'desc',
+									},
+								},
+								size: true,
+								additionalServices: {
+									include: {
+										additionalServicesOption: true,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		});
+	}),
 	addOrRemove: privetProcedure
 		.input(
 			z.object({

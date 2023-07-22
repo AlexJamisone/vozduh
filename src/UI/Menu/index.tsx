@@ -24,7 +24,7 @@ const Menu = () => {
 	const { colorMode } = useColorMode();
 	if (!role) return null;
 	return (
-		<Center>
+		<Center as="aside">
 			{isSignedIn && (
 				<Stack
 					as={motion.div}

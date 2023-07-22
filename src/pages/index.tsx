@@ -1,11 +1,11 @@
 import { Image } from '@chakra-ui/next-js';
-import { Center, useColorMode } from '@chakra-ui/react';
+import { Center, Stack, useColorMode } from '@chakra-ui/react';
 import Category from '~/UI/Category';
 
 export default function Home() {
 	const { colorMode } = useColorMode();
 	return (
-		<>
+		<Stack as={'main'} gap={0} pb={75}>
 			<Center as="section" h="100vh" position="relative">
 				<Image
 					alt="main"
@@ -19,6 +19,6 @@ export default function Home() {
 				/>
 			</Center>
 			<Category />
-		</>
+		</Stack>
 	);
 }
