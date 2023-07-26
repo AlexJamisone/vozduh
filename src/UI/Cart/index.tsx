@@ -14,13 +14,13 @@ import {
 	Text,
 	useDisclosure,
 } from '@chakra-ui/react';
-import { motion } from 'framer-motion';
 import { useRef } from 'react';
 import { PiShoppingCartSimpleLight } from 'react-icons/pi';
 import { RiWindyFill } from 'react-icons/ri';
 import NoData from '~/components/NoData';
 import { useCart } from '~/context/cartContext';
 import CartItem from './CartItem';
+
 const Cart = () => {
 	const { isOpen, onClose, onToggle } = useDisclosure();
 	const btnRef = useRef<HTMLButtonElement | null>(null);
@@ -34,30 +34,21 @@ const Cart = () => {
 					aria-label="cart"
 					icon={<Icon as={PiShoppingCartSimpleLight} />}
 					onClick={onToggle}
+					position="relative"
+					_before={{
+						content: `'${cart.items.length}'`,
+						width: cart.items.length === 0 ? '0px' : '20px',
+						height: cart.items.length === 0 ? '0px' : '20px',
+						position: 'absolute',
+						bottom: -5,
+						right: -5,
+						border: '1px solid',
+						p: cart.items.length === 0 ? 0 : 0.5,
+						rounded: 'full',
+						opacity: cart.items.length === 0 ? 0 : 1,
+						transition: 'opacity .7s ease-in-out',
+					}}
 				/>
-				{cart.items.length !== 0 && (
-					<Text
-						position="absolute"
-						bottom={-5}
-						right={-3}
-						px={1.5}
-						border="1px solid"
-						borderColor="whiteAlpha.300"
-						rounded="full"
-						as={motion.p}
-						initial={{ opacity: 0 }}
-						animate={{
-							opacity: 1,
-							transition: {
-								type: 'spring',
-								duration: 0.5,
-							},
-						}}
-						fontSize="sm"
-					>
-						{cart.items.length}
-					</Text>
-				)}
 			</Stack>
 			<Drawer
 				isOpen={isOpen}

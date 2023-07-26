@@ -4,7 +4,6 @@ import ProductDitalsAction from './ProductDitalsAction';
 
 const ProductDitalsInfo = () => {
 	const { product, dispatch, state } = useProductDitalsContext();
-	console.log(state.additionalServ);
 	return (
 		<Stack
 			w={['100%', '50%']}

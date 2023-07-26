@@ -12,12 +12,13 @@ import { useProductDitalsContext } from '~/context/productDitailsContext';
 import { api } from '~/utils/api';
 
 const ProductDitalsAction = () => {
-	const { dispatchCart } = useCart();
+	const { dispatchCart, cart } = useCart();
 	const { product, state, dispatch } = useProductDitalsContext();
 	const { data: userFav } = api.favorites.get.useQuery();
 	const { mutate: addOrRemove } = api.favorites.addOrRemove.useMutation();
 	const toast = useToast();
 	const ctx = api.useContext();
+	console.log(cart);
 	return (
 		<ButtonGroup isAttached w="100%" gap={1}>
 			<Button

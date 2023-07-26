@@ -8,6 +8,7 @@ import UserBtn from '~/components/UserBtn';
 import { nav } from '~/constants/nav';
 import useLocalStorage from '~/hooks/useLoacalStorage';
 import Cart from '../Cart';
+
 const Desktop = () => {
 	const { isSignedIn } = useAuth();
 	const { value, setValue } = useLocalStorage('initial');
@@ -59,7 +60,7 @@ const Desktop = () => {
 									opacity: 1,
 									transition: {
 										type: 'spring',
-										delay: 3.1,
+										delay: !value ? 0.5 : 3.1,
 									},
 								}}
 							>
@@ -88,7 +89,7 @@ const Desktop = () => {
 					opacity: 1,
 					transition: {
 						type: 'spring',
-						delay: 3.1,
+						delay: !value ? 0.5 : 3.1,
 					},
 				}}
 			>

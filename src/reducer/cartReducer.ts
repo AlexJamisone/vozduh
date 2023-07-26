@@ -55,12 +55,33 @@ export type Action =
 	| SetUpdateAction
 	| SetClearAction;
 
-export const initial: CartState = {
+const CART_STORAGE_KEY = 'cart';
+
+const getCartFromLocalStorage = (): CartState | null => {
+	if (typeof window !== 'undefined' && window.localStorage) {
+		const cartJSON = window.localStorage.getItem(CART_STORAGE_KEY);
+		if (cartJSON) {
+			return JSON.parse(cartJSON) as CartState;
+		}
+	}
+	return null;
+};
+
+const saveCartToLocalStorage = (cart: CartState) => {
+	if (typeof window !== 'undefined' && window.localStorage) {
+		window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+	}
+};
+
+export const initial: CartState = getCartFromLocalStorage() || {
 	items: [],
 	totalSum: 0,
 };
 
-export function cartReducer(state: CartState, action: Action): CartState {
+export function cartReducer(
+	state: CartState = initial,
+	action: Action
+): CartState {
 	switch (action.type) {
 		case 'ADD': {
 			const itemIndex = state.items.findIndex(
@@ -80,7 +101,7 @@ export function cartReducer(state: CartState, action: Action): CartState {
 					...action.payload,
 					quantity: 1,
 				};
-				return {
+				const newState = {
 					...state,
 					items: [...state.items, newItems],
 					totalSum:
@@ -91,6 +112,8 @@ export function cartReducer(state: CartState, action: Action): CartState {
 							0
 						) || 0),
 				};
+				saveCartToLocalStorage(newState);
+				return newState;
 			} else {
 				const updatedItems = [...state.items];
 				const existingItem = updatedItems[itemIndex];
@@ -100,7 +123,7 @@ export function cartReducer(state: CartState, action: Action): CartState {
 						quantity: existingItem.quantity + 1,
 					};
 					updatedItems[itemIndex] = updatedItem;
-					return {
+					const newState = {
 						...state,
 						items: updatedItems,
 						totalSum:
@@ -111,6 +134,8 @@ export function cartReducer(state: CartState, action: Action): CartState {
 								0
 							) || 0),
 					};
+					saveCartToLocalStorage(newState);
+					return newState;
 				}
 			}
 		}
@@ -148,12 +173,13 @@ export function cartReducer(state: CartState, action: Action): CartState {
 					),
 				0
 			);
-
-			return {
+			const newState = {
 				...state,
 				items: updatedItems,
 				totalSum: updatedTotalSum,
 			};
+			saveCartToLocalStorage(newState);
+			return newState;
 		}
 
 		case 'REMOVE': {
@@ -188,15 +214,18 @@ export function cartReducer(state: CartState, action: Action): CartState {
 
 			// Calculate the updated totalSum
 			const updatedTotalSum = state.totalSum - reduction;
-
-			return {
+			const newState = {
 				...state,
 				items: updatedItems,
 				totalSum: updatedTotalSum,
 			};
+			saveCartToLocalStorage(newState);
+			return newState;
 		}
-		case 'CLEAR':
+		case 'CLEAR': {
+			// saveCartToLocalStorage(initial);
 			return initial;
+		}
 		default:
 			return state;
 	}
