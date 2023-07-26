@@ -1,5 +1,6 @@
-import { OrderStatus } from '@prisma/client';
+import type { OrderStatus } from '@prisma/client';
 import { z } from 'zod';
+import type { CartState } from '~/reducer/cartReducer';
 import {
 	adminProcedure,
 	createTRPCRouter,
@@ -77,5 +78,15 @@ export const ordersRouter = createTRPCRouter({
 					status: input.status,
 				},
 			});
+		}),
+	createIsAuthHaveAddress: privetProcedure
+		.input(
+			z.object({
+				addressId: z.string().nonempty(),
+				items: z.custom<CartState>(),
+			})
+		)
+		.mutation(({ ctx, input }) => {
+			return [];
 		}),
 });

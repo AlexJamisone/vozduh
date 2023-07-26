@@ -1,5 +1,5 @@
 import { Image } from '@chakra-ui/next-js';
-import { Icon, IconButton, Stack, Text } from '@chakra-ui/react';
+import { Icon, IconButton, Stack, Text, useMediaQuery } from '@chakra-ui/react';
 import { AiFillDelete } from 'react-icons/ai';
 import {
 	MdOutlineKeyboardArrowLeft,
@@ -12,6 +12,7 @@ type CartItemProps = {
 };
 const CartItem = ({ item }: CartItemProps) => {
 	const { dispatchCart } = useCart();
+	const [isLowerThan400] = useMediaQuery('(max-width: 400px)');
 	const {
 		image: src,
 		name,
@@ -84,16 +85,14 @@ const CartItem = ({ item }: CartItemProps) => {
 		>
 			<Image
 				alt={name}
-				width={39}
-				height={39}
+				width={isLowerThan400 ? 39 : 50}
+				height={isLowerThan400 ? 39 : 50}
 				src={`https://utfs.io/f/${src}`}
 			/>
 			<Stack gap={0.5}>
-				<Text fontSize={['smaller', null]}>{name}</Text>
+				<Text fontSize={['smaller', 'md']}>{name}</Text>
 				<Stack textAlign="center" fontSize="small">
-					<Text fontSize={['smaller', null]}>
-						Размер: {size.value}
-					</Text>
+					<Text fontSize={['smaller']}>Размер: {size.value}</Text>
 					{additionalOptions?.map(
 						({ optionTitle, serviceTitle, price }, index) => (
 							<Stack
@@ -115,7 +114,7 @@ const CartItem = ({ item }: CartItemProps) => {
 				<Text>{quantity}</Text>
 				{handlButton('plus')}
 			</Stack>
-			<Text fontSize={['smaller', null]}>{price} ₽</Text>
+			<Text fontSize={['smaller', 'md']}>{price} ₽</Text>
 			{handlButton('remove')}
 		</Stack>
 	);

@@ -11,7 +11,7 @@ import 'react-dadata/dist/react-dadata.css';
 import { useCreateAddressContext } from '~/context/addressContext';
 import { env } from '~/env.mjs';
 
-const UserAddressSelectCity = () => {
+const AddressSelectCity = () => {
 	const { valueSuggestion, handlPoints, isLoadingCdek, address } =
 		useCreateAddressContext();
 	return (
@@ -40,4 +40,4 @@ const UserAddressSelectCity = () => {
 	);
 };
 
-export default UserAddressSelectCity;
+export default AddressSelectCity;

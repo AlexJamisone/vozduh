@@ -6,6 +6,7 @@ import { createTRPCRouter, privetProcedure } from '~/server/api/trpc';
 
 export const addressRouter = createTRPCRouter({
 	get: privetProcedure.query(async ({ ctx }) => {
+		if (!ctx.userId) return null;
 		return await ctx.prisma.address.findMany({
 			where: {
 				userId: ctx.userId,

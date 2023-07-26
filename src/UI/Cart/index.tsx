@@ -1,3 +1,4 @@
+import { Link } from '@chakra-ui/next-js';
 import {
 	Button,
 	Divider,
@@ -109,7 +110,17 @@ const Cart = () => {
 								<Text>Итог:</Text>
 								<Text>{cart.totalSum} ₽</Text>
 							</Stack>
-							<Button size={['sm', 'md']}>Оформить заказ</Button>
+							<Button
+								as={Link}
+								_hover={{
+									textDecoration: 'none',
+								}}
+								href="/new-order"
+								size={['sm', 'md']}
+								onClick={onClose}
+							>
+								Оформить заказ
+							</Button>
 						</DrawerFooter>
 					)}
 				</DrawerContent>

@@ -1,9 +1,5 @@
 import {
 	Button,
-	FormControl,
-	FormErrorMessage,
-	FormLabel,
-	Input,
 	Modal,
 	ModalBody,
 	ModalCloseButton,
@@ -16,20 +12,19 @@ import {
 } from '@chakra-ui/react';
 import type { Point } from '@prisma/client';
 import { motion } from 'framer-motion';
-import { useReducer, useState, type ChangeEvent } from 'react';
+import { useReducer, useState } from 'react';
 import type {
 	DaDataAddress,
 	DaDataAddressSuggestion,
 	DaDataSuggestion,
 } from 'react-dadata';
-import { IMaskInput } from 'react-imask';
+import AddressInputs from '~/UI/Address/AddressInputs';
+import AddressPointCard from '~/UI/Address/AddressPointCard';
+import AddressSelectCity from '~/UI/Address/AddressSelectCity';
 import YandexMap from '~/UI/Maps/YandexMap';
-import { addressInput } from '~/constants/address';
 import AddressContext from '~/context/addressContext';
 import { addressReducer, initial } from '~/reducer/addressReducer';
 import { api } from '~/utils/api';
-import UserAddressPointCard from './UserAddressPointCard';
-import UserAddressSelectCity from './UserAddressSelectCity';
 
 type UserAddressModalProps = {
 	isOpen: boolean;
@@ -52,6 +47,7 @@ const UserAddressModal = ({ isOpen, onClose }: UserAddressModalProps) => {
 	const ctx = api.useContext();
 	const toast = useToast();
 
+	//have duplication in Order/index.tsx make helper later
 	const [valueSuggestion, setValueSuggestion] = useState<
 		DaDataAddressSuggestion | undefined
 	>();
@@ -68,22 +64,7 @@ const UserAddressModal = ({ isOpen, onClose }: UserAddressModalProps) => {
 			}
 		);
 	};
-	const handlInput = (e: ChangeEvent<HTMLInputElement>) => {
-		const { name, value } = e.target;
-		switch (name) {
-			case 'firstName':
-				dispatchAddress({ type: 'SET_FIRSTNAME', payload: value });
-				break;
-			case 'lastName':
-				dispatchAddress({ type: 'SET_LASTNAME', payload: value });
-				break;
-			case 'phone':
-				dispatchAddress({ type: 'SET_PHONE', payload: value });
-				break;
-			default:
-				break;
-		}
-	};
+
 	return (
 		<Modal isOpen={isOpen} onClose={onClose}>
 			<ModalOverlay />
@@ -95,52 +76,18 @@ const UserAddressModal = ({ isOpen, onClose }: UserAddressModalProps) => {
 					points,
 					handlPoints,
 					isLoadingCdek,
+					isError,
+					error: error?.data?.zodError?.fieldErrors,
+					reset,
 				}}
 			>
 				<ModalContent as={motion.section} layout>
 					<ModalHeader textAlign="center">Новый адрес</ModalHeader>
 					<ModalCloseButton />
 					<ModalBody as={Stack} gap={3}>
-						{addressInput(address).map(
-							({ name, placeholder, value }) => (
-								<FormControl
-									key={name}
-									isInvalid={
-										isError &&
-										error.data?.zodError?.fieldErrors[
-											name
-										] !== undefined
-									}
-								>
-									<FormLabel>{placeholder}</FormLabel>
-									<Input
-										as={IMaskInput}
-										mask={
-											name === 'phone'
-												? '+{7}(000)000-00-00'
-												: ''
-										}
-										type="text"
-										value={value}
-										placeholder={placeholder}
-										onChange={(e) => {
-											handlInput(e);
-											reset();
-										}}
-										name={name}
-									/>
-									<FormErrorMessage fontWeight={600}>
-										{
-											error?.data?.zodError?.fieldErrors[
-												name
-											]
-										}
-									</FormErrorMessage>
-								</FormControl>
-							)
-						)}
-						<UserAddressSelectCity />
-						<UserAddressPointCard />
+						<AddressInputs />
+						<AddressSelectCity />
+						<AddressPointCard />
 						<YandexMap />
 					</ModalBody>
 					<ModalFooter gap={5}>

@@ -16,6 +16,13 @@ export interface CreateAddressContext {
 		suggestion: DaDataSuggestion<DaDataAddress> | undefined
 	) => void;
 	isLoadingCdek: boolean;
+	isError: boolean;
+	error?: {
+		[x: string]: string[] | undefined;
+		[x: number]: string[] | undefined;
+		[x: symbol]: string[] | undefined;
+	};
+	reset: () => void;
 }
 
 const AddressContext = createContext<CreateAddressContext | null>(null);

@@ -10,7 +10,7 @@ import { motion } from 'framer-motion';
 import HighlightText from '~/components/HighlightText';
 import { useCreateAddressContext } from '~/context/addressContext';
 
-const UserAddressPointCard = () => {
+const AddressPointCard = () => {
 	const { address, dispatchAddress } = useCreateAddressContext();
 	const { colorMode } = useColorMode();
 	if (!address.point) return null;
@@ -95,4 +95,4 @@ const UserAddressPointCard = () => {
 	);
 };
 
-export default UserAddressPointCard;
+export default AddressPointCard;
