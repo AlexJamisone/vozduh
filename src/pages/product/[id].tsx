@@ -17,7 +17,7 @@ const ProductDitailsPage = () => {
 	const [state, dispatch] = useReducer(productDitailsReducer, initial);
 	if (!product) return null;
 	return (
-		<Center pt={200}>
+		<Center pt={[100, 200]}>
 			<ProductDitalsContext.Provider value={{ product, dispatch, state }}>
 				<ProductDitails
 					info={<ProductDitails.Info />}

@@ -11,7 +11,7 @@ type CartItemProps = {
 	item: CartItem;
 };
 const CartItem = ({ item }: CartItemProps) => {
-	const { dispatchCart, cart } = useCart();
+	const { dispatchCart } = useCart();
 	const {
 		image: src,
 		name,
@@ -21,7 +21,6 @@ const CartItem = ({ item }: CartItemProps) => {
 		size,
 		additionalOptions,
 	} = item;
-	console.log(cart);
 	const handlButton = (operation: 'minus' | 'plus' | 'remove') => {
 		return (
 			<IconButton
@@ -85,14 +84,16 @@ const CartItem = ({ item }: CartItemProps) => {
 		>
 			<Image
 				alt={name}
-				width={50}
-				height={50}
+				width={39}
+				height={39}
 				src={`https://utfs.io/f/${src}`}
 			/>
 			<Stack gap={0.5}>
-				<Text>{name}</Text>
+				<Text fontSize={['smaller', null]}>{name}</Text>
 				<Stack textAlign="center" fontSize="small">
-					<Text>Размер: {size.value}</Text>
+					<Text fontSize={['smaller', null]}>
+						Размер: {size.value}
+					</Text>
 					{additionalOptions?.map(
 						({ optionTitle, serviceTitle, price }, index) => (
 							<Stack
@@ -114,7 +115,7 @@ const CartItem = ({ item }: CartItemProps) => {
 				<Text>{quantity}</Text>
 				{handlButton('plus')}
 			</Stack>
-			<Text>{price} ₽</Text>
+			<Text fontSize={['smaller', null]}>{price} ₽</Text>
 			{handlButton('remove')}
 		</Stack>
 	);

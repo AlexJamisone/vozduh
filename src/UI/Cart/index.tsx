@@ -14,6 +14,7 @@ import {
 	Text,
 	useDisclosure,
 } from '@chakra-ui/react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useRef } from 'react';
 import { PiShoppingCartSimpleLight } from 'react-icons/pi';
 import { RiWindyFill } from 'react-icons/ri';
@@ -55,39 +56,60 @@ const Cart = () => {
 				onClose={onClose}
 				finalFocusRef={btnRef}
 				placement="right"
-				size={['md']}
+				size={['xs', 'md']}
 			>
 				<DrawerOverlay />
 				<DrawerContent>
 					<DrawerHeader textAlign="center">Корзина</DrawerHeader>
 					<DrawerCloseButton />
-					<DrawerBody>
+					<DrawerBody px={[1, null]}>
 						{cart.items.length === 0 && (
 							<NoData
 								title="В вашей корзине пусто"
 								icon={RiWindyFill}
 							/>
 						)}
-						{cart.items.map((item, index) => (
-							<Stack key={index}>
-								<CartItem item={item} />
-								<Divider />
-							</Stack>
-						))}
+						<AnimatePresence>
+							{cart.items.map((item, index) => (
+								<Stack
+									key={index}
+									as={motion.div}
+									layout
+									initial={{ opacity: 0 }}
+									animate={{
+										opacity: 1,
+										transition: {
+											type: 'spring',
+											duration: 0.1 * index,
+										},
+									}}
+									exit={{
+										opacity: 0,
+										transition: {
+											type: 'spring',
+											duration: 0.3,
+										},
+									}}
+								>
+									<CartItem item={item} />
+									<Divider />
+								</Stack>
+							))}
+						</AnimatePresence>
 					</DrawerBody>
 					{cart.items.length !== 0 && (
 						<DrawerFooter gap={5}>
 							<Stack
-								w="70%"
+								w={[null, '70%']}
 								fontWeight={600}
-								fontSize="2xl"
+								fontSize={['md', '2xl']}
 								direction="row"
 								justifyContent="space-between"
 							>
 								<Text>Итог:</Text>
 								<Text>{cart.totalSum} ₽</Text>
 							</Stack>
-							<Button>Оформить заказ</Button>
+							<Button size={['sm', 'md']}>Оформить заказ</Button>
 						</DrawerFooter>
 					)}
 				</DrawerContent>

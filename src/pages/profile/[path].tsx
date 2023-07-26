@@ -30,7 +30,7 @@ const ProfileRouter = () => {
 		}
 	};
 	return (
-		<Center pt={200} w="100%">
+		<Center pt={[100, 200]} pb={[75]} w="100%">
 			{handlRouter()}
 		</Center>
 	);

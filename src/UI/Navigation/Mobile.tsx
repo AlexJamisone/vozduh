@@ -18,6 +18,7 @@ import Logo from '~/assets/Logo';
 import ThemeButton from '~/components/ThemeButton';
 import UserBtn from '~/components/UserBtn';
 import { nav } from '~/constants/nav';
+import Cart from '../Cart';
 
 const Mobile = () => {
 	const { isSignedIn } = useAuth();
@@ -27,12 +28,13 @@ const Mobile = () => {
 			as="nav"
 			direction="row"
 			alignItems="center"
-			gap={16}
+			gap={[7, 16]}
 			justifyContent="center"
 		>
 			<Link href="/">
 				<Logo />
 			</Link>
+			<Cart />
 			<IconButton
 				aria-label="menu-trigger"
 				variant="outline"

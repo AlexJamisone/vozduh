@@ -48,7 +48,11 @@ const Desktop = () => {
 								}
 								onAnimationComplete={() => setValue(false)}
 							>
-								<Link href={src}>
+								<Link
+									href={src}
+									display="inline-block"
+									h="100%"
+								>
 									<Icon as={icon} />
 								</Link>
 							</Box>
