@@ -6,9 +6,11 @@ import React from 'react';
 import ThemeButton from '~/components/ThemeButton';
 import UserBtn from '~/components/UserBtn';
 import { nav } from '~/constants/nav';
+import useLocalStorage from '~/hooks/useLoacalStorage';
 import Cart from '../Cart';
 const Desktop = () => {
 	const { isSignedIn } = useAuth();
+	const { value, setValue } = useLocalStorage('initial');
 	return (
 		<>
 			<Center
@@ -23,16 +25,27 @@ const Desktop = () => {
 						{isLogo ? (
 							<Box
 								as={motion.div}
-								initial={{ y: 400, scale: 1.5, opacity: 0 }}
-								animate={{
-									y: 0,
-									scale: 1,
-									opacity: 1,
-									transition: {
-										type: 'spring',
-										duration: 3,
-									},
-								}}
+								initial={!value ? { opacity: 0 } : { y: 350 }}
+								animate={
+									!value
+										? {
+												opacity: 1,
+												y: 0,
+												transition: {
+													type: 'spring',
+													duration: 0.2,
+												},
+										  }
+										: {
+												y: 0,
+												transition: {
+													type: 'spring',
+													duration: 2,
+													delay: 3,
+												},
+										  }
+								}
+								onAnimationComplete={() => setValue(false)}
 							>
 								<Link href={src}>
 									<Icon as={icon} />

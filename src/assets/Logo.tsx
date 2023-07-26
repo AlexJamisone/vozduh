@@ -1,100 +1,62 @@
-import { useColorMode } from '@chakra-ui/react';
+import { Box, Icon, useColorMode } from '@chakra-ui/react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { pathLogo } from '~/constants/logo';
 
 const Logo = () => {
 	const { colorMode } = useColorMode();
+	const { scrollYProgress } = useScroll();
+	const scroll = useTransform(scrollYProgress, [0, 1], [1, 0]);
 	return (
-		<svg
+		<Icon
+			w={[200, 300]}
+			h={[100]}
+			version="1.1"
+			id="Layer_1"
 			xmlns="http://www.w3.org/2000/svg"
-			fillRule="evenodd"
-			strokeLinejoin="round"
-			strokeMiterlimit="2"
-			clipRule="evenodd"
-			viewBox="0 0 390 262"
-			width={175}
-			height={150}
-			fill={colorMode === 'dark' ? 'white' : ''}
+			xmlnsXlink="http://www.w3.org/1999/xlink"
+			x="0px"
+			y="0px"
+			viewBox="0 0 85 28.3"
+			xmlSpace="preserve"
+			fill={colorMode === 'dark' ? 'white' : undefined}
+			transition="all .3s linear"
 		>
-			<text
-				x="317.549"
-				y="3025.14"
-				fontFamily="Helvetica"
-				fontSize="12"
-				transform="matrix(5.35875 0 0 5.35876 -1706.411 -15998.773)"
-			>
-				M
-				<tspan x="326.945" y="3025.14">
-					Y
-				</tspan>
-			</text>
-			<g
-				fontFamily='"Helvetica-Bold","Helvetica"'
-				fontSize="12"
-				fontWeight="700"
-			>
-				<text
-					x="317.549"
-					y="3025.14"
-					transform="matrix(5.35875 0 0 5.35876 -1616.524 -16000.047)"
-				>
-					C
-					<tspan x="325.615px 334.349px" y="3025.14px 3025.14px">
-						OM
-					</tspan>
-				</text>
-				<text
-					x="343.745"
-					y="3025.14"
-					transform="matrix(5.35875 0 0 5.35876 -1616.524 -16000.047)"
-				>
-					P
-				</text>
-				<text
-					x="350.309"
-					y="3025.14"
-					transform="matrix(5.35875 0 0 5.35876 -1616.524 -16000.047)"
-				>
-					A
-					<tspan x="358.375px 366.441px" y="3025.14px 3025.14px">
-						NY
-					</tspan>
-				</text>
-			</g>
-			<text
-				x="317.549"
-				y="3025.14"
-				fontFamily="Helvetica"
-				fontSize="12"
-				transform="matrix(3.06835 0 0 3.06836 -881.814 -9028.786)"
-			>
-				f
-				<tspan
-					x="320.283px 323.679px 329.753px 335.827px 337.893px 343.967px 350.04px 356.114px 358.848px 368.244px"
-					y="3025.14px 3025.14px 3025.14px 3025.14px 3025.14px 3025.14px 3025.14px 3025.14px 3025.14px 3025.14px"
-				>
-					reelogo.me
-				</tspan>
-			</text>
-			<path d="M63.829 114.468H10.704L146.23 16.003c13.136-9.544 30.924-9.544 44.06 0l135.524 98.465H272.69s-63.21-45.925-91.276-66.313a22.377 22.377 0 0 0-26.31 0c-28.064 20.388-91.274 66.313-91.274 66.313Z" />
-			<path
-				fill="url(#a)"
-				d="M56.013 78H33.441l58.156-42.253a14.947 14.947 0 0 1 17.573 0L167.327 78h-22.572l-38.924-28.279a9.265 9.265 0 0 0-10.895 0L56.013 78Z"
-				transform="matrix(2.35356 0 0 2.35356 -15.113 -69.11)"
+			{pathLogo.map(({ id, d }, index) => (
+				<motion.path
+					key={id}
+					d={d}
+					initial={{ opacity: 0 }}
+					animate={{
+						opacity: 1,
+						transition: {
+							type: 'spring',
+							duration: 0.4,
+							delay: 0.1 * index,
+							damping: 100,
+						},
+					}}
+				/>
+			))}
+			<Box
+				as={motion.rect}
+				stroke={colorMode === 'dark' ? 'white' : '#121212'}
+				transition="all .3s linear"
+				strokeMiterlimit={10}
+				fill={'none'}
+				x="4.8"
+				y="4.4"
+				width="75.4px"
+				height="18.2px"
+				initial={{ pathLength: 0 }}
+				animate={{
+					pathLength: 1,
+					transition: { duration: 3, type: 'spring', delay: 0.7 },
+				}}
+				style={{
+					pathLength: scroll,
+				}}
 			/>
-			<defs>
-				<linearGradient
-					id="a"
-					x1="0"
-					x2="1"
-					y1="0"
-					y2="0"
-					gradientTransform="rotate(-180 83.664 39) scale(133.886)"
-					gradientUnits="userSpaceOnUse"
-				>
-					<stop offset="0" />
-					<stop offset="1" stopOpacity="0" />
-				</linearGradient>
-			</defs>
-		</svg>
+		</Icon>
 	);
 };
 

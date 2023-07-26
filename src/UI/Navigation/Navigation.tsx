@@ -30,7 +30,7 @@ const Navigation = () => {
 			bg={showBg ? 'Menu' : undefined}
 			transition="all 0.5s ease-in-out"
 			w="100%"
-			zIndex={20}
+			zIndex={99}
 		>
 			{isLowerThan1150 ? <Mobile /> : <Desktop />}
 		</Stack>

@@ -1,11 +1,17 @@
 import { Image } from '@chakra-ui/next-js';
 import { Center, Stack, useColorMode } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
 import Category from '~/UI/Category';
 
 export default function Home() {
 	const { colorMode } = useColorMode();
 	return (
-		<Stack as={'main'} gap={0} pb={75}>
+		<Stack
+			as={motion.main}
+			initial={{ backgroundColor: 'Menu' }}
+			gap={0}
+			pb={75}
+		>
 			<Center as="section" h="100vh" position="relative">
 				<Image
 					alt="main"
