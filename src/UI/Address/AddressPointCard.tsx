@@ -6,7 +6,7 @@ import {
 	Text,
 	useColorMode,
 } from '@chakra-ui/react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import HighlightText from '~/components/HighlightText';
 import { useCreateAddressContext } from '~/context/addressContext';
 
@@ -15,12 +15,13 @@ const AddressPointCard = () => {
 	const { colorMode } = useColorMode();
 	if (!address.point) return null;
 	return (
-		<>
+		<AnimatePresence>
 			{address.selectPoint && (
 				<Card
 					rounded="3xl"
 					as={motion.div}
 					initial={{ opacity: 0, y: 50 }}
+					layout
 					animate={{
 						opacity: 1,
 						y: 0,
@@ -91,7 +92,7 @@ const AddressPointCard = () => {
 					</CardBody>
 				</Card>
 			)}
-		</>
+		</AnimatePresence>
 	);
 };
 

@@ -1,5 +1,5 @@
 import { Stack } from '@chakra-ui/react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useCreateAddressContext } from '~/context/addressContext';
 import Maps from './Maps';
 import YandexProvider from './YandexProvider';
@@ -7,10 +7,11 @@ import YandexProvider from './YandexProvider';
 const YandexMap = () => {
 	const { address } = useCreateAddressContext();
 	return (
-		<>
+		<AnimatePresence>
 			{address.map && (
 				<Stack
 					as={motion.div}
+					layout
 					initial={{
 						opacity: 0,
 						y: 50,
@@ -22,13 +23,20 @@ const YandexMap = () => {
 						filter: 'blur(0px)',
 						transition: { duration: 0.3, delay: 0.5 },
 					}}
+					exit={{
+						opacity: 0,
+						transition: {
+							type: 'spring',
+							duration: 0.5,
+						},
+					}}
 				>
 					<YandexProvider>
 						<Maps />
 					</YandexProvider>
 				</Stack>
 			)}
-		</>
+		</AnimatePresence>
 	);
 };
 

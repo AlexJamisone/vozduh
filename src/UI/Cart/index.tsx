@@ -16,7 +16,7 @@ import {
 	useDisclosure,
 } from '@chakra-ui/react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PiShoppingCartSimpleLight } from 'react-icons/pi';
 import { RiWindyFill } from 'react-icons/ri';
 import NoData from '~/components/NoData';
@@ -26,7 +26,11 @@ import CartItem from './CartItem';
 const Cart = () => {
 	const { isOpen, onClose, onToggle } = useDisclosure();
 	const btnRef = useRef<HTMLButtonElement | null>(null);
+	const [countCart, setCountCart] = useState(0);
 	const { cart } = useCart();
+	useEffect(() => {
+		setCountCart(cart.items.length);
+	}, [cart.items.length]);
 	return (
 		<>
 			<Stack position="relative">
@@ -38,16 +42,16 @@ const Cart = () => {
 					onClick={onToggle}
 					position="relative"
 					_before={{
-						content: `'${cart.items.length}'`,
-						width: cart.items.length === 0 ? '0px' : '20px',
-						height: cart.items.length === 0 ? '0px' : '20px',
+						content: `'${countCart}'`,
+						width: countCart === 0 ? '0px' : '20px',
+						height: countCart === 0 ? '0px' : '20px',
 						position: 'absolute',
 						bottom: -5,
 						right: -5,
 						border: '1px solid',
-						p: cart.items.length === 0 ? 0 : 0.5,
+						p: countCart === 0 ? 0 : 0.5,
 						rounded: 'full',
-						opacity: cart.items.length === 0 ? 0 : 1,
+						opacity: countCart === 0 ? 0 : 1,
 						transition: 'opacity .7s ease-in-out',
 					}}
 				/>
@@ -111,6 +115,7 @@ const Cart = () => {
 								<Text>{cart.totalSum} ₽</Text>
 							</Stack>
 							<Button
+								colorScheme="telegram"
 								as={Link}
 								_hover={{
 									textDecoration: 'none',
