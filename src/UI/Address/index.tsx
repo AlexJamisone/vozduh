@@ -7,7 +7,12 @@ import AddressSelectCity from './AddressSelectCity';
 
 const CreateAddress = () => {
 	return (
-		<Stack direction="row" gap={24} alignItems="center">
+		<Stack
+			direction="row"
+			gap={24}
+			alignItems="center"
+			justifyContent="center"
+		>
 			<Stack w={300} as={motion.div} layout>
 				<AddressInputs />
 				<AddressSelectCity />

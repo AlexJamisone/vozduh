@@ -52,6 +52,7 @@ const ProductDitalsAction = () => {
 							isClosable: true,
 							status: 'success',
 							position: 'top-right',
+							duration: 1500,
 						});
 						dispatch({
 							type: 'CLEAR',

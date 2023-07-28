@@ -1,18 +1,26 @@
-import { Radio, RadioGroup, Stack } from '@chakra-ui/react';
+import { Button, Radio, RadioGroup, Stack } from '@chakra-ui/react';
 import { useAuth } from '@clerk/nextjs';
-import { useReducer, useState } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import { useEffect, useReducer, useState } from 'react';
 import type {
 	DaDataAddress,
 	DaDataAddressSuggestion,
 	DaDataSuggestion,
 } from 'react-dadata';
 import AddressContext from '~/context/addressContext';
+import { useCart } from '~/context/cartContext';
 import { addressReducer, initial } from '~/reducer/addressReducer';
 import { api } from '~/utils/api';
 import CreateAddress from '../Address';
+import CartItem from '../Cart/CartItem';
 import UserAddressCard from '../User/Profile/UserAddress/UserAddressCard';
 const NewOrder = () => {
 	const { isSignedIn } = useAuth();
+	const { cart } = useCart();
+	const [isClient, setIsClient] = useState(false);
+	useEffect(() => {
+		setIsClient(true);
+	}, []);
 	const { data: addressList } = api.address.get.useQuery();
 	const [address, dispatchAddress] = useReducer(addressReducer, initial);
 	const {
@@ -55,7 +63,7 @@ const NewOrder = () => {
 				isError,
 			}}
 		>
-			<Stack>
+			<Stack py={75}>
 				{isSignedIn ? (
 					addressList?.length === 0 ? (
 						<CreateAddress />
@@ -74,6 +82,20 @@ const NewOrder = () => {
 						</RadioGroup>
 					)
 				) : null}
+				<Stack>
+					{isClient && (
+						<AnimatePresence>
+							{cart.items.map((item, index) => (
+								<CartItem
+									key={index}
+									item={item}
+									index={index}
+								/>
+							))}
+						</AnimatePresence>
+					)}
+				</Stack>
+				<Button>Заказать</Button>
 			</Stack>
 		</AddressContext.Provider>
 	);

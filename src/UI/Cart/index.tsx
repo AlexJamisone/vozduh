@@ -1,7 +1,6 @@
 import { Link } from '@chakra-ui/next-js';
 import {
 	Button,
-	Divider,
 	Drawer,
 	DrawerBody,
 	DrawerCloseButton,
@@ -15,7 +14,7 @@ import {
 	Text,
 	useDisclosure,
 } from '@chakra-ui/react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { PiShoppingCartSimpleLight } from 'react-icons/pi';
 import { RiWindyFill } from 'react-icons/ri';
@@ -76,29 +75,11 @@ const Cart = () => {
 						)}
 						<AnimatePresence>
 							{cart.items.map((item, index) => (
-								<Stack
+								<CartItem
 									key={index}
-									as={motion.div}
-									layout
-									initial={{ opacity: 0 }}
-									animate={{
-										opacity: 1,
-										transition: {
-											type: 'spring',
-											duration: 0.1 * index,
-										},
-									}}
-									exit={{
-										opacity: 0,
-										transition: {
-											type: 'spring',
-											duration: 0.3,
-										},
-									}}
-								>
-									<CartItem item={item} />
-									<Divider />
-								</Stack>
+									item={item}
+									index={index}
+								/>
 							))}
 						</AnimatePresence>
 					</DrawerBody>

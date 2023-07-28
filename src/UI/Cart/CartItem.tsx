@@ -1,5 +1,13 @@
 import { Image } from '@chakra-ui/next-js';
-import { Icon, IconButton, Stack, Text, useMediaQuery } from '@chakra-ui/react';
+import {
+	Divider,
+	Icon,
+	IconButton,
+	Stack,
+	Text,
+	useMediaQuery,
+} from '@chakra-ui/react';
+import { motion } from 'framer-motion';
 import { AiFillDelete } from 'react-icons/ai';
 import {
 	MdOutlineKeyboardArrowLeft,
@@ -7,10 +15,12 @@ import {
 } from 'react-icons/md';
 import { useCart } from '~/context/cartContext';
 import { CartItem } from '~/reducer/cartReducer';
+
 type CartItemProps = {
 	item: CartItem;
+	index: number;
 };
-const CartItem = ({ item }: CartItemProps) => {
+const CartItem = ({ item, index }: CartItemProps) => {
 	const { dispatchCart } = useCart();
 	const [isLowerThan400] = useMediaQuery('(max-width: 400px)');
 	const {
@@ -78,44 +88,65 @@ const CartItem = ({ item }: CartItemProps) => {
 	};
 	return (
 		<Stack
-			direction="row"
-			alignItems="center"
-			justifyContent="space-between"
-			textAlign="center"
+			as={motion.div}
+			layout
+			initial={{ opacity: 0 }}
+			animate={{
+				opacity: 1,
+				transition: {
+					type: 'spring',
+					duration: 0.1 * index,
+				},
+			}}
+			exit={{
+				opacity: 0,
+				transition: {
+					type: 'spring',
+					duration: 0.3,
+				},
+			}}
 		>
-			<Image
-				alt={name}
-				width={isLowerThan400 ? 39 : 50}
-				height={isLowerThan400 ? 39 : 50}
-				src={`https://utfs.io/f/${src}`}
-			/>
-			<Stack gap={0.5}>
-				<Text fontSize={['smaller', 'md']}>{name}</Text>
-				<Stack textAlign="center" fontSize="small">
-					<Text fontSize={['smaller']}>Размер: {size.value}</Text>
-					{additionalOptions?.map(
-						({ optionTitle, serviceTitle, price }, index) => (
-							<Stack
-								key={index + 1}
-								direction="row"
-								fontSize="smaller"
-								justifyContent="center"
-							>
-								<Text>
-									{serviceTitle} {optionTitle} · {price} ₽
-								</Text>
-							</Stack>
-						)
-					)}
+			<Stack
+				direction="row"
+				alignItems="center"
+				justifyContent="space-between"
+				textAlign="center"
+			>
+				<Image
+					alt={name}
+					width={isLowerThan400 ? 39 : 50}
+					height={isLowerThan400 ? 39 : 50}
+					src={`https://utfs.io/f/${src}`}
+				/>
+				<Stack gap={0.5}>
+					<Text fontSize={['smaller', 'md']}>{name}</Text>
+					<Stack textAlign="center" fontSize="small">
+						<Text fontSize={['smaller']}>Размер: {size.value}</Text>
+						{additionalOptions?.map(
+							({ optionTitle, serviceTitle, price }, index) => (
+								<Stack
+									key={index + 1}
+									direction="row"
+									fontSize="smaller"
+									justifyContent="center"
+								>
+									<Text>
+										{serviceTitle} {optionTitle} · {price} ₽
+									</Text>
+								</Stack>
+							)
+						)}
+					</Stack>
 				</Stack>
+				<Stack direction="row">
+					{handlButton('minus')}
+					<Text>{quantity}</Text>
+					{handlButton('plus')}
+				</Stack>
+				<Text fontSize={['smaller', 'md']}>{price} ₽</Text>
+				{handlButton('remove')}
 			</Stack>
-			<Stack direction="row">
-				{handlButton('minus')}
-				<Text>{quantity}</Text>
-				{handlButton('plus')}
-			</Stack>
-			<Text fontSize={['smaller', 'md']}>{price} ₽</Text>
-			{handlButton('remove')}
+			<Divider />
 		</Stack>
 	);
 };
