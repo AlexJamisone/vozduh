@@ -3,8 +3,12 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useCreateAddressContext } from '~/context/addressContext';
 import Maps from './Maps';
 import YandexProvider from './YandexProvider';
+type YandexMapProps = {
+	width?: number;
+	height?: number;
+};
 
-const YandexMap = () => {
+const YandexMap = ({ height, width }: YandexMapProps) => {
 	const { address } = useCreateAddressContext();
 	return (
 		<AnimatePresence>
@@ -32,7 +36,7 @@ const YandexMap = () => {
 					}}
 				>
 					<YandexProvider>
-						<Maps />
+						<Maps width={width} height={height} />
 					</YandexProvider>
 				</Stack>
 			)}

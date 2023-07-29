@@ -11,7 +11,6 @@ import {
 	Icon,
 	IconButton,
 	Stack,
-	Text,
 	useDisclosure,
 } from '@chakra-ui/react';
 import { AnimatePresence } from 'framer-motion';
@@ -19,6 +18,7 @@ import { useEffect, useRef, useState } from 'react';
 import { PiShoppingCartSimpleLight } from 'react-icons/pi';
 import { RiWindyFill } from 'react-icons/ri';
 import NoData from '~/components/NoData';
+import TotalSum from '~/components/TotalSum';
 import { useCart } from '~/context/cartContext';
 import CartItem from './CartItem';
 
@@ -84,18 +84,10 @@ const Cart = () => {
 						</AnimatePresence>
 					</DrawerBody>
 					{cart.items.length !== 0 && (
-						<DrawerFooter gap={5}>
-							<Stack
-								w={[null, '70%']}
-								fontWeight={600}
-								fontSize={['md', '2xl']}
-								direction="row"
-								justifyContent="space-between"
-							>
-								<Text>Итог:</Text>
-								<Text>{cart.totalSum} ₽</Text>
-							</Stack>
+						<DrawerFooter justifyContent="space-between" gap={5}>
+							<TotalSum sum={cart.totalSum} />
 							<Button
+								w="50%"
 								colorScheme="telegram"
 								as={Link}
 								_hover={{

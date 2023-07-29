@@ -1,4 +1,4 @@
-import { Button, Radio, RadioGroup, Stack } from '@chakra-ui/react';
+import { Radio, RadioGroup, Stack } from '@chakra-ui/react';
 import { useAuth } from '@clerk/nextjs';
 import { AnimatePresence } from 'framer-motion';
 import { useEffect, useReducer, useState } from 'react';
@@ -7,6 +7,7 @@ import type {
 	DaDataAddressSuggestion,
 	DaDataSuggestion,
 } from 'react-dadata';
+import TotalSum from '~/components/TotalSum';
 import AddressContext from '~/context/addressContext';
 import { useCart } from '~/context/cartContext';
 import { addressReducer, initial } from '~/reducer/addressReducer';
@@ -14,6 +15,7 @@ import { api } from '~/utils/api';
 import CreateAddress from '../Address';
 import CartItem from '../Cart/CartItem';
 import UserAddressCard from '../User/Profile/UserAddress/UserAddressCard';
+import OrderAction from './OrderAction';
 const NewOrder = () => {
 	const { isSignedIn } = useAuth();
 	const { cart } = useCart();
@@ -95,7 +97,8 @@ const NewOrder = () => {
 						</AnimatePresence>
 					)}
 				</Stack>
-				<Button>Заказать</Button>
+				<TotalSum sum={cart.totalSum} />
+				<OrderAction />
 			</Stack>
 		</AddressContext.Provider>
 	);

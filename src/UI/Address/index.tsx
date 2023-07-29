@@ -19,7 +19,7 @@ const CreateAddress = () => {
 			</Stack>
 			<Stack gap={8}>
 				<AddressPointCard />
-				<YandexMap />
+				<YandexMap width={405} height={200} />
 			</Stack>
 		</Stack>
 	);
