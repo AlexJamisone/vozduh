@@ -1,10 +1,15 @@
 import { Stack, Text } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
 
 type TotalSumProps = {
 	sum: number;
 };
 
 const TotalSum = ({ sum }: TotalSumProps) => {
+	const [isClient, setIsClient] = useState(false);
+	useEffect(() => {
+		setIsClient(true);
+	}, []);
 	return (
 		<Stack
 			w={[null, '100%']}
@@ -14,7 +19,7 @@ const TotalSum = ({ sum }: TotalSumProps) => {
 			justifyContent="space-between"
 		>
 			<Text>Итог:</Text>
-			<Text>{sum} ₽</Text>
+			{isClient && <Text>{sum} ₽</Text>}
 		</Stack>
 	);
 };

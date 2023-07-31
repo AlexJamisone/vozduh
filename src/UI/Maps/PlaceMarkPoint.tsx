@@ -12,13 +12,20 @@ const PlacemarkPoint = ({ point }: PlacemarkPointProps) => {
 		<Placemark
 			geometry={[point.latitude, point.longitude]}
 			onClick={() => {
-				dispatchAddress({ type: 'SET_POINT', payload: point });
+				dispatchAddress({
+					type: 'SET_POINT',
+					payload: {
+						selected: point,
+						selectedLat: point.latitude,
+						selectedLon: point.longitude,
+					},
+				});
 				dispatchAddress({ type: 'SET_SELECT_POINT', payload: true });
 			}}
 			fillColor="ff0000"
 			options={{
 				preset:
-					address.point?.name === point.name
+					address.point?.selected?.name === point.name
 						? 'islands#darkGreenCircleIcon'
 						: 'islands#blueCircleIcon',
 			}}

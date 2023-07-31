@@ -5,10 +5,14 @@ export type AddressState = {
 	firstName: string;
 	lastName: string;
 	contactPhone: string;
-	point?: Point;
+	point: {
+		selected?: Point;
+		isPointSelect?: boolean;
+		selectedLat?: number;
+		selectedLon?: number;
+	};
 	confirmPoint: boolean;
 	errorConfirm: boolean;
-	selectPoint: boolean;
 	map: boolean;
 	edit: boolean;
 };
@@ -31,7 +35,11 @@ interface SetPhoneAction {
 }
 interface SetPointAction {
 	type: 'SET_POINT';
-	payload: Point;
+	payload: {
+		selected: Point;
+		selectedLat: number;
+		selectedLon: number;
+	};
 }
 interface SetEditAction {
 	type: 'SET_EDIT';
@@ -79,7 +87,9 @@ export const initial: AddressState = {
 	id: '',
 	edit: false,
 	map: false,
-	selectPoint: false,
+	point: {
+		isPointSelect: false,
+	},
 	confirmPoint: false,
 	contactPhone: '',
 	firstName: '',
@@ -101,11 +111,25 @@ export const addressReducer = (
 		case 'SET_PHONE':
 			return { ...state, contactPhone: action.payload };
 		case 'SET_POINT':
-			return { ...state, point: action.payload };
+			return {
+				...state,
+				point: {
+					...state.point,
+					selected: action.payload.selected,
+					selectedLat: action.payload.selectedLat,
+					selectedLon: action.payload.selectedLon,
+				},
+			};
 		case 'SET_MAP':
 			return { ...state, map: action.payload };
 		case 'SET_SELECT_POINT':
-			return { ...state, selectPoint: action.payload };
+			return {
+				...state,
+				point: {
+					...state.point,
+					isPointSelect: action.payload,
+				},
+			};
 		case 'SET_CONFIRM':
 			return { ...state, confirmPoint: action.payload };
 		case 'SET_CONFIRM_ERROR':
@@ -118,7 +142,12 @@ export const addressReducer = (
 				id: '',
 				lastName: '',
 				map: false,
-				selectPoint: false,
+				point: {
+					isPointSelect: false,
+					selected: undefined,
+					selectedLat: undefined,
+					selectedLon: undefined,
+				},
 				confirmPoint: false,
 				errorConfirm: false,
 			};

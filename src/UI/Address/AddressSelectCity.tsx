@@ -1,5 +1,6 @@
 import {
 	FormControl,
+	FormErrorMessage,
 	FormLabel,
 	Input,
 	InputGroup,
@@ -12,14 +13,30 @@ import { useCreateAddressContext } from '~/context/addressContext';
 import { env } from '~/env.mjs';
 
 const AddressSelectCity = () => {
-	const { valueSuggestion, handlPoints, isLoadingCdek, address } =
-		useCreateAddressContext();
+	const {
+		valueSuggestion,
+		handlPoints,
+		dispatchAddress,
+		isLoadingCdek,
+		address,
+	} = useCreateAddressContext();
 	return (
 		<InputGroup position="relative" zIndex={99}>
-			<FormControl isDisabled={address.confirmPoint}>
+			<FormControl
+				isDisabled={address.confirmPoint}
+				isInvalid={
+					valueSuggestion === undefined && address.errorConfirm
+				}
+			>
 				<FormLabel>Город</FormLabel>
 				<AddressSuggestions
-					onChange={(sug) => handlPoints(sug)}
+					onChange={(sug) => {
+						dispatchAddress({
+							type: 'SET_CONFIRM_ERROR',
+							payload: false,
+						});
+						handlPoints(sug);
+					}}
 					autoload
 					selectOnBlur
 					token={env.NEXT_PUBLIC_DADATA_API_KEY}
@@ -35,6 +52,7 @@ const AddressSelectCity = () => {
 				<InputRightElement position="absolute" top="45%" right={3}>
 					{isLoadingCdek && <Spinner size="sm" />}
 				</InputRightElement>
+				<FormErrorMessage>Введите ваш город</FormErrorMessage>
 			</FormControl>
 		</InputGroup>
 	);

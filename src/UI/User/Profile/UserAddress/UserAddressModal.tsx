@@ -113,7 +113,8 @@ const UserAddressModal = ({ isOpen, onClose }: UserAddressModalProps) => {
 											firstName: address.firstName,
 											lastName: address.lastName,
 											phone: address.contactPhone,
-											point: address.point as Point,
+											point: address.point
+												.selected as Point,
 										},
 										{
 											onSuccess: ({ message }) => {

@@ -1,42 +1,38 @@
 import { Button } from '@chakra-ui/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCreateAddressContext } from '~/context/addressContext';
-
-const OrderAction = () => {
+type OrderActionProps = {
+	action: () => void;
+};
+const OrderAction = ({ action }: OrderActionProps) => {
 	const { address } = useCreateAddressContext();
-	const notEmty =
-		address.firstName &&
-		address.lastName &&
-		address.selectPoint &&
-		address.contactPhone.length === 16 &&
-		address.confirmPoint;
 	return (
 		<AnimatePresence>
-			{notEmty && (
-				<Button
-					colorScheme="telegram"
-					as={motion.button}
-					initial={{ opacity: 0, y: 50 }}
-					animate={{
-						opacity: 1,
-						y: 0,
-						transition: {
-							type: 'spring',
-							duration: 0.5,
-						},
-					}}
-					exit={{
-						y: 50,
-						opacity: 0,
-						transition: {
-							duration: 0.5,
-							type: 'spring',
-						},
-					}}
-				>
-					Заказать
-				</Button>
-			)}
+			<Button
+				border={address.errorConfirm ? '1px solid' : undefined}
+				borderColor={address.errorConfirm ? 'orange.300' : undefined}
+				as={motion.button}
+				initial={{ opacity: 0, y: 50 }}
+				animate={{
+					opacity: 1,
+					y: 0,
+					transition: {
+						type: 'spring',
+						duration: 0.5,
+					},
+				}}
+				exit={{
+					y: 50,
+					opacity: 0,
+					transition: {
+						duration: 0.5,
+						type: 'spring',
+					},
+				}}
+				onClick={action}
+			>
+				Заказать
+			</Button>
 		</AnimatePresence>
 	);
 };

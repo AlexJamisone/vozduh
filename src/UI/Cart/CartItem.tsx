@@ -95,7 +95,7 @@ const CartItem = ({ item, index }: CartItemProps) => {
 				opacity: 1,
 				transition: {
 					type: 'spring',
-					duration: 0.1 * index,
+					duration: 3 * index,
 				},
 			}}
 			exit={{

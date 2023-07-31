@@ -13,12 +13,10 @@ import { useCreateAddressContext } from '~/context/addressContext';
 const AddressPointCard = () => {
 	const { address, dispatchAddress } = useCreateAddressContext();
 	const { colorMode } = useColorMode();
-	if (!address.point) return null;
 	return (
 		<AnimatePresence>
-			{address.selectPoint && (
+			{address.point.isPointSelect && (
 				<Card
-					rounded="3xl"
 					as={motion.div}
 					initial={{ opacity: 0, y: 50 }}
 					layout
@@ -30,6 +28,7 @@ const AddressPointCard = () => {
 							duration: 0.4,
 						},
 					}}
+					mt="30px"
 					boxShadow={
 						colorMode === 'dark' ? '0 0 10px 0 white' : '2xl'
 					}
@@ -46,7 +45,7 @@ const AddressPointCard = () => {
 						<Stack direction="row" alignItems="end" gap={3}>
 							<Text>
 								<HighlightText title="ПВЗ:" />{' '}
-								{address.point.name}
+								{address.point.selected?.name}
 							</Text>
 							<Button
 								size="sm"
@@ -79,15 +78,15 @@ const AddressPointCard = () => {
 						</Stack>
 						<Text>
 							<HighlightText title="Адрес:" />{' '}
-							{address.point.addressName}
+							{address.point.selected?.addressName}
 						</Text>
 						<Text>
 							<HighlightText title="Режим работы:" />{' '}
-							{address.point.work_time}
+							{address.point.selected?.work_time}
 						</Text>
 						<Text>
 							<HighlightText title="Телефон:" />{' '}
-							{address.point.phone}
+							{address.point.selected?.phone}
 						</Text>
 					</CardBody>
 				</Card>

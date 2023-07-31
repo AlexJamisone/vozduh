@@ -8,8 +8,6 @@ import {
 	useDisclosure,
 } from '@chakra-ui/react';
 import type {
-	AdditionalService,
-	AdditionalServiceOption,
 	Address,
 	Order,
 	OrderItem,
@@ -29,11 +27,6 @@ type AdminOrderCardProps = {
 			product: Product & {
 				priceHistory: ProductPriceHistory[];
 			};
-			additionalServiceOption:
-				| (AdditionalServiceOption & {
-						additionalServices: AdditionalService;
-				  })
-				| null;
 		})[];
 		address: Address & {
 			point: Point | null;

@@ -12,13 +12,7 @@ import {
 	Thead,
 	Tr,
 } from '@chakra-ui/react';
-import type {
-	AdditionalService,
-	AdditionalServiceOption,
-	OrderItem,
-	Product,
-	ProductPriceHistory,
-} from '@prisma/client';
+import type { OrderItem, Product, ProductPriceHistory } from '@prisma/client';
 import OrderStickItem from './OrderStickItem';
 
 type OrderDitailsProps = {
@@ -26,11 +20,6 @@ type OrderDitailsProps = {
 		product: Product & {
 			priceHistory: ProductPriceHistory[];
 		};
-		additionalServiceOption:
-			| (AdditionalServiceOption & {
-					additionalServices: AdditionalService;
-			  })
-			| null;
 	})[];
 	isOpen: boolean;
 	onClose: () => void;

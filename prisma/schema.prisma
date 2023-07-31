@@ -92,7 +92,6 @@ model AdditionalServiceOption {
     price              String
     additionalServices AdditionalService @relation(fields: [addServId], references: [id], onDelete: Cascade)
     addServId          String
-    OrderItem          OrderItem[]
 }
 
 model Size {
@@ -120,26 +119,25 @@ model Order {
     id          String      @id @default(cuid())
     orderNumber Int         @default(autoincrement())
     user        User?       @relation(fields: [userId], references: [id])
-    address     Address     @relation(fields: [addressId], references: [id])
     userId      String?
     status      OrderStatus @default(PENDING)
     createdAt   DateTime    @default(now())
-    orderItem   OrderItem[]
+    address     Address     @relation(fields: [addressId], references: [id])
     addressId   String
     viewed      Boolean     @default(false)
     totalSum    Float
+    orderItem   OrderItem[]
 }
 
 model OrderItem {
-    id                      String                   @id @default(cuid())
+    id                      String   @id @default(cuid())
     quantity                Int
     size                    String
-    product                 Product                  @relation(fields: [productId], references: [id])
+    product                 Product  @relation(fields: [productId], references: [id])
     productId               String
-    order                   Order                    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+    order                   Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
     orderId                 String
-    additionalServiceOption AdditionalServiceOption? @relation(fields: [addServOpt], references: [id])
-    addServOpt              String?
+    additionalServiceOption String[]
 }
 
 model Comment {

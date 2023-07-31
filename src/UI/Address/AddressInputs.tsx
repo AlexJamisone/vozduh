@@ -30,29 +30,39 @@ const AddressInputs = () => {
 	};
 	return (
 		<>
-			{addressInput(address).map(({ name, placeholder, value }) => (
-				<FormControl
-					key={name}
-					isInvalid={isError && error?.[name] !== undefined}
-				>
-					<FormLabel>{placeholder}</FormLabel>
-					<Input
-						as={IMaskInput}
-						mask={name === 'phone' ? '+{7}(000)000-00-00' : ''}
-						type="text"
-						value={value}
-						placeholder={placeholder}
-						onChange={(e) => {
-							handlInput(e);
-							reset();
-						}}
-						name={name}
-					/>
-					<FormErrorMessage fontWeight={600}>
-						{error?.[name]}
-					</FormErrorMessage>
-				</FormControl>
-			))}
+			{addressInput(address).map(
+				({ name, placeholder, value, errorMessage }) => (
+					<FormControl
+						key={name}
+						isInvalid={
+							isError &&
+							(error?.[name] !== undefined ||
+								(error?.address !== undefined &&
+									error?.address.includes(errorMessage)))
+						}
+					>
+						<FormLabel>{placeholder}</FormLabel>
+						<Input
+							as={IMaskInput}
+							mask={name === 'phone' ? '+{7}(000)000-00-00' : ''}
+							type="text"
+							value={value}
+							placeholder={placeholder}
+							onChange={(e) => {
+								handlInput(e);
+								reset();
+							}}
+							name={name}
+						/>
+						<FormErrorMessage fontWeight={600}>
+							{error?.[name] ||
+								error?.address?.find(
+									(string) => string === errorMessage
+								)}
+						</FormErrorMessage>
+					</FormControl>
+				)
+			)}
 		</>
 	);
 };

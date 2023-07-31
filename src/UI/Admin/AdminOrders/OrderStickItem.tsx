@@ -1,22 +1,11 @@
 import { Td, Tr } from '@chakra-ui/react';
-import type {
-	AdditionalService,
-	AdditionalServiceOption,
-	OrderItem,
-	Product,
-	ProductPriceHistory,
-} from '@prisma/client';
+import type { OrderItem, Product, ProductPriceHistory } from '@prisma/client';
 
 type OrderStickItemProps = {
 	orderItem: OrderItem & {
 		product: Product & {
 			priceHistory: ProductPriceHistory[];
 		};
-		additionalServiceOption:
-			| (AdditionalServiceOption & {
-					additionalServices: AdditionalService;
-			  })
-			| null;
 	};
 };
 
@@ -37,8 +26,8 @@ const OrderStickItem = ({ orderItem }: OrderStickItemProps) => {
 				{orderItem.product.name} x{orderItem.quantity}
 			</Td>
 			<Td>
-				{orderItem.additionalServiceOption?.additionalServices.title}:{' '}
-				{orderItem.additionalServiceOption?.name}
+				{/* {orderItem.additionalServiceOption?.additionalServices.title}:{' '}
+				{orderItem.additionalServiceOption?.name} */}
 			</Td>
 			<Td>{orderItem.size}</Td>
 		</Tr>
