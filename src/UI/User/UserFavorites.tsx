@@ -1,7 +1,7 @@
 import { RiHeartsFill } from 'react-icons/ri';
 import NoData from '~/components/NoData';
 import { api } from '~/utils/api';
-import ProductCard from '../ProductCard';
+import ProductCard from '../Product/ProductCard';
 
 const UserFavorites = () => {
 	const { data: favoritersProducts } =

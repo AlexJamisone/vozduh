@@ -65,7 +65,7 @@ const NewOrder = () => {
 	};
 
 	const handlOrder = () => {
-		if (!address.confirmPoint) {
+		if (!address.confirmPoint && address.id.length === 0) {
 			dispatchAddress({
 				type: 'SET_CONFIRM_ERROR',
 				payload: true,
@@ -77,7 +77,7 @@ const NewOrder = () => {
 				status: 'warning',
 			});
 		} else {
-			if (addressList?.length === 0) {
+			if (addressList?.length === 0 || !isSignedIn) {
 				createNoAddreess(
 					{
 						totalSum: cart.totalSum,
@@ -218,7 +218,9 @@ const NewOrder = () => {
 							</Stack>
 						</RadioGroup>
 					)
-				) : null}
+				) : (
+					<CreateAddress />
+				)}
 				<Stack>
 					{isClient && (
 						<AnimatePresence>

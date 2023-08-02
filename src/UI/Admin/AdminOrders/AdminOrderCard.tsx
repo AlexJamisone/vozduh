@@ -36,10 +36,10 @@ type AdminOrderCardProps = {
 const AdminOrderCard = ({ order }: AdminOrderCardProps) => {
 	const { isOpen, onClose, onToggle } = useDisclosure();
 	return (
-		<Card>
+		<Card size="sm" maxW={350}>
 			<CardBody textAlign="center">
 				Заказ #{order.orderNumber}
-				<Stack textAlign="left">
+				<Stack textAlign="left" gap={3}>
 					<Text>
 						Дата создания:{' '}
 						{dayjs(order.createdAt).format('DD.MM.YY HH:mm')}

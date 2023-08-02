@@ -128,9 +128,10 @@ export const ordersRouter = createTRPCRouter({
 								}) => ({
 									productId,
 									quantity,
-									addServOpt: additionalServiceOption?.map(
-										(opt) => opt
-									),
+									additionalServiceOption:
+										additionalServiceOption?.map(
+											(opt) => opt
+										),
 									size: sizeValue,
 								})
 							),

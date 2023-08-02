@@ -1,7 +1,7 @@
 import { Stack, useToast } from '@chakra-ui/react';
 import { useReducer, type ReactNode } from 'react';
 import { LiaRingSolid } from 'react-icons/lia';
-import ProductCard from '~/UI/ProductCard';
+import ProductCard from '~/UI/Product/ProductCard';
 import NoData from '~/components/NoData';
 import ProductContext from '~/context/productContext';
 import { initial, productReducer } from '~/reducer/productReducer';

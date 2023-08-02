@@ -1,6 +1,6 @@
 import { Center, Stack } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import ProductCard from '~/UI/ProductCard';
+import ProductCard from '~/UI/Product/ProductCard';
 import { api } from '~/utils/api';
 
 const ProductCategory = () => {

@@ -2,10 +2,14 @@ import { clerkClient } from '@clerk/nextjs';
 import type { Point } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { createTRPCRouter, privetProcedure } from '~/server/api/trpc';
+import {
+	createTRPCRouter,
+	privetProcedure,
+	publicProcedure,
+} from '~/server/api/trpc';
 
 export const addressRouter = createTRPCRouter({
-	get: privetProcedure.query(async ({ ctx }) => {
+	get: publicProcedure.query(async ({ ctx }) => {
 		if (!ctx.userId) return null;
 		return await ctx.prisma.address.findMany({
 			where: {

@@ -1,7 +1,7 @@
 import { Center } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useReducer } from 'react';
-import ProductDitails from '~/UI/ProductDitails';
+import ProductDitails from '~/UI/Product/ProductDitails';
 import ProductDitalsContext from '~/context/productDitailsContext';
 import {
 	initial,

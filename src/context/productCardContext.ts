@@ -1,6 +1,6 @@
 import type { Product, ProductPriceHistory, Size } from '@prisma/client';
 import { createContext, useContext } from 'react';
-import type { AdditionalServiceWithOption } from '~/UI/ProductCard';
+import type { AdditionalServiceWithOption } from '~/UI/Product/ProductCard';
 
 export interface ProductCardContext {
 	product: Product & {
