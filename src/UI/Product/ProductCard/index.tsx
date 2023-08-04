@@ -77,7 +77,7 @@ const ProductCard = ({
 					id: product.id,
 					name: product.name,
 					category: product.categoryTitle as string,
-					description: product.description,
+					description: product.description.join('\n\n'),
 					image: product.image,
 					price: product.priceHistory[0]?.price.toString() as string,
 					size: state.product.size,

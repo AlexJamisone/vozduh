@@ -48,7 +48,7 @@ const AdminProducts = ({
 			update(
 				{
 					name: state.product.name,
-					description: state.product.description,
+					description: state.product.description.split(/\n/g),
 					category: state.product.category,
 					price: state.product.price,
 					image: state.product.image,
@@ -73,7 +73,7 @@ const AdminProducts = ({
 			create(
 				{
 					name: state.product.name,
-					description: state.product.description,
+					description: state.product.description.split(/\n/g),
 					category: state.product.category,
 					image: state.product.image,
 					price: state.product.price,

@@ -65,7 +65,7 @@ model Category {
 model Product {
     id                 String                @id @default(cuid())
     name               String
-    description        String
+    description        String[]
     image              String[]
     archived           Boolean               @default(false)
     comments           Comment[]
@@ -120,13 +120,14 @@ model Order {
     orderNumber Int         @default(autoincrement())
     user        User?       @relation(fields: [userId], references: [id])
     userId      String?
-    status      OrderStatus @default(PENDING)
-    createdAt   DateTime    @default(now())
     address     Address     @relation(fields: [addressId], references: [id])
     addressId   String
+    status      OrderStatus @default(PENDING)
+    createdAt   DateTime    @default(now())
+    comment     String?
     viewed      Boolean     @default(false)
-    totalSum    Float
     orderItem   OrderItem[]
+    totalSum    Float
 }
 
 model OrderItem {
@@ -152,9 +153,19 @@ model Comment {
 model FAQ {
     id        String   @id @unique @default(cuid())
     title     String
-    content   String
+    content   String[]
     createdAt DateTime @default(now())
     updateAt  DateTime @updatedAt
+}
+
+model OfflineShop {
+    id          String   @id @default(cuid())
+    createdAt   DateTime @default(now())
+    name        String
+    fullAddress String
+    phone       String
+    image       String
+    work_time   String?
 }
 
 enum OrderStatus {

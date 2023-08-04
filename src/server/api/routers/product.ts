@@ -96,9 +96,11 @@ export const productRouter = createTRPCRouter({
 				name: z.string().nonempty({
 					message: 'Пожалуйста, укажите название товара.',
 				}),
-				description: z.string().nonempty({
-					message: 'Обязательно заполните описание товара',
-				}),
+				description: z.array(
+					z.string().nonempty({
+						message: 'Обязательно заполните описание товара',
+					})
+				),
 				price: z
 					.string()
 					.nonempty({ message: 'Пожалуйста, укажите цену товара.' }),
@@ -181,9 +183,11 @@ export const productRouter = createTRPCRouter({
 				name: z.string().nonempty({
 					message: 'Пожалуйста, укажите название товара.',
 				}),
-				description: z.string().nonempty({
-					message: 'Обязательно заполните описание товара',
-				}),
+				description: z.array(
+					z.string().nonempty({
+						message: 'Обязательно заполните описание товара',
+					})
+				),
 				price: z
 					.string()
 					.nonempty({ message: 'Пожалуйста, укажите цену товара.' }),
