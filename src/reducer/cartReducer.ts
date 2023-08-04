@@ -1,3 +1,8 @@
+import {
+	getFromLocalStorage,
+	saveToLocalStorage,
+} from '~/helpers/getFromLocalStorage';
+
 export type CartState = {
 	items: CartItem[];
 	totalSum: number;
@@ -55,25 +60,7 @@ export type Action =
 	| SetUpdateAction
 	| SetClearAction;
 
-const CART_STORAGE_KEY = 'cart';
-
-const getCartFromLocalStorage = (): CartState | null => {
-	if (typeof window !== 'undefined' && window.localStorage) {
-		const cartJSON = window.localStorage.getItem(CART_STORAGE_KEY);
-		if (cartJSON) {
-			return JSON.parse(cartJSON) as CartState;
-		}
-	}
-	return null;
-};
-
-const saveCartToLocalStorage = (cart: CartState) => {
-	if (typeof window !== 'undefined' && window.localStorage) {
-		window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
-	}
-};
-
-export const initial: CartState = getCartFromLocalStorage() || {
+export const initial: CartState = getFromLocalStorage<CartState>('cart') || {
 	items: [],
 	totalSum: 0,
 };
@@ -112,7 +99,7 @@ export function cartReducer(
 							0
 						) || 0),
 				};
-				saveCartToLocalStorage(newState);
+				saveToLocalStorage(newState, 'cart');
 				return newState;
 			} else {
 				const updatedItems = [...state.items];
@@ -134,7 +121,7 @@ export function cartReducer(
 								0
 							) || 0),
 					};
-					saveCartToLocalStorage(newState);
+					saveToLocalStorage(newState, 'cart');
 					return newState;
 				}
 			}
@@ -178,7 +165,7 @@ export function cartReducer(
 				items: updatedItems,
 				totalSum: updatedTotalSum,
 			};
-			saveCartToLocalStorage(newState);
+			saveToLocalStorage(newState, 'cart');
 			return newState;
 		}
 
@@ -219,7 +206,7 @@ export function cartReducer(
 				items: updatedItems,
 				totalSum: updatedTotalSum,
 			};
-			saveCartToLocalStorage(newState);
+			saveToLocalStorage(newState, 'cart');
 			return newState;
 		}
 		case 'CLEAR': {

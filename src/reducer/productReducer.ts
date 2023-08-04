@@ -1,3 +1,8 @@
+import {
+	getFromLocalStorage,
+	saveToLocalStorage,
+} from '~/helpers/getFromLocalStorage';
+
 export type Product = {
 	id: string;
 	name: string;
@@ -148,7 +153,11 @@ export type Action =
 	| SetAddOptionAction
 	| SetIncomeServiceAction;
 
-export const initial: ProductState = {
+const LOCAL_STORAGE_KEY = 'createProduct';
+
+export const initial: ProductState = getFromLocalStorage<ProductState>(
+	LOCAL_STORAGE_KEY
+) || {
 	controlView: {
 		category: false,
 		editCategory: false,
@@ -194,16 +203,18 @@ export const productReducer = (
 				},
 			};
 		case 'INCOME_SERVICE': {
-			return {
+			const newState = {
 				...state,
 				product: {
 					...state.product,
 					serviceAvailability: action.payload,
 				},
 			};
+			saveToLocalStorage(newState, LOCAL_STORAGE_KEY);
+			return newState;
 		}
 		case 'ADD_SERVICE': {
-			return {
+			const newState = {
 				...state,
 				product: {
 					...state.product,
@@ -223,9 +234,11 @@ export const productReducer = (
 					],
 				},
 			};
+			saveToLocalStorage(newState, LOCAL_STORAGE_KEY);
+			return newState;
 		}
 		case 'UPDATE_SERVICE': {
-			return {
+			const newState = {
 				...state,
 				product: {
 					...state.product,
@@ -243,9 +256,11 @@ export const productReducer = (
 					),
 				},
 			};
+			saveToLocalStorage(newState, 'createProduct');
+			return newState;
 		}
 		case 'UPDATE_OPTIONS': {
-			return {
+			const newState = {
 				...state,
 				product: {
 					...state.product,
@@ -283,6 +298,8 @@ export const productReducer = (
 					),
 				},
 			};
+			saveToLocalStorage(newState, LOCAL_STORAGE_KEY);
+			return newState;
 		}
 		case 'ADD_OPTION': {
 			return {
@@ -311,7 +328,7 @@ export const productReducer = (
 			};
 		}
 		case 'REMOVE_OPTIONS': {
-			return {
+			const newState = {
 				...state,
 				product: {
 					...state.product,
@@ -336,6 +353,8 @@ export const productReducer = (
 					),
 				},
 			};
+			saveToLocalStorage(newState, 'createProduct');
+			return newState;
 		}
 		case 'REMOVE_SERVICE': {
 			const updateServices = state.product.serviceAvailability.filter(
@@ -350,7 +369,7 @@ export const productReducer = (
 			};
 		}
 		case 'SET_PRODUCT': {
-			return {
+			const newState = {
 				...state,
 				product: {
 					category: action.payload.category,
@@ -363,6 +382,8 @@ export const productReducer = (
 					serviceAvailability: [...state.product.serviceAvailability],
 				},
 			};
+			saveToLocalStorage(newState, 'createProduct');
+			return newState;
 		}
 		case 'SET_PRODUCT_SIZE': {
 			const newSizeArray = [...state.product.size];
