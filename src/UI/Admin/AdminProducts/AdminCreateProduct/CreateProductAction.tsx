@@ -21,7 +21,11 @@ const CreateProductAction = () => {
 					colorScheme="red"
 					onClick={() => {
 						dispatch({
-							type: 'CLEAR',
+							type: 'SET_VIEW',
+							payload: {
+								...state.controlView,
+								editProduct: !state.controlView.editProduct,
+							},
 						});
 					}}
 				>

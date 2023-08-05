@@ -154,36 +154,35 @@ export type Action =
 	| SetIncomeServiceAction;
 
 const LOCAL_STORAGE_KEY = 'createProduct';
-
-export const initial: ProductState = getFromLocalStorage<ProductState>(
-	LOCAL_STORAGE_KEY
-) || {
+const state = {
 	controlView: {
 		category: false,
 		editCategory: false,
 		editProduct: false,
 		editSize: false,
-		product: false,
 		size: false,
+		product: false,
 	},
 	category: {
 		image: '',
 		title: '',
 	},
 	product: {
-		id: '',
 		category: '',
 		description: '',
-		image: [],
+		id: '',
 		name: '',
 		price: '',
-		size: [],
+		image: [],
 		serviceAvailability: [],
+		size: [],
 	},
 	size: {
 		value: '',
 	},
 };
+export const initial: ProductState =
+	getFromLocalStorage<ProductState>(LOCAL_STORAGE_KEY) || state;
 
 export const productReducer = (
 	state: ProductState,
@@ -191,7 +190,7 @@ export const productReducer = (
 ): ProductState => {
 	switch (action.type) {
 		case 'SET_VIEW':
-			return {
+			const newState = {
 				...state,
 				controlView: {
 					category: action.payload.category,
@@ -202,6 +201,8 @@ export const productReducer = (
 					size: action.payload.size,
 				},
 			};
+			saveToLocalStorage(newState, LOCAL_STORAGE_KEY);
+			return newState;
 		case 'INCOME_SERVICE': {
 			const newState = {
 				...state,
@@ -256,7 +257,7 @@ export const productReducer = (
 					),
 				},
 			};
-			saveToLocalStorage(newState, 'createProduct');
+			saveToLocalStorage(newState, LOCAL_STORAGE_KEY);
 			return newState;
 		}
 		case 'UPDATE_OPTIONS': {
@@ -353,7 +354,7 @@ export const productReducer = (
 					),
 				},
 			};
-			saveToLocalStorage(newState, 'createProduct');
+			saveToLocalStorage(newState, LOCAL_STORAGE_KEY);
 			return newState;
 		}
 		case 'REMOVE_SERVICE': {
@@ -382,7 +383,7 @@ export const productReducer = (
 					serviceAvailability: [...state.product.serviceAvailability],
 				},
 			};
-			saveToLocalStorage(newState, 'createProduct');
+			saveToLocalStorage(newState, LOCAL_STORAGE_KEY);
 			return newState;
 		}
 		case 'SET_PRODUCT_SIZE': {
@@ -421,6 +422,7 @@ export const productReducer = (
 		case 'SET_ALL':
 			return { ...state, ...action.payload };
 		case 'CLEAR':
+			saveToLocalStorage(initial, LOCAL_STORAGE_KEY);
 			return initial;
 		default:
 			return state;

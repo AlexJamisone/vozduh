@@ -32,7 +32,7 @@ const AdminNavigationMenu = () => {
 					},
 				});
 				break;
-			case 'Категория':
+			case 'Категорию':
 				dispatch({
 					type: 'SET_VIEW',
 					payload: {

@@ -94,7 +94,11 @@ const ProductDitalsInfo = () => {
 				{product.priceHistory[0]?.price} ₽
 			</Text>
 			<ProductDitalsAction />
-			<Text>{product.description}</Text>
+			<Stack>
+				{product.description.map((description, index) => (
+					<Text key={index}>{description}</Text>
+				))}
+			</Stack>
 		</Stack>
 	);
 };

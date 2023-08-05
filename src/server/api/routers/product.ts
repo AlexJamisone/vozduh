@@ -96,11 +96,9 @@ export const productRouter = createTRPCRouter({
 				name: z.string().nonempty({
 					message: 'Пожалуйста, укажите название товара.',
 				}),
-				description: z.array(
-					z.string().nonempty({
-						message: 'Обязательно заполните описание товара',
-					})
-				),
+				description: z.array(z.string()).min(1, {
+					message: 'Обязательно заполните описание товара',
+				}),
 				price: z
 					.string()
 					.nonempty({ message: 'Пожалуйста, укажите цену товара.' }),
@@ -143,7 +141,7 @@ export const productRouter = createTRPCRouter({
 			return await ctx.prisma.product.create({
 				data: {
 					name: input.name,
-					description: input.description,
+					description: input.description.filter(Boolean),
 					image: input.image,
 					priceHistory: {
 						create: {
@@ -183,11 +181,9 @@ export const productRouter = createTRPCRouter({
 				name: z.string().nonempty({
 					message: 'Пожалуйста, укажите название товара.',
 				}),
-				description: z.array(
-					z.string().nonempty({
-						message: 'Обязательно заполните описание товара',
-					})
-				),
+				description: z.array(z.string()).min(1, {
+					message: 'Обязательно заполните описание товара',
+				}),
 				price: z
 					.string()
 					.nonempty({ message: 'Пожалуйста, укажите цену товара.' }),
@@ -251,7 +247,7 @@ export const productRouter = createTRPCRouter({
 					},
 					data: {
 						name: input.name,
-						description: input.description,
+						description: input.description.filter(Boolean),
 						image: input.image,
 						category: {
 							connect: {
@@ -323,7 +319,7 @@ export const productRouter = createTRPCRouter({
 					},
 					data: {
 						name: input.name,
-						description: input.description,
+						description: input.description.filter(Boolean),
 						image: input.image,
 						category: {
 							connect: {
