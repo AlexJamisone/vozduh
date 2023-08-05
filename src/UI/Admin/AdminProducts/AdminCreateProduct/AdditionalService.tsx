@@ -11,6 +11,7 @@ import {
 	Input,
 	Stack,
 } from '@chakra-ui/react';
+import { useRef } from 'react';
 import { AiFillDelete } from 'react-icons/ai';
 import { RxCross2 } from 'react-icons/rx';
 import { useProductContext } from '~/context/productContext';
@@ -19,6 +20,7 @@ import productErrorFilter from '~/helpers/productErrorFilter';
 const AdditionalService = () => {
 	const { dispatch, state, isErrorProduct, errorProduct, resetProduct } =
 		useProductContext();
+	const inputref = useRef<HTMLInputElement | null>(null);
 	const errorTitle =
 		isErrorProduct &&
 		errorProduct?.fieldErrors.service?.includes(
@@ -96,6 +98,7 @@ const AdditionalService = () => {
 											<Input
 												placeholder="Придумай название опции"
 												value={name}
+												ref={inputref}
 												onChange={(e) => {
 													resetProduct();
 													dispatch({
@@ -169,14 +172,14 @@ const AdditionalService = () => {
 							)}
 						</Stack>
 						<Button
-							onClick={() =>
+							onClick={() => {
 								dispatch({
 									type: 'ADD_OPTION',
 									payload: {
 										serviceIndex,
 									},
-								})
-							}
+								});
+							}}
 							colorScheme="green"
 						>
 							Добавить вариант
