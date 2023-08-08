@@ -17,6 +17,7 @@ import { HiOutlineMenu } from 'react-icons/hi';
 import Logo from '~/assets/Logo';
 import ThemeButton from '~/components/ThemeButton';
 import UserBtn from '~/components/UserBtn';
+import NotificationButton from '~/components/buttons/NotificationButton';
 import { nav } from '~/constants/nav';
 import Cart from '../Cart';
 
@@ -52,6 +53,7 @@ const Mobile = () => {
 						>
 							<Text>Меню</Text>
 							<ThemeButton />
+							<NotificationButton />
 							{isSignedIn ? (
 								<Stack mr={12}>
 									<UserBtn />

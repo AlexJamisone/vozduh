@@ -24,7 +24,6 @@ const Menu = () => {
 	const { isSignedIn } = useAuth();
 	const { colorMode } = useColorMode();
 	if (!role) return null;
-	console.log('favorites', favoritesCount);
 	return (
 		<Center as="aside">
 			{isSignedIn && (
@@ -57,40 +56,33 @@ const Menu = () => {
 						role === 'ADMIN'
 							? ordersIncome
 							: (favoritesCount as number)
-					)?.map(({ id, icon, path, title, name, income }) => {
-						console.log(income);
-						return (
-							<Stack key={id} position="relative">
-								<Tooltip label={title}>
-									<IconButton
-										as={Link}
-										isActive={name === qpath}
-										boxShadow={
-											colorMode === 'dark' &&
-											name === qpath
-												? '0 0 10px 0 white'
-												: name === qpath
-												? '0 0 10px 0 black'
-												: undefined
-										}
-										href={path}
-										variant="outline"
-										aria-label="menu-list"
-										rounded="full"
-										icon={<Icon as={icon} />}
-										{...(income?.is &&
-											counterElement(
-												income.value as number,
-												{
-													bottom: -3,
-													right: -5,
-												}
-											))}
-									/>
-								</Tooltip>
-							</Stack>
-						);
-					})}
+					)?.map(({ id, icon, path, title, name, income }) => (
+						<Stack key={id} position="relative">
+							<Tooltip label={title}>
+								<IconButton
+									as={Link}
+									isActive={name === qpath}
+									boxShadow={
+										colorMode === 'dark' && name === qpath
+											? '0 0 10px 0 white'
+											: name === qpath
+											? '0 0 10px 0 black'
+											: undefined
+									}
+									href={path}
+									variant="outline"
+									aria-label="menu-list"
+									rounded="full"
+									icon={<Icon as={icon} />}
+									{...(income?.is &&
+										counterElement(income.value as number, {
+											bottom: -3,
+											right: -5,
+										}))}
+								/>
+							</Tooltip>
+						</Stack>
+					))}
 				</Stack>
 			)}
 		</Center>
