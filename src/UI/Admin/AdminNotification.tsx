@@ -7,7 +7,6 @@ export type NotificationProps = {
 	productImg: string;
 	sum: number;
 };
-//make this better
 const AdminNotification = () => {
 	const [notification, setNotification] = useState<
 		NotificationProps | undefined
@@ -18,15 +17,15 @@ const AdminNotification = () => {
 	});
 	useEffect(() => {
 		if (Notification.permission === 'granted' && notification) {
-			const notificationMessage = new Notification(
+			new Notification(
 				`Новый заказ от ${notification.name} на сумму ${notification.sum}`,
 				{
 					body: `${notification.productName} в город ${notification.city}`,
 					icon: `https://utfs.io/f/${notification.productImg}`,
 				}
 			);
-			notificationMessage.onclose = () => setNotification(undefined);
 		}
+		return () => setNotification(undefined);
 	}, [notification]);
 	return <></>;
 };
