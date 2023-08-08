@@ -21,9 +21,8 @@ const ProductDitails = ({ info, photo }: ProductDitailsProps) => {
 			animate={{
 				opacity: 1,
 				transition: {
-					type: 'spring',
 					duration: 0.5,
-					delay: 0.5,
+					delay: 0.9,
 				},
 			}}
 		>

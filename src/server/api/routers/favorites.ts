@@ -55,6 +55,15 @@ export const favoritesRouter = createTRPCRouter({
 			},
 		});
 	}),
+	countOfFavorites: publicProcedure.query(async ({ ctx, input }) => {
+		if (!ctx.userId) return null;
+		const count = await ctx.prisma.favorites.findMany({
+			where: {
+				userId: ctx.userId,
+			},
+		});
+		return count.length;
+	}),
 	addOrRemove: privetProcedure
 		.input(
 			z.object({

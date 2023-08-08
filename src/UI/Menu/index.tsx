@@ -4,7 +4,6 @@ import {
 	Icon,
 	IconButton,
 	Stack,
-	Text,
 	Tooltip,
 	useColorMode,
 } from '@chakra-ui/react';
@@ -13,16 +12,19 @@ import type { Role } from '@prisma/client';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 import { menu_link } from '~/constants/menu';
+import { counterElement } from '~/helpers/counterElement';
 import { api } from '~/utils/api';
 
 const Menu = () => {
 	const { data: role } = api.user.getRole.useQuery();
 	const { data: ordersIncome } = api.order.getIncomeOrder.useQuery();
+	const { data: favoritesCount } = api.favorites.countOfFavorites.useQuery();
 	const { query } = useRouter();
 	const { path: qpath } = query;
 	const { isSignedIn } = useAuth();
 	const { colorMode } = useColorMode();
 	if (!role) return null;
+	console.log('favorites', favoritesCount);
 	return (
 		<Center as="aside">
 			{isSignedIn && (
@@ -50,8 +52,14 @@ const Menu = () => {
 					w={['100%', 'unset', null]}
 					zIndex={100}
 				>
-					{menu_link(role as Role, ordersIncome)?.map(
-						({ id, icon, path, title, name, income }) => (
+					{menu_link(
+						role as Role,
+						role === 'ADMIN'
+							? ordersIncome
+							: (favoritesCount as number)
+					)?.map(({ id, icon, path, title, name, income }) => {
+						console.log(income);
+						return (
 							<Stack key={id} position="relative">
 								<Tooltip label={title}>
 									<IconButton
@@ -70,27 +78,19 @@ const Menu = () => {
 										aria-label="menu-list"
 										rounded="full"
 										icon={<Icon as={icon} />}
+										{...(income?.is &&
+											counterElement(
+												income.value as number,
+												{
+													bottom: -3,
+													right: -5,
+												}
+											))}
 									/>
 								</Tooltip>
-								{income && (
-									<Stack
-										position="absolute"
-										border="1px solid"
-										px={2}
-										rounded="full"
-										bottom={-2}
-										right={-4}
-										fontSize={11}
-										py={0.5}
-										cursor="default"
-										bgColor="Menu"
-									>
-										<Text>{income}</Text>
-									</Stack>
-								)}
 							</Stack>
-						)
-					)}
+						);
+					})}
 				</Stack>
 			)}
 		</Center>

@@ -20,6 +20,7 @@ import { RiWindyFill } from 'react-icons/ri';
 import NoData from '~/components/NoData';
 import TotalSum from '~/components/TotalSum';
 import { useCart } from '~/context/cartContext';
+import { counterElement } from '~/helpers/counterElement';
 import CartItem from './CartItem';
 
 const Cart = () => {
@@ -40,19 +41,7 @@ const Cart = () => {
 					icon={<Icon as={PiShoppingCartSimpleLight} />}
 					onClick={onToggle}
 					position="relative"
-					_before={{
-						content: `'${countCart}'`,
-						width: countCart === 0 ? '0px' : '20px',
-						height: countCart === 0 ? '0px' : '20px',
-						position: 'absolute',
-						bottom: -5,
-						right: -5,
-						border: '1px solid',
-						p: countCart === 0 ? 0 : 0.5,
-						rounded: 'full',
-						opacity: countCart === 0 ? 0 : 1,
-						transition: 'opacity .7s ease-in-out',
-					}}
+					{...counterElement(countCart)}
 				/>
 			</Stack>
 			<Drawer

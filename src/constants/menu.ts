@@ -12,12 +12,15 @@ type MenuActions = {
 	icon: IconType;
 	title: string;
 	name: string;
-	income?: number;
+	income?: {
+		is: boolean;
+		value?: number;
+	};
 };
 
 export const menu_link = (
 	role: Role,
-	income?: number
+	value?: number
 ): MenuActions[] | undefined => {
 	switch (role) {
 		case 'ADMIN':
@@ -28,7 +31,10 @@ export const menu_link = (
 					title: 'Заказы',
 					icon: FaRegRectangleList,
 					name: 'orders',
-					income,
+					income: {
+						is: true,
+						value,
+					},
 				},
 				{
 					id: 2,
@@ -60,6 +66,10 @@ export const menu_link = (
 					icon: GoHeart,
 					title: 'Избранное',
 					name: 'favorites',
+					income: {
+						is: true,
+						value,
+					},
 				},
 				{
 					id: 6,
