@@ -89,6 +89,8 @@ const NewOrder = () => {
 								quantity,
 								size: { value },
 								additionalOptions,
+								name,
+								image,
 							}) => ({
 								productId: id,
 								quantity,
@@ -97,6 +99,8 @@ const NewOrder = () => {
 									({ optionTitle, serviceTitle }) =>
 										`${optionTitle}: ${serviceTitle}`
 								),
+								name,
+								image,
 							})
 						),
 						address: {
@@ -141,6 +145,8 @@ const NewOrder = () => {
 								quantity,
 								size: { value },
 								additionalOptions,
+								name,
+								image,
 							}) => ({
 								productId: id,
 								quantity,
@@ -149,6 +155,8 @@ const NewOrder = () => {
 									({ optionTitle, serviceTitle }) =>
 										`${optionTitle}: ${serviceTitle}`
 								),
+								image,
+								name,
 							})
 						),
 					},

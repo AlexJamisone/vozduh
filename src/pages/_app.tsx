@@ -3,6 +3,7 @@ import { ruRU } from '@clerk/localizations';
 import { ClerkProvider, SignedIn } from '@clerk/nextjs';
 import { type AppType } from 'next/app';
 import Head from 'next/head';
+import AdminNotification from '~/UI/Admin/AdminNotification';
 import Menu from '~/UI/Menu';
 import Navigation from '~/UI/Navigation/Navigation';
 import { theme } from '~/chakra/theme';
@@ -11,6 +12,7 @@ import '~/styles/globals.css';
 import { api } from '~/utils/api';
 
 const MyApp: AppType = ({ Component, pageProps }) => {
+	const { data: role } = api.user.getRole.useQuery();
 	return (
 		<ChakraProvider theme={theme}>
 			<ColorModeScript initialColorMode={'system'} />
@@ -26,6 +28,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
 					</Head>
 					<Navigation />
 					<SignedIn>
+						{role === 'ADMIN' && <AdminNotification />}
 						<Menu />
 					</SignedIn>
 					<Component {...pageProps} />

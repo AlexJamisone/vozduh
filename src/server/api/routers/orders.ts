@@ -6,6 +6,8 @@ import {
 	privetProcedure,
 	publicProcedure,
 } from '~/server/api/trpc';
+import { prisma } from '~/server/db';
+import { pusherServer } from '~/server/pusher';
 
 const cartItems = z.array(
 	z.object({
@@ -13,6 +15,8 @@ const cartItems = z.array(
 		quantity: z.number(),
 		sizeValue: z.string(),
 		additionalServiceOption: z.array(z.string()).or(z.undefined()),
+		name: z.string(),
+		image: z.string(),
 	})
 );
 
@@ -139,6 +143,21 @@ export const ordersRouter = createTRPCRouter({
 					},
 				},
 			});
+			const address = await prisma.address.findUnique({
+				where: {
+					id: input.addressId,
+				},
+				include: {
+					point: true,
+				},
+			});
+			await pusherServer.trigger('order', 'new-order', {
+				name: address?.firstName,
+				city: address?.point?.city,
+				productName: input.cart[0]?.name,
+				productImg: input.cart[0]?.image,
+				sum: input.totalSum,
+			});
 			return {
 				success: `Заказ №${newOrder.orderNumber} успешно создан! В ближайшее время с вами свяжутся по указанным данным!`,
 				route: '/profile/main',
@@ -182,6 +201,21 @@ export const ordersRouter = createTRPCRouter({
 							},
 						},
 					},
+				});
+				const address = await prisma.address.findUnique({
+					where: {
+						id: newOrder.addressId,
+					},
+					include: {
+						point: true,
+					},
+				});
+				await pusherServer.trigger('order', 'new-order', {
+					name: address?.firstName,
+					city: address?.point?.city,
+					productName: input.cart[0]?.name,
+					productImg: input.cart[0]?.image,
+					sum: input.totalSum,
 				});
 				return {
 					success: `Заказ №${newOrder.orderNumber} успешно создан! В ближайшее время с вами свяжутся по указанным данным!`,
@@ -233,6 +267,21 @@ export const ordersRouter = createTRPCRouter({
 							connect: { id: newOrder.id },
 						},
 					},
+				});
+				const address = await prisma.address.findUnique({
+					where: {
+						id: newOrder.addressId,
+					},
+					include: {
+						point: true,
+					},
+				});
+				await pusherServer.trigger('order', 'new-order', {
+					name: address?.firstName,
+					city: address?.point?.city,
+					productName: input.cart[0]?.name,
+					productImg: input.cart[0]?.image,
+					sum: input.totalSum,
 				});
 				return {
 					success: `Заказ №${newOrder.orderNumber} успешно создан! В ближайшее время с вами свяжутся по указанным данным!`,

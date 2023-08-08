@@ -19,7 +19,7 @@ const TotalSum = ({ sum }: TotalSumProps) => {
 			justifyContent="space-between"
 		>
 			<Text>Итог:</Text>
-			{isClient && <Text>{sum} ₽</Text>}
+			{isClient && <Text>{sum.toString()} ₽</Text>}
 		</Stack>
 	);
 };
