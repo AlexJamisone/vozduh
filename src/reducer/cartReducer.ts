@@ -60,10 +60,15 @@ export type Action =
 	| SetUpdateAction
 	| SetClearAction;
 
-export const initial: CartState = getFromLocalStorage<CartState>('cart') || {
+const LOCAL_STORAGE_KEY = 'cart';
+
+const initialState: CartState = {
 	items: [],
 	totalSum: 0,
 };
+
+export const initial: CartState =
+	getFromLocalStorage<CartState>(LOCAL_STORAGE_KEY) || initialState;
 
 export function cartReducer(
 	state: CartState = initial,
@@ -99,7 +104,7 @@ export function cartReducer(
 							0
 						) || 0),
 				};
-				saveToLocalStorage(newState, 'cart');
+				saveToLocalStorage(newState, LOCAL_STORAGE_KEY);
 				return newState;
 			} else {
 				const updatedItems = [...state.items];
@@ -121,7 +126,7 @@ export function cartReducer(
 								0
 							) || 0),
 					};
-					saveToLocalStorage(newState, 'cart');
+					saveToLocalStorage(newState, LOCAL_STORAGE_KEY);
 					return newState;
 				}
 			}
@@ -165,7 +170,7 @@ export function cartReducer(
 				items: updatedItems,
 				totalSum: updatedTotalSum,
 			};
-			saveToLocalStorage(newState, 'cart');
+			saveToLocalStorage(newState, LOCAL_STORAGE_KEY);
 			return newState;
 		}
 
@@ -206,12 +211,12 @@ export function cartReducer(
 				items: updatedItems,
 				totalSum: updatedTotalSum,
 			};
-			saveToLocalStorage(newState, 'cart');
+			saveToLocalStorage(newState, LOCAL_STORAGE_KEY);
 			return newState;
 		}
 		case 'CLEAR': {
-			// saveCartToLocalStorage(initial);
-			return initial;
+			saveToLocalStorage(initialState, LOCAL_STORAGE_KEY);
+			return initialState;
 		}
 		default:
 			return state;

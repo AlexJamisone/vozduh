@@ -2,6 +2,7 @@ import { Radio, RadioGroup, Stack, useToast } from '@chakra-ui/react';
 import { useAuth } from '@clerk/nextjs';
 import type { Point } from '@prisma/client';
 import { AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/router';
 import { useEffect, useReducer, useState } from 'react';
 import type {
 	DaDataAddress,
@@ -21,6 +22,7 @@ const NewOrder = () => {
 	const { isSignedIn } = useAuth();
 	const { cart, dispatchCart } = useCart();
 	const [isClient, setIsClient] = useState(false);
+	const router = useRouter();
 	useEffect(() => {
 		setIsClient(true);
 	}, []);
@@ -105,18 +107,18 @@ const NewOrder = () => {
 						},
 					},
 					{
-						onSuccess: () => {
+						onSuccess: ({ route, success }) => {
 							void ctx.user.invalidate();
 							dispatchAddress({ type: 'SET_CLEAR' });
 							dispatchCart({ type: 'CLEAR' });
 							toast({
-								description:
-									'Заказ успешно создан! В ближайшее время с вами свяжутся.',
-								duration: 5000,
+								description: success,
+								duration: null,
 								isClosable: true,
 								status: 'success',
 								position: 'top-right',
 							});
+							void router.push(route);
 						},
 						onError: () => {
 							toast({
@@ -151,13 +153,13 @@ const NewOrder = () => {
 						),
 					},
 					{
-						onSuccess: () => {
+						onSuccess: ({ route, success }) => {
 							void ctx.user.invalidate();
+							void router.push(route);
 							dispatchAddress({ type: 'SET_CLEAR' });
 							dispatchCart({ type: 'CLEAR' });
 							toast({
-								description:
-									'Заказ успешно создан! В ближайшее время с вами свяжутся.',
+								description: success,
 								duration: 5000,
 								isClosable: true,
 								status: 'success',

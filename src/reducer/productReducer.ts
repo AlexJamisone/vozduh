@@ -154,7 +154,7 @@ export type Action =
 	| SetIncomeServiceAction;
 
 const LOCAL_STORAGE_KEY = 'createProduct';
-const state = {
+const initialState: ProductState = {
 	controlView: {
 		category: false,
 		editCategory: false,
@@ -182,7 +182,7 @@ const state = {
 	},
 };
 export const initial: ProductState =
-	getFromLocalStorage<ProductState>(LOCAL_STORAGE_KEY) || state;
+	getFromLocalStorage<ProductState>(LOCAL_STORAGE_KEY) || initialState;
 
 export const productReducer = (
 	state: ProductState,
@@ -422,8 +422,8 @@ export const productReducer = (
 		case 'SET_ALL':
 			return { ...state, ...action.payload };
 		case 'CLEAR':
-			saveToLocalStorage(initial, LOCAL_STORAGE_KEY);
-			return initial;
+			saveToLocalStorage(initialState, LOCAL_STORAGE_KEY);
+			return initialState;
 		default:
 			return state;
 	}

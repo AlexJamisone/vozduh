@@ -112,7 +112,7 @@ export const ordersRouter = createTRPCRouter({
 	createIsAuthHaveAddress: privetProcedure
 		.input(userWithAddressId)
 		.mutation(async ({ ctx, input }) => {
-			return await ctx.prisma.order.create({
+			const newOrder = await ctx.prisma.order.create({
 				data: {
 					addressId: input.addressId,
 					totalSum: input.totalSum,
@@ -139,12 +139,16 @@ export const ordersRouter = createTRPCRouter({
 					},
 				},
 			});
+			return {
+				success: `Заказ №${newOrder.orderNumber} успешно создан! В ближайшее время с вами свяжутся по указанным данным!`,
+				route: '/profile/main',
+			};
 		}),
 	createNoAddreess: publicProcedure
 		.input(withNoAddress)
 		.mutation(async ({ ctx, input }) => {
 			if (!ctx.userId) {
-				return await ctx.prisma.order.create({
+				const newOrder = await ctx.prisma.order.create({
 					data: {
 						address: {
 							create: {
@@ -179,6 +183,10 @@ export const ordersRouter = createTRPCRouter({
 						},
 					},
 				});
+				return {
+					success: `Заказ №${newOrder.orderNumber} успешно создан! В ближайшее время с вами свяжутся по указанным данным!`,
+					route: '/',
+				};
 			} else {
 				const newOrder = await ctx.prisma.order.create({
 					data: {
@@ -226,7 +234,10 @@ export const ordersRouter = createTRPCRouter({
 						},
 					},
 				});
-				return newOrder;
+				return {
+					success: `Заказ №${newOrder.orderNumber} успешно создан! В ближайшее время с вами свяжутся по указанным данным!`,
+					route: '/profile/main',
+				};
 			}
 		}),
 });

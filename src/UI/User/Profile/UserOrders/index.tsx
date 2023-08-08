@@ -10,6 +10,7 @@ import {
 	Tr,
 } from '@chakra-ui/react';
 import 'dayjs/locale/ru';
+import { AnimatePresence } from 'framer-motion';
 import { api } from '~/utils/api';
 import UserOrderStick from './UserOrderStick';
 
@@ -19,7 +20,7 @@ const UserOrders = () => {
 	return (
 		<Card>
 			<CardBody>
-				<TableContainer>
+				<TableContainer maxH={550} overflowY="auto">
 					<Table>
 						<TableCaption fontWeight={600} placement="top">
 							Заказы
@@ -34,9 +35,15 @@ const UserOrders = () => {
 							</Tr>
 						</Thead>
 						<Tbody fontSize={12} textAlign="center">
-							{orders.map((order) => (
-								<UserOrderStick key={order.id} order={order} />
-							))}
+							<AnimatePresence>
+								{orders.map((order, index) => (
+									<UserOrderStick
+										index={index}
+										key={order.id}
+										order={order}
+									/>
+								))}
+							</AnimatePresence>
 						</Tbody>
 					</Table>
 				</TableContainer>
