@@ -33,6 +33,20 @@ const ProductDitailsPage = () => {
 					property="og:image"
 					content={`https://utfs.io/f/${product.image[0] as string}`}
 				/>
+				<meta
+					property="og:url"
+					content={`https://vozduh-kappa.vercel.app/product/${product.id}`}
+				/>
+				<meta property="twitter:title" content={product.name} />
+				<meta property="twitter:description" content={description} />
+				<meta
+					property="twitter:image"
+					content={`https://utfs.io/f/${product.image[0] as string}`}
+				/>
+				<meta
+					property="twitter:url"
+					content={`https://vozduh-kappa.vercel.app/product/${product.id}`}
+				/>
 			</Head>
 			<ProductDitalsContext.Provider value={{ product, dispatch, state }}>
 				<ProductDitails
