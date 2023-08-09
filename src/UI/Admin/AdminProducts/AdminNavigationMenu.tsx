@@ -11,35 +11,44 @@ const AdminNavigationMenu = () => {
 	const handlControl = (value: string) => {
 		switch (value) {
 			case 'Товар':
+				dispatch({ type: 'CLEAR' });
 				dispatch({
 					type: 'SET_VIEW',
 					payload: {
-						...state.controlView,
 						product: true,
 						category: false,
 						size: false,
+						editCategory: false,
+						editProduct: false,
+						editSize: false,
 					},
 				});
 				break;
 			case 'Размер':
+				dispatch({ type: 'CLEAR' });
 				dispatch({
 					type: 'SET_VIEW',
 					payload: {
-						...state.controlView,
 						product: false,
 						category: false,
 						size: true,
+						editCategory: false,
+						editProduct: false,
+						editSize: false,
 					},
 				});
 				break;
 			case 'Категорию':
+				dispatch({ type: 'CLEAR' });
 				dispatch({
 					type: 'SET_VIEW',
 					payload: {
-						...state.controlView,
 						product: false,
 						category: true,
 						size: false,
+						editCategory: false,
+						editProduct: false,
+						editSize: false,
 					},
 				});
 		}
@@ -62,17 +71,20 @@ const AdminNavigationMenu = () => {
 					as={motion.button}
 					initial={{ opacity: 0, x: 25 }}
 					animate={{ opacity: 1, x: 0 }}
-					onClick={() =>
+					onClick={() => {
 						dispatch({
 							type: 'SET_VIEW',
 							payload: {
-								...state.controlView,
+								editCategory: false,
+								editProduct: false,
+								editSize: false,
 								category: false,
 								product: false,
 								size: false,
 							},
-						})
-					}
+						});
+						dispatch({ type: 'CLEAR' });
+					}}
 				/>
 			)}
 			{productControllButton({

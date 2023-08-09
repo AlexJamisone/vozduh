@@ -52,15 +52,29 @@ const ProductImage = ({ src }: ProductImageProps) => {
 						{ src },
 						{
 							onSuccess: () => {
-								dispatch({
-									type: 'SET_PRODUCT',
-									payload: {
-										...state.product,
-										image: state.product.image.filter(
-											(oldSrc) => !oldSrc.includes(src)
-										),
-									},
-								});
+								if (
+									state.controlView.category ||
+									state.controlView.editCategory
+								) {
+									dispatch({
+										type: 'SET_CATEGORY',
+										payload: {
+											...state.category,
+											image: '',
+										},
+									});
+								} else {
+									dispatch({
+										type: 'SET_PRODUCT',
+										payload: {
+											...state.product,
+											image: state.product.image.filter(
+												(oldSrc) =>
+													!oldSrc.includes(src)
+											),
+										},
+									});
+								}
 								toast({
 									description: 'Картинка успешно удалена',
 									isClosable: true,

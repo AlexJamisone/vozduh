@@ -35,7 +35,7 @@ const AdminCreateProduct = () => {
 			}}
 		>
 			<CreateProductInputs />
-			<ImageUploader />
+			<ImageUploader endpoint="imageUploader" />
 			<CardWithImage />
 			<SelectCategory />
 			<SelectSize />

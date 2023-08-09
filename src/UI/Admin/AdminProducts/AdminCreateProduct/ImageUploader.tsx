@@ -11,7 +11,11 @@ import { useState } from 'react';
 import { useProductContext } from '~/context/productContext';
 import type { OurFileRouter } from '~/server/uploadthing';
 
-const ImageUploader = () => {
+type ImageUploaderProps = {
+	endpoint: keyof OurFileRouter;
+};
+
+const ImageUploader = ({ endpoint }: ImageUploaderProps) => {
 	const { state, dispatch, errorProduct, isErrorProduct, resetProduct } =
 		useProductContext();
 	const toast = useToast();
@@ -30,7 +34,7 @@ const ImageUploader = () => {
 			borderColor={error ? 'red.300' : undefined}
 		>
 			<UploadDropzone<OurFileRouter>
-				endpoint="imageUploader"
+				endpoint={endpoint}
 				onUploadProgress={(value) => {
 					setProgress({
 						show: true,
@@ -52,16 +56,26 @@ const ImageUploader = () => {
 						value: 0,
 					});
 					if (!res) throw new Error('Проблемы с загрузкой фото');
-					dispatch({
-						type: 'SET_PRODUCT',
-						payload: {
-							...state.product,
-							image: [
-								...state.product.image,
-								...res.map(({ fileKey }) => fileKey),
-							],
-						},
-					});
+					if (endpoint === 'imageUploader') {
+						dispatch({
+							type: 'SET_PRODUCT',
+							payload: {
+								...state.product,
+								image: [
+									...state.product.image,
+									...res.map(({ fileKey }) => fileKey),
+								],
+							},
+						});
+					} else {
+						dispatch({
+							type: 'SET_CATEGORY',
+							payload: {
+								...state.category,
+								image: res[0]?.fileKey ?? '',
+							},
+						});
+					}
 					toast({
 						description: 'Фото успешно загружено!',
 						status: 'success',

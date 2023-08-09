@@ -8,6 +8,11 @@ export const ourFileRouter = {
 	}).onUploadComplete(({ file }) => {
 		console.log('file url', file.url);
 	}),
+	signlUploader: f({
+		image: { maxFileSize: '16MB', maxFileCount: 1 },
+	}).onUploadComplete(({ file }) => {
+		console.log('file url', file.url);
+	}),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;

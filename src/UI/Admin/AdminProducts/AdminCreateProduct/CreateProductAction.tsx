@@ -27,6 +27,7 @@ const CreateProductAction = () => {
 								editProduct: !state.controlView.editProduct,
 							},
 						});
+						dispatch({ type: 'CLEAR' });
 					}}
 				>
 					Отмена

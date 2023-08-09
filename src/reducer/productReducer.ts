@@ -40,8 +40,10 @@ export type ProductState = {
 		value: string;
 	};
 	category: {
+		id: string;
 		title: string;
 		image: string;
+		path: string;
 	};
 };
 
@@ -74,8 +76,10 @@ interface SetIncomeServiceAction {
 interface SetCategoryAction {
 	type: 'SET_CATEGORY';
 	payload: {
+		id: string;
 		title: string;
 		image: string;
+		path: string;
 	};
 }
 interface SetAllAction {
@@ -164,8 +168,10 @@ const initialState: ProductState = {
 		product: false,
 	},
 	category: {
+		id: '',
 		image: '',
 		title: '',
+		path: '',
 	},
 	product: {
 		category: '',
@@ -404,14 +410,19 @@ export const productReducer = (
 				},
 			};
 		}
-		case 'SET_CATEGORY':
-			return {
+		case 'SET_CATEGORY': {
+			const newState = {
 				...state,
 				category: {
+					id: action.payload.id,
 					image: action.payload.image,
 					title: action.payload.title,
+					path: action.payload.path,
 				},
 			};
+			saveToLocalStorage(newState, LOCAL_STORAGE_KEY);
+			return newState;
+		}
 		case 'SET_SIZE':
 			return {
 				...state,
@@ -421,9 +432,10 @@ export const productReducer = (
 			};
 		case 'SET_ALL':
 			return { ...state, ...action.payload };
-		case 'CLEAR':
+		case 'CLEAR': {
 			saveToLocalStorage(initialState, LOCAL_STORAGE_KEY);
 			return initialState;
+		}
 		default:
 			return state;
 	}

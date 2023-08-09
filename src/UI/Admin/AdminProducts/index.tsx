@@ -6,7 +6,7 @@ import NoData from '~/components/NoData';
 import ProductContext from '~/context/productContext';
 import { initial, productReducer } from '~/reducer/productReducer';
 import { api } from '~/utils/api';
-import AdminCreateCategory from './AdminCreateCategory';
+import AdminCategorys from './AdminCategorys';
 import AdminCreateProduct from './AdminCreateProduct';
 import AdminCreateSize from './AdminCreateSize';
 import AdminNavigationMenu from './AdminNavigationMenu';
@@ -158,7 +158,7 @@ const AdminProducts = ({
 
 AdminProducts.Product = AdminCreateProduct;
 AdminProducts.Size = AdminCreateSize;
-AdminProducts.Category = AdminCreateCategory;
+AdminProducts.Category = AdminCategorys;
 AdminProducts.Menu = AdminNavigationMenu;
 
 export default AdminProducts;
