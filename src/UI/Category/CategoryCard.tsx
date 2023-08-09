@@ -41,7 +41,7 @@ const CategoryCard = ({ category }: CategoryCardProps) => {
 				}}
 			>
 				<Image
-					src={category.image}
+					src={`https://utfs.io/f/${category.image}`}
 					alt={category.path}
 					objectFit="fill"
 				/>

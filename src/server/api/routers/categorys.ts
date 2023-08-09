@@ -1,3 +1,4 @@
+import { utapi } from 'uploadthing/server';
 import { z } from 'zod';
 import {
 	adminProcedure,
@@ -51,6 +52,21 @@ export const categorysRouter = createTRPCRouter({
 					image: input.image,
 					title: input.title,
 					path: input.path,
+				},
+			});
+		}),
+	delete: adminProcedure
+		.input(
+			z.object({
+				id: z.string(),
+				image: z.string(),
+			})
+		)
+		.mutation(async ({ ctx, input }) => {
+			await utapi.deleteFiles(input.image);
+			return await ctx.prisma.category.delete({
+				where: {
+					id: input.id,
 				},
 			});
 		}),

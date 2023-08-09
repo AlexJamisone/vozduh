@@ -7,9 +7,13 @@ import { useProductContext } from '~/context/productContext';
 import { api } from '~/utils/api';
 type ProductImageProps = {
 	src: string;
+	image?: {
+		width: number;
+		height: number;
+	};
 };
 
-const ProductImage = ({ src }: ProductImageProps) => {
+const ProductImage = ({ src, image }: ProductImageProps) => {
 	const { dispatch, state } = useProductContext();
 	const [isLoadingImg, setIsLoadingImg] = useState(false);
 	const { mutate: deleteSinglImg, isLoading } =
@@ -19,8 +23,8 @@ const ProductImage = ({ src }: ProductImageProps) => {
 		<Stack position="relative" as={motion.div} layout>
 			<Skeleton isLoaded={isLoadingImg}>
 				<Image
-					width={100}
-					height={100}
+					width={image?.width ?? 100}
+					height={image?.height ?? 100}
 					src={`https://utfs.io/f/${src}`}
 					alt={`product${src}`}
 					quality={100}

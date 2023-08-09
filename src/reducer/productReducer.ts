@@ -82,6 +82,10 @@ interface SetCategoryAction {
 		path: string;
 	};
 }
+
+interface SetClearCategory {
+	type: 'CLEAR_CATEGORY';
+}
 interface SetAllAction {
 	type: 'SET_ALL';
 	payload: ProductState;
@@ -155,7 +159,8 @@ export type Action =
 	| SetRemoveOptionsAction
 	| SetUpdateOptionsActions
 	| SetAddOptionAction
-	| SetIncomeServiceAction;
+	| SetIncomeServiceAction
+	| SetClearCategory;
 
 const LOCAL_STORAGE_KEY = 'createProduct';
 const initialState: ProductState = {
@@ -418,6 +423,19 @@ export const productReducer = (
 					image: action.payload.image,
 					title: action.payload.title,
 					path: action.payload.path,
+				},
+			};
+			saveToLocalStorage(newState, LOCAL_STORAGE_KEY);
+			return newState;
+		}
+		case 'CLEAR_CATEGORY': {
+			const newState: ProductState = {
+				...state,
+				category: {
+					id: '',
+					image: '',
+					path: '',
+					title: '',
 				},
 			};
 			saveToLocalStorage(newState, LOCAL_STORAGE_KEY);
