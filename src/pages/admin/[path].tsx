@@ -27,7 +27,7 @@ const AdminRouter = () => {
 		}
 	};
 	return (
-		<Center pt={175} mb={75}>
+		<Center pt={[100, 175]} mb={75}>
 			{handlRouter()}
 		</Center>
 	);

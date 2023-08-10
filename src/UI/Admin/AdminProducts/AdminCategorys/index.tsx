@@ -112,7 +112,7 @@ const AdminCategorys = () => {
 	const createError = errorCreate?.data?.zodError?.fieldErrors;
 	const updateError = errorUpdate?.data?.zodError?.fieldErrors;
 	return (
-		<Stack>
+		<Stack mx={5}>
 			<Stack direction="row">
 				<Stack w={'50%'}>
 					{categoryInputs(state.category).map(
@@ -128,14 +128,22 @@ const AdminCategorys = () => {
 										updateError?.[name]?.[0] == undefined)
 								}
 							>
-								<FormLabel>{label}</FormLabel>
+								<FormLabel fontSize={['xs', 'md']}>
+									{label}
+								</FormLabel>
 								<Input
 									value={value}
 									placeholder={placeholder}
 									name={name}
 									onChange={handlChange}
+									size={['sm', 'md']}
 								/>
-								<FormHelperText>{helper}</FormHelperText>
+								<FormHelperText
+									fontSize={['xs', 'md']}
+									display="inline-block"
+								>
+									{helper}
+								</FormHelperText>
 								<FormErrorMessage fontWeight={600}>
 									{errorCreate?.data?.zodError?.fieldErrors[
 										name
@@ -202,6 +210,7 @@ const AdminCategorys = () => {
 			<Button
 				onClick={handlClick}
 				isLoading={isLoadingCreate || isLoadingUpdate}
+				size={['sm', 'md']}
 			>
 				{state.controlView.editCategory ? 'Обновить' : 'Сохранить'}
 			</Button>

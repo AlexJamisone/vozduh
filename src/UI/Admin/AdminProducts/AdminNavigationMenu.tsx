@@ -67,6 +67,7 @@ const AdminNavigationMenu = () => {
 				state.controlView.size) && (
 				<IconButton
 					aria-label="back"
+					size={['sm', 'md']}
 					icon={<Icon as={IoIosArrowBack} />}
 					as={motion.button}
 					initial={{ opacity: 0, x: 25 }}
@@ -105,6 +106,7 @@ const AdminNavigationMenu = () => {
 					variant="outline"
 					isActive={stateView}
 					onClick={() => handlControl(value)}
+					size={['sm', 'md']}
 				>
 					{actionString(stateEdit)} {value}
 				</Button>
