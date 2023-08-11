@@ -37,6 +37,7 @@ export type ProductState = {
 	};
 	product: Product;
 	size: {
+		id: string;
 		value: string;
 	};
 	category: {
@@ -66,7 +67,10 @@ interface SetProductAction {
 
 interface SetSizeAction {
 	type: 'SET_SIZE';
-	payload: string;
+	payload: {
+		id: string;
+		value: string;
+	};
 }
 interface SetIncomeServiceAction {
 	type: 'INCOME_SERVICE';
@@ -190,6 +194,7 @@ const initialState: ProductState = {
 	},
 	size: {
 		value: '',
+		id: '',
 	},
 };
 export const initial: ProductState =
@@ -445,7 +450,8 @@ export const productReducer = (
 			return {
 				...state,
 				size: {
-					value: action.payload,
+					id: action.payload.id,
+					value: action.payload.value,
 				},
 			};
 		case 'SET_ALL':

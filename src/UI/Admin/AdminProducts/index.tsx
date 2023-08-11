@@ -8,8 +8,8 @@ import { initial, productReducer } from '~/reducer/productReducer';
 import { api } from '~/utils/api';
 import AdminCategorys from './AdminCategorys';
 import AdminCreateProduct from './AdminCreateProduct';
-import AdminCreateSize from './AdminCreateSize';
 import AdminNavigationMenu from './AdminNavigationMenu';
+import AdminSize from './AdminSize';
 
 type AdminProductsProps = {
 	product?: ReactNode;
@@ -157,7 +157,7 @@ const AdminProducts = ({
 };
 
 AdminProducts.Product = AdminCreateProduct;
-AdminProducts.Size = AdminCreateSize;
+AdminProducts.Size = AdminSize;
 AdminProducts.Category = AdminCategorys;
 AdminProducts.Menu = AdminNavigationMenu;
 
