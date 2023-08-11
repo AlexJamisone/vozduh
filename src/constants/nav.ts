@@ -20,7 +20,7 @@ export const nav: NavProps[] = [
 	},
 	{
 		title: 'Магазины',
-		src: '/offline',
+		src: '/shops',
 		isLogo: false,
 	},
 ];

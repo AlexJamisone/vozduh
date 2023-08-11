@@ -6,6 +6,7 @@ import { cdekRouter } from './routers/cdek';
 import { favoritesRouter } from './routers/favorites';
 import { ordersRouter } from './routers/orders';
 import { productRouter } from './routers/product';
+import { shopRouter } from './routers/shop';
 import { sizeRouter } from './routers/size';
 
 /**
@@ -22,6 +23,7 @@ export const appRouter = createTRPCRouter({
 	favorites: favoritesRouter,
 	product: productRouter,
 	size: sizeRouter,
+	shop: shopRouter,
 });
 
 // export type definition of API
