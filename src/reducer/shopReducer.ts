@@ -5,6 +5,7 @@ export type ShopState = {
 	phone: string;
 	image: string;
 	work_time?: string;
+	shopEdit: boolean;
 };
 
 interface SetShopInputsAction {
@@ -19,6 +20,7 @@ interface SetClearShopAction {
 export type Action = SetShopInputsAction | SetClearShopAction;
 
 export const initial: ShopState = {
+	shopEdit: false,
 	fullAddress: '',
 	id: '',
 	image: '',
@@ -38,6 +40,7 @@ export const shopReducer = (state: ShopState, action: Action): ShopState => {
 				image: action.payload.image,
 				phone: action.payload.phone,
 				work_time: action.payload.work_time,
+				shopEdit: action.payload.shopEdit,
 			};
 		case 'CLEAR':
 			return initial;

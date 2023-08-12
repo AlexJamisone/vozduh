@@ -6,10 +6,10 @@ import {
 } from '~/server/api/trpc';
 
 const shopInputs = z.object({
-	name: z.string(),
-	fullAddress: z.string(),
-	phone: z.string(),
-	image: z.string(),
+	name: z.string().nonempty({ message: 'Введите название магазина' }),
+	fullAddress: z.string().nonempty({ message: 'Введите полный адрес' }),
+	phone: z.string().nonempty({ message: 'Введите телефон' }),
+	image: z.string().nonempty({ message: 'Загрузите картинку' }),
 	work_time: z.string().optional(),
 });
 
@@ -21,7 +21,7 @@ export const shopRouter = createTRPCRouter({
 		.input(shopInputs)
 		.mutation(async ({ ctx, input }) => {
 			const { fullAddress, image, name, phone, work_time } = input;
-			return await ctx.prisma.offlineShop.create({
+			const create = await ctx.prisma.offlineShop.create({
 				data: {
 					fullAddress,
 					image,
@@ -30,6 +30,15 @@ export const shopRouter = createTRPCRouter({
 					work_time,
 				},
 			});
+			if (!create)
+				return {
+					message: 'Проблемы с созданием',
+					success: false,
+				};
+			return {
+				message: `Оффлайе магазин ${name} успешно создан!`,
+				success: true,
+			};
 		}),
 	update: adminProcedure
 		.input(
@@ -40,7 +49,7 @@ export const shopRouter = createTRPCRouter({
 		)
 		.mutation(async ({ ctx, input }) => {
 			const { fullAddress, image, name, phone, work_time } = input.inputs;
-			return await ctx.prisma.offlineShop.update({
+			const update = await ctx.prisma.offlineShop.update({
 				where: {
 					id: input.id,
 				},
@@ -52,6 +61,15 @@ export const shopRouter = createTRPCRouter({
 					work_time,
 				},
 			});
+			if (!update)
+				return {
+					message: 'Проблемы с обновлением!',
+					success: false,
+				};
+			return {
+				message: `Оффлайн магазин успешно обновлен`,
+				success: true,
+			};
 		}),
 	delete: adminProcedure
 		.input(
