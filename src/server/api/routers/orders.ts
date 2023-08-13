@@ -65,29 +65,48 @@ export const ordersRouter = createTRPCRouter({
 			},
 		});
 	}),
-	getForAdmin: adminProcedure.query(async ({ ctx }) => {
-		return await ctx.prisma.order.findMany({
-			orderBy: {
-				createdAt: 'desc',
-			},
-			include: {
-				address: {
-					include: {
-						point: true,
-					},
+	getForAdmin: adminProcedure
+		.input(
+			z.object({
+				limit: z.number(),
+				cursor: z.string().nullish(),
+			})
+		)
+		.query(async ({ ctx, input }) => {
+			const { limit, cursor } = input;
+			const items = await ctx.prisma.order.findMany({
+				orderBy: {
+					createdAt: 'desc',
 				},
-				orderItem: {
-					include: {
-						product: {
-							include: {
-								priceHistory: true,
+				include: {
+					address: {
+						include: {
+							point: true,
+						},
+					},
+					orderItem: {
+						include: {
+							product: {
+								include: {
+									priceHistory: true,
+								},
 							},
 						},
 					},
 				},
-			},
-		});
-	}),
+				take: limit + 1,
+				cursor: cursor ? { id: cursor } : undefined,
+			});
+			let nextCursor: typeof cursor | undefined;
+			if (items.length > limit) {
+				const nextItem = items.pop();
+				nextCursor = nextItem?.id;
+			}
+			return {
+				items,
+				nextCursor,
+			};
+		}),
 	getIncomeOrder: publicProcedure.query(async ({ ctx }) => {
 		const orders = await ctx.prisma.order.findMany({
 			where: {
