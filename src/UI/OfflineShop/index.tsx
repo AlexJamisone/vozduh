@@ -4,6 +4,7 @@ import { AiOutlinePlus, AiTwotoneShop } from 'react-icons/ai';
 import NoData from '~/components/NoData';
 import { initial, shopReducer } from '~/reducer/shopReducer';
 import { api } from '~/utils/api';
+import OfflineShopCard from './OfflineShopCard';
 import OfflineShopModal from './OfflineShopModal';
 
 const OfflineShop = () => {
@@ -27,7 +28,11 @@ const OfflineShop = () => {
 			)}
 			{shops?.length === 0 ? (
 				<NoData icon={AiTwotoneShop} title="Нет магазинов" />
-			) : null}
+			) : (
+				shops?.map((shop) => (
+					<OfflineShopCard role={role} key={shop.id} shop={shop} />
+				))
+			)}
 			<OfflineShopModal
 				isOpen={isOpen}
 				onClose={onClose}
