@@ -4,40 +4,58 @@ import {
 	CardFooter,
 	CardHeader,
 	Highlight,
+	Icon,
+	IconButton,
 	Image,
-	Skeleton,
 	Stack,
 	Text,
+	useToast,
 	type SystemStyleObject,
 } from '@chakra-ui/react';
 import type { OfflineShop, Role } from '@prisma/client';
 import type { TRPCError } from '@trpc/server';
+import { motion } from 'framer-motion';
+import { AiOutlineDelete } from 'react-icons/ai';
 import { useOfflineShopContext } from '~/context/offlineShopContext';
+import { api } from '~/utils/api';
 
 type OfflineShopCardProps = {
 	shop: OfflineShop;
 	role: Role | null | undefined | TRPCError;
-	isLoading: boolean;
 	onToggle: () => void;
 };
 const styleHiglight: SystemStyleObject = {
 	py: 0.5,
 	px: 2,
-	bgColor: 'green.400',
+	bgColor: 'green.300',
 	rounded: '2xl',
 };
-const OfflineShopCard = ({
-	shop,
-	role,
-	isLoading,
-	onToggle,
-}: OfflineShopCardProps) => {
-	const { name, image, fullAddress, phone, work_time } = shop;
+const OfflineShopCard = ({ shop, role, onToggle }: OfflineShopCardProps) => {
+	const { name, image, fullAddress, phone, work_time, id } = shop;
+	const { mutate: deleteOfflineShop, isLoading: isLoadedDelet } =
+		api.shop.delete.useMutation();
 	const { dispatch } = useOfflineShopContext();
+	const ctx = api.useContext();
+	const toast = useToast();
 	return (
 		<Card
-			as={Skeleton}
-			isLoaded={!isLoading}
+			as={motion.div}
+			layout
+			initial={{ opacity: 0 }}
+			whileInView={{
+				opacity: 1,
+				transition: {
+					type: 'spring',
+					duration: 0.3,
+				},
+			}}
+			exit={{
+				opacity: 0,
+				transition: {
+					type: 'spring',
+					duration: 0.5,
+				},
+			}}
 			size="sm"
 			cursor={role === 'ADMIN' ? 'pointer' : 'default'}
 			rounded="2xl"
@@ -60,8 +78,47 @@ const OfflineShopCard = ({
 				}
 			}}
 		>
-			<CardHeader textAlign="center" fontWeight={600} fontSize="lg">
-				{name}
+			<CardHeader
+				as={Stack}
+				direction="row"
+				textAlign="center"
+				justifyContent="center"
+				fontWeight={600}
+				fontSize="lg"
+				gap={3}
+			>
+				<Text>{name}</Text>
+				{role === 'ADMIN' && (
+					<IconButton
+						variant="outline"
+						size="sm"
+						aria-label="delet"
+						icon={<Icon as={AiOutlineDelete} />}
+						colorScheme="red"
+						onClick={(e) => {
+							e.stopPropagation();
+							deleteOfflineShop(
+								{
+									id,
+									image,
+								},
+								{
+									onSuccess: () => {
+										void ctx.shop.invalidate();
+										toast({
+											description: `Магазин ${name} успешно удален`,
+											isClosable: true,
+											duration: 2500,
+											position: 'top-right',
+											status: 'info',
+										});
+									},
+								}
+							);
+						}}
+						isLoading={isLoadedDelet}
+					/>
+				)}
 			</CardHeader>
 			<CardBody>
 				<Image
@@ -69,6 +126,7 @@ const OfflineShopCard = ({
 					h={250}
 					alt={name}
 					src={`https://utfs.io/f/${image}`}
+					objectFit="cover"
 				/>
 			</CardBody>
 			<CardFooter

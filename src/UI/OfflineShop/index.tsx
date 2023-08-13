@@ -1,4 +1,4 @@
-import { Button, Icon, Stack, useDisclosure } from '@chakra-ui/react';
+import { Button, Icon, Spinner, Stack, useDisclosure } from '@chakra-ui/react';
 import { useReducer } from 'react';
 import { AiOutlinePlus, AiTwotoneShop } from 'react-icons/ai';
 import NoData from '~/components/NoData';
@@ -13,7 +13,6 @@ const OfflineShop = () => {
 	const { data: shops, isLoading } = api.shop.get.useQuery();
 	const { isOpen, onClose, onToggle } = useDisclosure();
 	const [state, dispatch] = useReducer(shopReducer, initial);
-
 	return (
 		<Stack
 			alignItems="center"
@@ -35,19 +34,21 @@ const OfflineShop = () => {
 						variant="outline"
 						onClick={onToggle}
 						leftIcon={<Icon as={AiOutlinePlus} />}
+						colorScheme="telegram"
 					>
 						Создать магазин
 					</Button>
 				)}
 				{shops?.length === 0 ? (
 					<NoData icon={AiTwotoneShop} title="Нет магазинов" />
+				) : isLoading ? (
+					<Spinner size="lg" />
 				) : (
 					shops?.map((shop) => (
 						<OfflineShopCard
 							role={role}
 							key={shop.id}
 							shop={shop}
-							isLoading={isLoading}
 							onToggle={onToggle}
 						/>
 					))

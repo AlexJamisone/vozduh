@@ -1,3 +1,4 @@
+import { utapi } from 'uploadthing/server';
 import { z } from 'zod';
 import {
 	adminProcedure,
@@ -79,9 +80,11 @@ export const shopRouter = createTRPCRouter({
 		.input(
 			z.object({
 				id: z.string(),
+				image: z.string(),
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
+			await utapi.deleteFiles(input.image);
 			return await ctx.prisma.offlineShop.delete({
 				where: {
 					id: input.id,

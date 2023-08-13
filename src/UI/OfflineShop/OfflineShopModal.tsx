@@ -14,6 +14,7 @@ import {
 	ModalFooter,
 	ModalHeader,
 	ModalOverlay,
+	Skeleton,
 	Stack,
 	useToast,
 } from '@chakra-ui/react';
@@ -66,6 +67,13 @@ const OfflineShopModal = ({ isOpen, onClose }: OfflineShopModalProps) => {
 			{ src: state.image },
 			{
 				onSuccess: () => {
+					dispatch({
+						type: 'SET_SHOP',
+						payload: {
+							...state,
+							image: '',
+						},
+					});
 					toast({
 						description: 'Картинка удалена!',
 						isClosable: true,
@@ -143,15 +151,16 @@ const OfflineShopModal = ({ isOpen, onClose }: OfflineShopModalProps) => {
 						>
 							<UploadButton<OurFileRouter>
 								endpoint="signlUploader"
-								onClientUploadComplete={(res) =>
+								onClientUploadComplete={(res) => {
+									reset();
 									dispatch({
 										type: 'SET_SHOP',
 										payload: {
 											...state,
 											image: res?.[0]?.fileKey ?? '',
 										},
-									})
-								}
+									});
+								}}
 							/>
 							<FormErrorMessage justifyContent="center">
 								{
@@ -162,7 +171,7 @@ const OfflineShopModal = ({ isOpen, onClose }: OfflineShopModalProps) => {
 							</FormErrorMessage>
 						</FormControl>
 						{state.image.length !== 0 && (
-							<Stack position="relative">
+							<Stack position="relative" justifyContent="center">
 								<IconButton
 									colorScheme="red"
 									position="absolute"
@@ -172,11 +181,13 @@ const OfflineShopModal = ({ isOpen, onClose }: OfflineShopModalProps) => {
 									onClick={() => deletImg()}
 									isLoading={isLoadingDelet}
 									icon={<Icon as={AiOutlineDelete} />}
+									zIndex={20}
 								/>
 								<Image
 									alt="shop"
 									src={`https://utfs.io/f/${state.image}`}
 									objectFit="cover"
+									fallback={<Skeleton w={'100%'} h={300} />}
 								/>
 							</Stack>
 						)}
