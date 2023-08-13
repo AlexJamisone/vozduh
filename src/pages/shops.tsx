@@ -3,7 +3,7 @@ import OfflineShop from '~/UI/OfflineShop';
 
 const ShopsPage = () => {
 	return (
-		<Center pt={150}>
+		<Center pt={[100, 150]} pb={75}>
 			<OfflineShop />
 		</Center>
 	);

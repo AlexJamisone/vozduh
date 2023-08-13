@@ -15,7 +15,11 @@ const shopInputs = z.object({
 
 export const shopRouter = createTRPCRouter({
 	get: publicProcedure.query(async ({ ctx }) => {
-		return await ctx.prisma.offlineShop.findMany();
+		return await ctx.prisma.offlineShop.findMany({
+			orderBy: {
+				createdAt: 'desc',
+			},
+		});
 	}),
 	create: adminProcedure
 		.input(shopInputs)

@@ -19,27 +19,21 @@ import {
 } from '@chakra-ui/react';
 import { UploadButton } from '@uploadthing/react';
 import '@uploadthing/react/styles.css';
-import { type ChangeEvent, type Dispatch } from 'react';
+import { type ChangeEvent } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { IMaskInput } from 'react-imask';
 import { shopInputs } from '~/constants/shop';
-import { type Action, type ShopState } from '~/reducer/shopReducer';
+import { useOfflineShopContext } from '~/context/offlineShopContext';
 import type { OurFileRouter } from '~/server/uploadthing';
 import { api } from '~/utils/api';
 
 type OfflineShopModalProps = {
 	isOpen: boolean;
 	onClose: () => void;
-	state: ShopState;
-	dispatch: Dispatch<Action>;
 };
 
-const OfflineShopModal = ({
-	isOpen,
-	onClose,
-	dispatch,
-	state,
-}: OfflineShopModalProps) => {
+const OfflineShopModal = ({ isOpen, onClose }: OfflineShopModalProps) => {
+	const { dispatch, state } = useOfflineShopContext();
 	const {
 		mutate: create,
 		isLoading: isLoadingCreate,
@@ -48,8 +42,12 @@ const OfflineShopModal = ({
 		reset,
 	} = api.shop.create.useMutation();
 
-	const { mutate: update, isLoading: isLoadingUpdate } =
-		api.shop.update.useMutation();
+	const {
+		mutate: update,
+		isLoading: isLoadingUpdate,
+		isError: isErrorUpdate,
+		error: errorUpdate,
+	} = api.shop.update.useMutation();
 	const { mutate: deletSinglImg, isLoading: isLoadingDelet } =
 		api.product.deletSinglImg.useMutation();
 
@@ -82,8 +80,9 @@ const OfflineShopModal = ({
 		<Modal
 			isOpen={isOpen}
 			onClose={() => {
-				if (state.image.length !== 0) deletImg();
+				if (state.image.length !== 0 && !state.shopEdit) deletImg();
 				onClose();
+				dispatch({ type: 'CLEAR' });
 			}}
 			closeOnEsc={false}
 		>
@@ -130,18 +129,38 @@ const OfflineShopModal = ({
 						)
 					)}
 					<Stack mt={5}>
-						<UploadButton<OurFileRouter>
-							endpoint="signlUploader"
-							onClientUploadComplete={(res) =>
-								dispatch({
-									type: 'SET_SHOP',
-									payload: {
-										...state,
-										image: res?.[0]?.fileKey ?? '',
-									},
-								})
+						<FormControl
+							isInvalid={
+								(isErrorCreate &&
+									errorCreate.data?.zodError?.fieldErrors?.[
+										'image'
+									] !== undefined) ||
+								(isErrorUpdate &&
+									errorUpdate.data?.zodError?.fieldErrors?.[
+										'image'
+									] !== undefined)
 							}
-						/>
+						>
+							<UploadButton<OurFileRouter>
+								endpoint="signlUploader"
+								onClientUploadComplete={(res) =>
+									dispatch({
+										type: 'SET_SHOP',
+										payload: {
+											...state,
+											image: res?.[0]?.fileKey ?? '',
+										},
+									})
+								}
+							/>
+							<FormErrorMessage justifyContent="center">
+								{
+									errorCreate?.data?.zodError?.fieldErrors?.[
+										'image'
+									]
+								}
+							</FormErrorMessage>
+						</FormControl>
 						{state.image.length !== 0 && (
 							<Stack position="relative">
 								<IconButton
@@ -220,11 +239,16 @@ const OfflineShopModal = ({
 						colorScheme="red"
 						isLoading={isLoadingDelet}
 						onClick={() => {
-							dispatch({
-								type: 'CLEAR',
-							});
-							if (state.image.length !== 0) deletImg();
-							onClose();
+							if (state.shopEdit) {
+								dispatch({ type: 'CLEAR' });
+								onClose();
+							} else {
+								dispatch({
+									type: 'CLEAR',
+								});
+								if (state.image.length !== 0) deletImg();
+								onClose();
+							}
 						}}
 					>
 						Отмена

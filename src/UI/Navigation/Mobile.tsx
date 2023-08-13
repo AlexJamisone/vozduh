@@ -81,7 +81,11 @@ const Mobile = () => {
 						{nav.map(
 							({ isLogo, src, title }) =>
 								!isLogo && (
-									<Link href={src} key={src}>
+									<Link
+										href={src}
+										key={src}
+										onClick={onClose}
+									>
 										{title}
 									</Link>
 								)
