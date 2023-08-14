@@ -33,7 +33,7 @@ const OrderDitailsOrder = ({
 	numberOrder,
 }: OrderDitailsProps) => {
 	return (
-		<Modal isOpen={isOpen} onClose={onClose} isCentered>
+		<Modal isOpen={isOpen} onClose={onClose} isCentered size="lg">
 			<ModalOverlay />
 			<ModalContent>
 				<ModalHeader textAlign="center">

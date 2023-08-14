@@ -153,6 +153,27 @@ export const ordersRouter = createTRPCRouter({
 				message: `Заказ #${updateView.orderNumber} просмотрен!`,
 			};
 		}),
+	changePay: adminProcedure
+		.input(
+			z.object({
+				orderId: z.string(),
+			})
+		)
+		.mutation(async ({ ctx, input }) => {
+			const updatedOrder = await ctx.prisma.order.update({
+				where: {
+					id: input.orderId,
+				},
+				data: {
+					isPayed: {
+						set: true,
+					},
+				},
+			});
+			return {
+				message: `Заказ #${updatedOrder.orderNumber} был оплачен!`,
+			};
+		}),
 	createIsAuthHaveAddress: privetProcedure
 		.input(userWithAddressId)
 		.mutation(async ({ ctx, input }) => {

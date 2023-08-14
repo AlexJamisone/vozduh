@@ -117,6 +117,7 @@ const CartItem = ({ item, index }: CartItemProps) => {
 					width={isLowerThan400 ? 39 : 50}
 					height={isLowerThan400 ? 39 : 50}
 					src={`https://utfs.io/f/${src}`}
+					objectFit="cover"
 				/>
 				<Stack gap={0.5}>
 					<Text fontSize={['smaller', 'md']}>{name}</Text>

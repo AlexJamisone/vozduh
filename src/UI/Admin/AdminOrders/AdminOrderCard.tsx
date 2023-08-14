@@ -51,6 +51,8 @@ const AdminOrderCard = ({ order }: AdminOrderCardProps) => {
 		api.order.changeStatus.useMutation();
 	const { mutate: changeView, isLoading: isLoadingChangeView } =
 		api.order.changeView.useMutation();
+	const { mutate: changePay, isLoading: isLoadedPay } =
+		api.order.changePay.useMutation();
 	const ctx = api.useContext();
 	const toast = useToast();
 	return (
@@ -122,6 +124,44 @@ const AdminOrderCard = ({ order }: AdminOrderCardProps) => {
 						/>
 					)}
 				</AnimatePresence>
+				<Button
+					size="sm"
+					position="absolute"
+					left={3}
+					colorScheme={order.isPayed ? 'green' : 'red'}
+					transition="all .5s ease-in-out"
+					isDisabled={order.isPayed}
+					isLoading={isLoadedPay}
+					onClick={() =>
+						changePay(
+							{
+								orderId: order.id,
+							},
+							{
+								onSuccess: ({ message }) => {
+									void ctx.order.invalidate();
+									toast({
+										description: message,
+										status: 'info',
+										isClosable: true,
+										duration: 2500,
+										position: 'top-right',
+									});
+								},
+								onError: ({ message }) => {
+									toast({
+										description: message,
+										status: 'error',
+										isClosable: true,
+										position: 'top-right',
+									});
+								},
+							}
+						)
+					}
+				>
+					{order.isPayed ? 'Оплачено' : 'Не оплачено'}
+				</Button>
 			</CardHeader>
 			<CardBody textAlign="center">
 				<Stack gap={3} mb={3}>

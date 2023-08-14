@@ -50,6 +50,7 @@ const ProductCardImg = () => {
 						height={point === 'base' ? 100 : 270}
 						alt={`product:${src}`}
 						src={`https://utfs.io/f/${src}`}
+						objectFit="cover"
 						quality={100}
 						onLoadingComplete={() => setIsLoadedImg(true)}
 					/>

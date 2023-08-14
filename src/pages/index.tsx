@@ -2,8 +2,10 @@ import { Image } from '@chakra-ui/next-js';
 import { Center, Stack, useColorMode } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import Category from '~/UI/Category';
+import { api } from '~/utils/api';
 
 export default function Home() {
+	api.user.get.useQuery();
 	const { colorMode } = useColorMode();
 	return (
 		<Stack

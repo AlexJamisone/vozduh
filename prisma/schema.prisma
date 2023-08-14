@@ -126,6 +126,7 @@ model Order {
     createdAt   DateTime    @default(now())
     comment     String?
     viewed      Boolean     @default(false)
+    isPayed     Boolean     @default(false)
     orderItem   OrderItem[]
     totalSum    Float
 }
