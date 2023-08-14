@@ -1,4 +1,4 @@
-import { Icon, IconButton, Image, Skeleton, Stack } from '@chakra-ui/react';
+import { Icon, IconButton, Image, Stack } from '@chakra-ui/react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useCallback, useEffect, useState } from 'react';
 import {
@@ -27,7 +27,7 @@ const ImageSlider = () => {
 		if (!emblaApi || !emblaThumbApi) return;
 		setSelectedIndex(emblaApi.selectedScrollSnap());
 		emblaThumbApi.scrollTo(emblaApi.selectedScrollSnap());
-	}, [emblaApi, emblaThumbApi, setSelectedIndex]);
+	}, [emblaApi, emblaThumbApi]);
 	useEffect(() => {
 		if (!emblaApi) return;
 		onSelect();
@@ -44,7 +44,6 @@ const ImageSlider = () => {
 							key={index}
 							alt={`${src}`}
 							src={`https://utfs.io/f/${src}`}
-							fallback={<Skeleton w={600} h="100%" />}
 							flex="0 0 100%"
 							w={['100%', 300]}
 						/>

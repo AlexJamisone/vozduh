@@ -12,8 +12,8 @@ const Category = () => {
 			position="relative"
 			justifyContent="center"
 		>
-			{categorys?.map((cat) => (
-				<CategoryCard key={cat.id} category={cat} />
+			{categorys?.map((cat, index) => (
+				<CategoryCard key={cat.id} category={cat} index={index} />
 			))}
 		</Center>
 	);
