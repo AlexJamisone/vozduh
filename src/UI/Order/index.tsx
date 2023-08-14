@@ -35,6 +35,7 @@ const NewOrder = () => {
 	} = api.cdek.getPoints.useMutation();
 	const {
 		mutate: createWithAddress,
+		isLoading: isLoadingWithAddress,
 		reset: resetWithAddress,
 		isError: isErrorWithAddress,
 		error: errorWithAddreess,
@@ -42,6 +43,7 @@ const NewOrder = () => {
 
 	const {
 		mutate: createNoAddreess,
+		isLoading: isLoadingNoAddress,
 		reset: resetNoAddress,
 		isError: isErrorNotAddress,
 		error: errorNoAddress,
@@ -97,7 +99,7 @@ const NewOrder = () => {
 								sizeValue: value,
 								additionalServiceOption: additionalOptions?.map(
 									({ optionTitle, serviceTitle }) =>
-										`${optionTitle}: ${serviceTitle}`
+										`${serviceTitle}: ${optionTitle}`
 								),
 								name,
 								image,
@@ -245,7 +247,10 @@ const NewOrder = () => {
 					)}
 				</Stack>
 				<TotalSum sum={cart.totalSum} />
-				<OrderAction action={handlOrder} />
+				<OrderAction
+					action={handlOrder}
+					isLoading={isLoadingNoAddress || isLoadingWithAddress}
+				/>
 			</Stack>
 		</AddressContext.Provider>
 	);

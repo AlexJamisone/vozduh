@@ -1,5 +1,5 @@
 import { Center, Spinner, Stack } from '@chakra-ui/react';
-import React from 'react';
+import { AnimatePresence } from 'framer-motion';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { api } from '~/utils/api';
 import AdminOrderCard from './AdminOrderCard';
@@ -40,11 +40,11 @@ const AdminOrders = () => {
 				overflowY="hidden"
 			>
 				{data.pages.map((page, index) => (
-					<React.Fragment key={index}>
+					<AnimatePresence key={index}>
 						{page.items.map((order) => (
-							<AdminOrderCard order={order} key={order.id} />
+							<AdminOrderCard key={order.id} order={order} />
 						))}
-					</React.Fragment>
+					</AnimatePresence>
 				))}
 			</Stack>
 		</InfiniteScroll>

@@ -3,12 +3,15 @@ import {
 	Card,
 	CardBody,
 	CardFooter,
+	CardHeader,
+	Icon,
+	IconButton,
 	Radio,
 	RadioGroup,
 	Spinner,
 	Stack,
-	Text,
 	useDisclosure,
+	useToast,
 } from '@chakra-ui/react';
 import type {
 	Address,
@@ -21,6 +24,10 @@ import type {
 } from '@prisma/client';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
+import { AnimatePresence, motion } from 'framer-motion';
+import { BsEye } from 'react-icons/bs';
+import HighlightPhrase from '~/components/HighlightPhrase';
+import TotalSum from '~/components/TotalSum';
 import { api } from '~/utils/api';
 import OrderDitailsOrder from './OrderDitailsOrder';
 
@@ -42,24 +49,105 @@ const AdminOrderCard = ({ order }: AdminOrderCardProps) => {
 	const { isOpen, onClose, onToggle } = useDisclosure();
 	const { mutate: changeStatus, isLoading } =
 		api.order.changeStatus.useMutation();
+	const { mutate: changeView, isLoading: isLoadingChangeView } =
+		api.order.changeView.useMutation();
 	const ctx = api.useContext();
+	const toast = useToast();
 	return (
-		<Card size="sm" maxW={350}>
-			<CardBody textAlign="center">
+		<Card
+			size="sm"
+			maxW={350}
+			rounded="2xl"
+			as={motion.div}
+			layout
+			initial={{ opacity: 0 }}
+			whileInView={{
+				opacity: 1,
+				transition: {
+					type: 'spring',
+					duration: 0.3,
+					stiffness: 50,
+				},
+			}}
+		>
+			<CardHeader textAlign="center" fontSize="xl" position="relative">
 				Заказ #{order.orderNumber}
-				<Stack textAlign="left" gap={3}>
-					<Text>
-						Дата создания:{' '}
-						{dayjs(order.createdAt).format('DD.MM.YY HH:mm')}
-					</Text>
-					<Text>
-						Покупатель: {order.address.firstName}{' '}
-						{order.address.lastName}
-					</Text>
-					<Text>Телефон: {order.address.contactPhone}</Text>
-					<Text>ПВЗ: {order.address.point?.addressFullName}</Text>
+				<AnimatePresence>
+					{!order.viewed && (
+						<IconButton
+							as={motion.button}
+							initial={{ opacity: 0 }}
+							animate={{
+								opacity: 1,
+								transition: {
+									type: 'spring',
+									duration: 0.5,
+								},
+							}}
+							exit={{
+								opacity: 0,
+								transition: {
+									type: 'spring',
+									duration: 0.5,
+									stiffness: 50,
+								},
+							}}
+							isLoading={isLoadingChangeView}
+							onClick={() =>
+								changeView(
+									{
+										orderId: order.id,
+									},
+									{
+										onSuccess: ({ message }) => {
+											void ctx.order.invalidate();
+											toast({
+												description: message,
+												status: 'info',
+												isClosable: true,
+												duration: 2000,
+												position: 'top-right',
+											});
+										},
+									}
+								)
+							}
+							aria-label="watch"
+							size="sm"
+							mx="auto"
+							position="absolute"
+							right={5}
+							variant="outline"
+							icon={<Icon as={BsEye} />}
+						/>
+					)}
+				</AnimatePresence>
+			</CardHeader>
+			<CardBody textAlign="center">
+				<Stack gap={3} mb={3}>
+					<HighlightPhrase
+						title="Дата создания:"
+						text={dayjs(order.createdAt).format('DD.MM.YY HH:mm')}
+					/>
+					<HighlightPhrase
+						title="Покупатель:"
+						text={`${order.address.firstName} ${order.address.lastName}`}
+					/>
+					<HighlightPhrase
+						title="Телефон:"
+						text={order.address.contactPhone}
+					/>
+					<HighlightPhrase
+						title="ПВЗ:"
+						text={order.address.point?.addressFullName ?? ''}
+					/>
 				</Stack>
-				<Button onClick={onToggle} w="100%">
+				<Button
+					rounded="2xl"
+					size={['sm', 'md']}
+					onClick={onToggle}
+					w="100%"
+				>
 					Товары
 				</Button>
 				<OrderDitailsOrder
@@ -68,6 +156,7 @@ const AdminOrderCard = ({ order }: AdminOrderCardProps) => {
 					onClose={onClose}
 					orderItem={order.orderItem}
 				/>
+				<TotalSum sum={order.totalSum} />
 			</CardBody>
 			<CardFooter justifyContent="space-between">
 				<RadioGroup

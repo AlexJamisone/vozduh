@@ -42,7 +42,7 @@ const OrderDitailsOrder = ({
 				<ModalCloseButton />
 				<ModalBody>
 					<TableContainer>
-						<Table variant="simple" size="sm">
+						<Table variant="striped" size="sm">
 							<Thead>
 								<Tr>
 									<Th>Изделие</Th>

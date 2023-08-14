@@ -3,8 +3,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useCreateAddressContext } from '~/context/addressContext';
 type OrderActionProps = {
 	action: () => void;
+	isLoading?: boolean;
 };
-const OrderAction = ({ action }: OrderActionProps) => {
+const OrderAction = ({ action, isLoading }: OrderActionProps) => {
 	const { address } = useCreateAddressContext();
 	return (
 		<AnimatePresence>
@@ -30,6 +31,7 @@ const OrderAction = ({ action }: OrderActionProps) => {
 					},
 				}}
 				onClick={action}
+				isLoading={isLoading}
 			>
 				Заказать
 			</Button>
