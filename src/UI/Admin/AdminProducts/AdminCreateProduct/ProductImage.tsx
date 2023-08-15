@@ -26,6 +26,7 @@ const ProductImage = ({ src, image }: ProductImageProps) => {
 					width={image?.width ?? 100}
 					height={image?.height ?? 100}
 					src={`https://utfs.io/f/${src}`}
+					objectFit="cover"
 					alt={`product${src}`}
 					quality={100}
 					onLoadingComplete={() => setIsLoadingImg(true)}

@@ -33,27 +33,61 @@ export const categorysRouter = createTRPCRouter({
 	create: adminProcedure
 		.input(categoryInput)
 		.mutation(async ({ ctx, input }) => {
-			return await ctx.prisma.category.create({
-				data: {
-					title: input.title,
-					image: input.image,
+			const check = await ctx.prisma.category.findUnique({
+				where: {
 					path: input.path,
+					title: input.title,
 				},
 			});
+			if (!check) {
+				await ctx.prisma.category.create({
+					data: {
+						title: input.title,
+						image: input.image,
+						path: input.path,
+					},
+				});
+				return {
+					message: `Категория "${input.title}" по пути "/${input.path}" успешно создана!`,
+					success: true,
+				};
+			} else {
+				return {
+					message: `Категория с таким названием/путём уже существует!`,
+					success: false,
+				};
+			}
 		}),
 	update: adminProcedure
 		.input(categoryInput)
 		.mutation(async ({ ctx, input }) => {
-			return await ctx.prisma.category.update({
+			const check = await ctx.prisma.category.findUnique({
 				where: {
-					id: input.id,
-				},
-				data: {
-					image: input.image,
-					title: input.title,
 					path: input.path,
+					title: input.title,
 				},
 			});
+			if (!check) {
+				await ctx.prisma.category.update({
+					where: {
+						id: input.id,
+					},
+					data: {
+						image: input.image,
+						title: input.title,
+						path: input.path,
+					},
+				});
+				return {
+					message: `Категория "${input.title}" по пути "/${input.path}" успешно обновленна!`,
+					success: true,
+				};
+			} else {
+				return {
+					message: `Категория с таким названием/путём уже существует!`,
+					success: false,
+				};
+			}
 		}),
 	delete: adminProcedure
 		.input(

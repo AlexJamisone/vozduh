@@ -6,6 +6,7 @@ import {
 	useToast,
 } from '@chakra-ui/react';
 import type { Category } from '@prisma/client';
+import { motion } from 'framer-motion';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { useProductContext } from '~/context/productContext';
 import { api } from '~/utils/api';
@@ -22,7 +23,7 @@ const CategoryButton = ({ category }: CategoryButtonProps) => {
 	const toast = useToast();
 	const { id, image, path, title } = category;
 	return (
-		<ButtonGroup variant="outline" isAttached>
+		<ButtonGroup variant="outline" isAttached as={motion.div} layout>
 			<Button
 				isActive={state.category.id === id}
 				onClick={() => {

@@ -47,22 +47,32 @@ const AdminCategorys = () => {
 					title: state.category.title,
 				},
 				{
-					onSuccess: () => {
+					onSuccess: ({ message, success }) => {
 						void ctx.categorys.invalidate();
 						toast({
-							description: 'Категория успешно обновленна ✔',
-							status: 'info',
+							description: message,
+							status: success ? 'info' : 'error',
 							position: 'top-right',
 							isClosable: true,
 							duration: 2000,
 						});
-						dispatch({ type: 'CLEAR_CATEGORY' });
-						dispatch({
-							type: 'SET_VIEW',
-							payload: {
-								...state.controlView,
-								editCategory: false,
-							},
+						if (success) {
+							dispatch({ type: 'CLEAR_CATEGORY' });
+							dispatch({
+								type: 'SET_VIEW',
+								payload: {
+									...state.controlView,
+									editCategory: false,
+								},
+							});
+						}
+					},
+					onError: ({ message }) => {
+						toast({
+							description: message,
+							status: 'error',
+							position: 'top-right',
+							duration: 2500,
 						});
 					},
 				}
@@ -76,16 +86,16 @@ const AdminCategorys = () => {
 					title: state.category.title,
 				},
 				{
-					onSuccess: () => {
+					onSuccess: ({ message, success }) => {
 						void ctx.categorys.invalidate();
 						toast({
-							description: `Категория "${state.category.title}" успешно создана! ✔`,
+							description: message,
 							isClosable: true,
 							duration: 2500,
-							status: 'success',
+							status: success ? 'success' : 'error',
 							position: 'top-right',
 						});
-						dispatch({ type: 'CLEAR_CATEGORY' });
+						if (success) dispatch({ type: 'CLEAR_CATEGORY' });
 					},
 				}
 			);
@@ -94,20 +104,13 @@ const AdminCategorys = () => {
 	const handlChange = (e: ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
 		reset();
-		switch (name) {
-			case 'title':
-				dispatch({
-					type: 'SET_CATEGORY',
-					payload: { ...state.category, title: value },
-				});
-				break;
-			case 'path':
-				dispatch({
-					type: 'SET_CATEGORY',
-					payload: { ...state.category, path: value },
-				});
-				break;
-		}
+		dispatch({
+			type: 'SET_CATEGORY',
+			payload: {
+				...state.category,
+				[name]: value,
+			},
+		});
 	};
 	const createError = errorCreate?.data?.zodError?.fieldErrors;
 	const updateError = errorUpdate?.data?.zodError?.fieldErrors;
@@ -125,7 +128,7 @@ const AdminCategorys = () => {
 										createError?.[name]?.[0] !==
 											undefined) ||
 									(isErrorUpdate &&
-										updateError?.[name]?.[0] == undefined)
+										updateError?.[name]?.[0] !== undefined)
 								}
 							>
 								<FormLabel fontSize={['xs', 'md']}>
@@ -145,11 +148,8 @@ const AdminCategorys = () => {
 									{helper}
 								</FormHelperText>
 								<FormErrorMessage fontWeight={600}>
-									{errorCreate?.data?.zodError?.fieldErrors[
-										name
-									]?.[0] ||
-										errorUpdate?.data?.zodError
-											?.fieldErrors[name]?.[0]}
+									{createError?.[name]?.[0] ||
+										updateError?.[name]?.[0]}
 								</FormErrorMessage>
 							</FormControl>
 						)
