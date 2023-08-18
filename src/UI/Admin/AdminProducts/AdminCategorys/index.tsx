@@ -97,6 +97,15 @@ const AdminCategorys = () => {
 						});
 						if (success) dispatch({ type: 'CLEAR_CATEGORY' });
 					},
+					onError: ({ message }) => {
+						toast({
+							description: message,
+							status: 'error',
+							isClosable: true,
+							duration: 2500,
+							position: 'top-right',
+						});
+					},
 				}
 			);
 		}
