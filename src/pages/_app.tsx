@@ -4,6 +4,7 @@ import { ClerkProvider, SignedIn } from '@clerk/nextjs';
 import { type AppType } from 'next/app';
 import Head from 'next/head';
 import AdminNotification from '~/UI/Admin/AdminNotification';
+import FAQButton from '~/UI/FAQ/FAQButton';
 import Menu from '~/UI/Menu';
 import Navigation from '~/UI/Navigation/Navigation';
 import { theme } from '~/chakra/theme';
@@ -28,6 +29,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
 						<Menu />
 					</SignedIn>
 					<Component {...pageProps} />
+					<FAQButton />
 				</CartProvider>
 			</ClerkProvider>
 		</ChakraProvider>

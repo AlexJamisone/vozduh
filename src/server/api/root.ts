@@ -4,6 +4,7 @@ import { aboutRouter } from './routers/about';
 import { addressRouter } from './routers/address';
 import { categorysRouter } from './routers/categorys';
 import { cdekRouter } from './routers/cdek';
+import { faqRouter } from './routers/faq';
 import { favoritesRouter } from './routers/favorites';
 import { ordersRouter } from './routers/orders';
 import { productRouter } from './routers/product';
@@ -26,6 +27,7 @@ export const appRouter = createTRPCRouter({
 	size: sizeRouter,
 	shop: shopRouter,
 	about: aboutRouter,
+	faq: faqRouter,
 });
 
 // export type definition of API
