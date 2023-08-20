@@ -57,7 +57,7 @@ model Point {
 model Category {
     id      String    @id @default(cuid())
     title   String    @unique
-    path    String    
+    path    String
     image   String
     product Product[]
 }
@@ -140,6 +140,14 @@ model OrderItem {
     order                   Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
     orderId                 String
     additionalServiceOption String[]
+}
+
+model About {
+    id        String   @id @default(cuid())
+    title     String
+    content   String[]
+    createdAt DateTime @default(now())
+    updateAt  DateTime @updatedAt
 }
 
 model Comment {
