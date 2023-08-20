@@ -14,7 +14,7 @@ export function counterElement(
 			p: content === 0 ? 0 : 0.5,
 			rounded: 'full',
 			textAlign: 'center',
-			opacity: content === 0 ? 0 : 1,
+			opacity: content === 0 || !content ? 0 : 1,
 			transition: 'opacity .7s ease-in-out',
 		},
 	};

@@ -16,7 +16,11 @@ const AdminNotification = () => {
 		setNotification(payload);
 	});
 	useEffect(() => {
-		if (Notification.permission === 'granted' && notification) {
+		if (
+			window.Notification &&
+			Notification.permission === 'granted' &&
+			notification
+		) {
 			new Notification(
 				`Новый заказ от ${notification.name} на сумму ${notification.sum}`,
 				{

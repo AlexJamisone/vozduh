@@ -1,4 +1,5 @@
 import type { Role } from '@prisma/client';
+import type { HTMLAttributeAnchorTarget } from 'react';
 import { AiOutlineLineChart } from 'react-icons/ai';
 import { FaRegRectangleList } from 'react-icons/fa6';
 import { GoHeart } from 'react-icons/go';
@@ -16,6 +17,7 @@ type MenuActions = {
 		is: boolean;
 		value?: number;
 	};
+	target?: HTMLAttributeAnchorTarget;
 };
 
 export const menu_link = (
@@ -45,10 +47,11 @@ export const menu_link = (
 				},
 				{
 					id: 3,
-					path: '/admin/some_ref',
+					path: process.env.NEXT_PUBLIC_ANALISTIC_URL as string,
 					title: 'Посещения',
 					icon: AiOutlineLineChart,
 					name: 'some_ref',
+					target: '_blank',
 				},
 			];
 		case 'USER':

@@ -29,6 +29,7 @@ export const env = createEnv({
 		NEXT_PUBLIC_DADATA_API_KEY: z.string().min(1),
 		NEXT_PUBLIC_PUSHER_APP_KEY: z.string().min(1),
 		NEXT_PUBLIC_PUSHER_CLUSTER: z.string().min(1),
+		NEXT_PUBLIC_ANALISTIC_URL: z.string().min(1),
 	},
 
 	/**
@@ -46,6 +47,7 @@ export const env = createEnv({
 		NEXT_PUBLIC_PUSHER_APP_KEY: process.env.NEXT_PUBLIC_PUSHER_APP_KEY,
 		PUSHER_APP_SECRET: process.env.PUSHER_APP_SECRET,
 		PUSHER_APP_ID: process.env.PUSHER_APP_ID,
+		NEXT_PUBLIC_ANALISTIC_URL: process.env.NEXT_PUBLIC_ANALISTIC_URL
 	},
 	/**
 	 * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

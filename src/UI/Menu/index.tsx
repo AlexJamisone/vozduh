@@ -56,33 +56,40 @@ const Menu = () => {
 						role === 'ADMIN'
 							? ordersIncome
 							: (favoritesCount as number)
-					)?.map(({ id, icon, path, title, name, income }) => (
-						<Stack key={id} position="relative">
-							<Tooltip label={title}>
-								<IconButton
-									as={Link}
-									isActive={name === qpath}
-									boxShadow={
-										colorMode === 'dark' && name === qpath
-											? '0 0 10px 0 white'
-											: name === qpath
-											? '0 0 10px 0 black'
-											: undefined
-									}
-									href={path}
-									variant="outline"
-									aria-label="menu-list"
-									rounded="full"
-									icon={<Icon as={icon} />}
-									{...(income?.is &&
-										counterElement(income.value as number, {
-											bottom: -3,
-											right: -5,
-										}))}
-								/>
-							</Tooltip>
-						</Stack>
-					))}
+					)?.map(
+						({ id, icon, path, title, name, income, target }) => (
+							<Stack key={id} position="relative">
+								<Tooltip label={title}>
+									<IconButton
+										as={Link}
+										isActive={name === qpath}
+										boxShadow={
+											colorMode === 'dark' &&
+											name === qpath
+												? '0 0 10px 0 white'
+												: name === qpath
+												? '0 0 10px 0 black'
+												: undefined
+										}
+										href={path}
+										target={target}
+										variant="outline"
+										aria-label="menu-list"
+										rounded="full"
+										icon={<Icon as={icon} />}
+										{...(income?.is &&
+											counterElement(
+												income.value as number,
+												{
+													bottom: -3,
+													right: -5,
+												}
+											))}
+									/>
+								</Tooltip>
+							</Stack>
+						)
+					)}
 				</Stack>
 			)}
 		</Center>
