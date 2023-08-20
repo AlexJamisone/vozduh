@@ -42,11 +42,11 @@ const Menu = () => {
 					bottom={0}
 					direction="row"
 					gap={7}
-					bg="InfoBackground"
+					bg="Menu"
 					py={3}
 					px={7}
 					roundedTop="2xl"
-					boxShadow={colorMode === 'dark' ? undefined : '2xl'}
+					boxShadow={colorMode === 'dark' ? 'dark-lg' : '2xl'}
 					justifyContent={['space-between', null, null]}
 					w={['100%', 'unset', null]}
 					zIndex={100}
