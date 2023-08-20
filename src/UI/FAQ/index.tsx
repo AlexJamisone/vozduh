@@ -5,7 +5,7 @@ import FAQAccordion from './FAQAccordion';
 const FAQ = () => {
 	const { data: faqs } = api.faq.get.useQuery();
 	return (
-		<Accordion w={500} allowMultiple defaultIndex={[0]}>
+		<Accordion w={500} allowMultiple>
 			{faqs?.map((faq) => (
 				<FAQAccordion key={faq.id} faq={faq} />
 			))}

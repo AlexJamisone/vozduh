@@ -6,8 +6,8 @@ const FAQButton = () => {
 	return (
 		<Stack
 			position="fixed"
-			left={20}
-			bottom={10}
+			left={[10, 20]}
+			bottom={[32, 10]}
 			as={motion.div}
 			initial={{
 				opacity: 0,
@@ -29,12 +29,13 @@ const FAQButton = () => {
 			bg="Menu"
 			boxShadow="dark-lg"
 			rounded="full"
-			w={75}
-			h={75}
+			w={[55, 75]}
+			h={[55, 75]}
 			cursor="pointer"
 			align="center"
 			alignItems="center"
 			justifyContent="center"
+			zIndex={99}
 		>
 			<Center
 				_hover={{
@@ -45,6 +46,7 @@ const FAQButton = () => {
 				fontWeight={600}
 				w="100%"
 				h="100%"
+				fontSize={[12, 16]}
 			>
 				F.A.Q.
 			</Center>
