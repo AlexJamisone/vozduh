@@ -8,26 +8,25 @@ import {
 	IconButton,
 	Stack,
 	Text,
-	useDisclosure,
 	useToast,
 } from '@chakra-ui/react';
 import type { FAQ } from '@prisma/client';
-import { useReducer } from 'react';
+import { type Dispatch } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { CiEdit } from 'react-icons/ci';
-import { aboutReducer, initialState } from '~/reducer/aboutReducer';
+import type { Action } from '~/reducer/aboutReducer';
 import { api } from '~/utils/api';
-import FAQModal from './FAQModal';
 
 type FAQAccordionProps = {
 	faq: FAQ;
+	onToggle: () => void;
+	dispatch: Dispatch<Action>;
 };
 
-const FAQAccordion = ({ faq }: FAQAccordionProps) => {
+const FAQAccordion = ({ faq, onToggle, dispatch }: FAQAccordionProps) => {
 	const { title, content } = faq;
-	const { isOpen, onToggle, onClose } = useDisclosure();
-	const [state, dispatch] = useReducer(aboutReducer, initialState);
 	const { mutate: deleteFaq, isLoading } = api.faq.delete.useMutation();
+	const { data: role } = api.user.getRole.useQuery();
 	const ctx = api.useContext();
 	const toast = useToast();
 	const handlButton = (
@@ -36,22 +35,30 @@ const FAQAccordion = ({ faq }: FAQAccordionProps) => {
 		isLoading?: boolean
 	) => {
 		return (
-			<IconButton
-				aria-label={operation}
-				icon={
-					<Icon
-						as={operation === 'edit' ? CiEdit : AiOutlineDelete}
+			<>
+				{role === 'ADMIN' && (
+					<IconButton
+						aria-label={operation}
+						icon={
+							<Icon
+								as={
+									operation === 'edit'
+										? CiEdit
+										: AiOutlineDelete
+								}
+							/>
+						}
+						colorScheme={operation === 'edit' ? 'telegram' : 'red'}
+						size="sm"
+						variant="outline"
+						onClick={(e) => {
+							e.stopPropagation();
+							action();
+						}}
+						isLoading={isLoading}
 					/>
-				}
-				colorScheme={operation === 'edit' ? 'telegram' : 'red'}
-				size="sm"
-				variant="outline"
-				onClick={(e) => {
-					e.stopPropagation();
-					action();
-				}}
-				isLoading={isLoading}
-			/>
+				)}
+			</>
 		);
 	};
 	return (
@@ -105,12 +112,6 @@ const FAQAccordion = ({ faq }: FAQAccordionProps) => {
 					<Text key={index}>{cont}</Text>
 				))}
 			</AccordionPanel>
-			<FAQModal
-				isOpen={isOpen}
-				onClose={onClose}
-				dispatch={dispatch}
-				state={state}
-			/>
 		</AccordionItem>
 	);
 };

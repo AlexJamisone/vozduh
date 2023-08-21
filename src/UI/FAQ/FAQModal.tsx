@@ -31,6 +31,7 @@ const FAQModal = ({ isOpen, onClose, dispatch, state }: FAQModalProps) => {
 		isLoading: isLoadingCreate,
 		isError: isErrorCreate,
 		error: errorCreate,
+		reset: resetCreate,
 	} = api.faq.create.useMutation();
 
 	const {
@@ -38,6 +39,7 @@ const FAQModal = ({ isOpen, onClose, dispatch, state }: FAQModalProps) => {
 		isLoading: isLoadingUpdate,
 		isError: isErrorUpdate,
 		error: errorUpdate,
+		reset: resetUpdate,
 	} = api.faq.update.useMutation();
 	const ctx = api.useContext();
 	const toast = useToast();
@@ -46,7 +48,13 @@ const FAQModal = ({ isOpen, onClose, dispatch, state }: FAQModalProps) => {
 	const errorOfCreate = errorCreate?.data?.zodError?.fieldErrors;
 	const errorOfUpdate = errorUpdate?.data?.zodError?.fieldErrors;
 	return (
-		<Modal isOpen={isOpen} onClose={onClose}>
+		<Modal
+			isOpen={isOpen}
+			onClose={onClose}
+			closeOnEsc={false}
+			isCentered
+			motionPreset="slideInBottom"
+		>
 			<ModalOverlay />
 			<ModalContent>
 				<ModalHeader>
@@ -63,16 +71,18 @@ const FAQModal = ({ isOpen, onClose, dispatch, state }: FAQModalProps) => {
 					>
 						<FormLabel>Заголовок\Вопрос</FormLabel>
 						<Input
+							placeholder="Придумай заголовок\вопрос"
 							value={title}
-							onChange={(e) =>
+							onChange={(e) => {
+								void resetCreate() || void resetUpdate();
 								dispatch({
 									type: 'SET_ABOUT',
 									payload: {
 										...state,
 										title: e.target.value,
 									},
-								})
-							}
+								});
+							}}
 						/>
 						<FormErrorMessage>
 							{errorOfCreate?.['title'] ||
@@ -82,26 +92,29 @@ const FAQModal = ({ isOpen, onClose, dispatch, state }: FAQModalProps) => {
 					<FormControl
 						isInvalid={
 							(isErrorCreate || isErrorUpdate) &&
-							(errorOfCreate?.['content'] !== undefined ||
-								errorOfUpdate?.['content'] !== undefined)
+							(errorOfCreate?.['content']?.[0] !== undefined ||
+								errorOfUpdate?.['content']?.[0] !== undefined)
 						}
 					>
 						<FormLabel>Контент</FormLabel>
 						<Textarea
+							h={150}
+							placeholder="Напиши ответ на вопрос"
 							value={content}
-							onChange={(e) =>
+							onChange={(e) => {
+								void resetCreate() || void resetUpdate();
 								dispatch({
 									type: 'SET_ABOUT',
 									payload: {
 										...state,
 										content: e.target.value,
 									},
-								})
-							}
+								});
+							}}
 						/>
 						<FormErrorMessage>
-							{errorOfCreate?.['content'] ||
-								errorOfUpdate?.['content']}
+							{errorOfCreate?.['content']?.[0] ||
+								errorOfUpdate?.['content']?.[0]}
 						</FormErrorMessage>
 					</FormControl>
 				</ModalBody>
