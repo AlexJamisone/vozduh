@@ -1,6 +1,8 @@
 import { Center, Spinner, Stack } from '@chakra-ui/react';
 import { AnimatePresence } from 'framer-motion';
+import { AiOutlineUnorderedList } from 'react-icons/ai';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import NoData from '~/components/NoData';
 import { api } from '~/utils/api';
 import AdminOrderCard from './AdminOrderCard';
 
@@ -15,6 +17,8 @@ const AdminOrders = () => {
 			}
 		);
 	if (!data) return null;
+	if (data.pages[0]?.items.length === 0)
+		return <NoData icon={AiOutlineUnorderedList} title="Нет заказов" />;
 	return (
 		<InfiniteScroll
 			dataLength={data.pages.reduce(
