@@ -1,39 +1,34 @@
 name: Prettier
 
 on:
-  push:
-  pull_request:
+    push:
+    pull_request:
 
 env:
-  DATABASE_URL: 'https://fake.com'
-  UPLOADTHING_SECRET: '33123'
-  UPLOADTHING_APP_ID: '23123'
-  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "312312"
-  CLERK_SECRET_KEY: '12312'
-  UPSTASH_REDIS_REST_URL: "12313"
-  UPSTASH_REDIS_REST_TOKEN: "13123"
-  NEXT_PUBLIC_DADATA_API_KEY: "1321311"
-  NEXT_PUBLIC_YANDEX_API: '123123'
-  CDEK_ID: '123123124'
-  CDEK_SECRET: '123123'
-  NEXT_PUBLIC_PUSHER_CLUSTER: '232'
-  NEXT_PUBLIC_PUSHER_APP_KEY: '3213'
-  PUSHER_APP_SECRET: '3213'
-  PUSHER_APP_ID: '123'
-  NEXT_PUBLIC_ANALISTIC_URL: '3213123'
-  BOT_TOKEN: '3213123'
+    DATABASE_URL: 'https://fake.com'
+    UPLOADTHING_SECRET: '33123'
+    UPLOADTHING_APP_ID: '23123'
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: '312312'
+    CLERK_SECRET_KEY: '12312'
+    UPSTASH_REDIS_REST_URL: '12313'
+    UPSTASH_REDIS_REST_TOKEN: '13123'
+    NEXT_PUBLIC_DADATA_API_KEY: '1321311'
+    NEXT_PUBLIC_YANDEX_API: '123123'
+    CDEK_ID: '123123124'
+    CDEK_SECRET: '123123'
+    NEXT_PUBLIC_ANALISTIC_URL: '3213123'
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Install dependencies
-        run: npm install
-      - name: Run Prettier
-        run: npm run prettier
-      - name: Typecheck
-        run: npm run typecheck
-      - name: Lint
-        run: npm run lint
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+            - name: Install dependencies
+              run: npm install
+            - name: Run Prettier
+              run: npm run prettier
+            - name: Typecheck
+              run: npm run typecheck
+            - name: Lint
+              run: npm run lint

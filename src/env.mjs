@@ -15,7 +15,6 @@ export const env = createEnv({
 		NODE_ENV: z.enum(["development", "test", "production"]),
 		CDEK_ID: z.string().min(1),
 		CDEK_SECRET: z.string().min(1),
-		BOT_TOKEN: z.string().min(1)
 	},
 
 	/**
@@ -41,7 +40,6 @@ export const env = createEnv({
 		CDEK_ID: process.env.CDEK_ID,
 		CDEK_SECRET: process.env.CDEK_SECRET,
 		NEXT_PUBLIC_ANALISTIC_URL: process.env.NEXT_PUBLIC_ANALISTIC_URL,
-		BOT_TOKEN: process.env.BOT_TOKEN
 	},
 	/**
 	 * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
