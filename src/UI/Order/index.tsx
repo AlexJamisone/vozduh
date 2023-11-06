@@ -26,6 +26,9 @@ const NewOrder = () => {
 	useEffect(() => {
 		setIsClient(true);
 	}, []);
+	useEffect(() => {
+		if (cart.totalSum === 0) void router.push('/');
+	}, [cart.totalSum]);
 	const { data: addressList } = api.address.get.useQuery();
 	const [address, dispatchAddress] = useReducer(addressReducer, initial);
 	const {
