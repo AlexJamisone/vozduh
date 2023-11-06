@@ -7,7 +7,7 @@ const FAQButton = () => {
 		<Stack
 			position="fixed"
 			left={[10, 20]}
-			bottom={[32, 10]}
+			bottom={[29, 10]}
 			as={motion.div}
 			initial={{
 				opacity: 0,

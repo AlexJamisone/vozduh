@@ -7,7 +7,6 @@ import {
 	publicProcedure,
 } from '~/server/api/trpc';
 import { prisma } from '~/server/db';
-import { pusherServer } from '~/server/pusher';
 
 const cartItems = z.array(
 	z.object({
@@ -212,13 +211,7 @@ export const ordersRouter = createTRPCRouter({
 					point: true,
 				},
 			});
-			await pusherServer.trigger('order', 'new-order', {
-				name: address?.firstName,
-				city: address?.point?.city,
-				productName: input.cart[0]?.name,
-				productImg: input.cart[0]?.image,
-				sum: input.totalSum,
-			});
+			// here bot req
 			return {
 				success: `Заказ №${newOrder.orderNumber} успешно создан! В ближайшее время с вами свяжутся по указанным данным!`,
 				route: '/profile/main',
@@ -271,13 +264,7 @@ export const ordersRouter = createTRPCRouter({
 						point: true,
 					},
 				});
-				await pusherServer.trigger('order', 'new-order', {
-					name: address?.firstName,
-					city: address?.point?.city,
-					productName: input.cart[0]?.name,
-					productImg: input.cart[0]?.image,
-					sum: input.totalSum,
-				});
+				// here bot req
 				return {
 					success: `Заказ №${newOrder.orderNumber} успешно создан! В ближайшее время с вами свяжутся по указанным данным!`,
 					route: '/',
@@ -337,13 +324,7 @@ export const ordersRouter = createTRPCRouter({
 						point: true,
 					},
 				});
-				await pusherServer.trigger('order', 'new-order', {
-					name: address?.firstName,
-					city: address?.point?.city,
-					productName: input.cart[0]?.name,
-					productImg: input.cart[0]?.image,
-					sum: input.totalSum,
-				});
+				// here bot req
 				return {
 					success: `Заказ №${newOrder.orderNumber} успешно создан! В ближайшее время с вами свяжутся по указанным данным!`,
 					route: '/profile/main',

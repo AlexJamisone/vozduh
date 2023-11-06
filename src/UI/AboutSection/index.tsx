@@ -34,9 +34,15 @@ const AboutSection = () => {
 			</Stack>
 		);
 	return (
-		<Stack cursor={role === 'ADMIN' ? 'pointer' : 'default'}>
+		<Stack cursor={role === 'ADMIN' ? 'pointer' : 'default'} gap={'50px'}>
 			{!edit && (
 				<Heading
+					fontFamily="Jost, sans-serif"
+					textAlign="center"
+					border="2px solid"
+					rounded={'xl'}
+					p={3}
+					fontSize={[14, 16]}
 					onClick={
 						role === 'ADMIN'
 							? () => {
@@ -75,13 +81,14 @@ const AboutSection = () => {
 				/>
 			)}
 			{!edit && (
-				<Stack gap={5}>
+				<Stack gap={5} alignItems="center">
 					{!about && <NoData icon={SlInfo} title="Нет контента" />}
 					{about?.content.map((content, index) => (
 						<Text
 							key={index}
 							maxW={400}
-							textAlign="left"
+							textAlign="center"
+							fontSize={[14, 16]}
 							onClick={
 								role === 'ADMIN'
 									? () => {

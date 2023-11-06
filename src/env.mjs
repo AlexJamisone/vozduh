@@ -15,8 +15,7 @@ export const env = createEnv({
 		NODE_ENV: z.enum(["development", "test", "production"]),
 		CDEK_ID: z.string().min(1),
 		CDEK_SECRET: z.string().min(1),
-		PUSHER_APP_ID: z.string().min(1),
-		PUSHER_APP_SECRET: z.string().min(1),
+		BOT_TOKEN: z.string().min(1)
 	},
 
 	/**
@@ -27,8 +26,6 @@ export const env = createEnv({
 	client: {
 		NEXT_PUBLIC_YANDEX_API: z.string().min(1),
 		NEXT_PUBLIC_DADATA_API_KEY: z.string().min(1),
-		NEXT_PUBLIC_PUSHER_APP_KEY: z.string().min(1),
-		NEXT_PUBLIC_PUSHER_CLUSTER: z.string().min(1),
 		NEXT_PUBLIC_ANALISTIC_URL: z.string().min(1),
 	},
 
@@ -43,11 +40,8 @@ export const env = createEnv({
 		NEXT_PUBLIC_YANDEX_API: process.env.NEXT_PUBLIC_YANDEX_API,
 		CDEK_ID: process.env.CDEK_ID,
 		CDEK_SECRET: process.env.CDEK_SECRET,
-		NEXT_PUBLIC_PUSHER_CLUSTER: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
-		NEXT_PUBLIC_PUSHER_APP_KEY: process.env.NEXT_PUBLIC_PUSHER_APP_KEY,
-		PUSHER_APP_SECRET: process.env.PUSHER_APP_SECRET,
-		PUSHER_APP_ID: process.env.PUSHER_APP_ID,
-		NEXT_PUBLIC_ANALISTIC_URL: process.env.NEXT_PUBLIC_ANALISTIC_URL
+		NEXT_PUBLIC_ANALISTIC_URL: process.env.NEXT_PUBLIC_ANALISTIC_URL,
+		BOT_TOKEN: process.env.BOT_TOKEN
 	},
 	/**
 	 * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

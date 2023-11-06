@@ -6,12 +6,10 @@ import React from 'react';
 import ThemeButton from '~/components/ThemeButton';
 import UserBtn from '~/components/UserBtn';
 import { nav } from '~/constants/nav';
-import useLocalStorage from '~/hooks/useLoacalStorage';
 import Cart from '../Cart';
 
 const Desktop = () => {
 	const { isSignedIn } = useAuth();
-	const { value, setValue } = useLocalStorage('initial');
 	return (
 		<>
 			<Center
@@ -26,27 +24,15 @@ const Desktop = () => {
 						{isLogo ? (
 							<Box
 								as={motion.div}
-								initial={!value ? { opacity: 0 } : { y: 350 }}
-								animate={
-									!value
-										? {
-												opacity: 1,
-												y: 0,
-												transition: {
-													type: 'spring',
-													duration: 0.2,
-												},
-										  }
-										: {
-												y: 0,
-												transition: {
-													type: 'spring',
-													duration: 2,
-													delay: 3,
-												},
-										  }
-								}
-								onAnimationComplete={() => setValue(false)}
+								initial={{ opacity: 0 }}
+								animate={{
+									opacity: 1,
+									y: 0,
+									transition: {
+										type: 'spring',
+										duration: 0.2,
+									},
+								}}
 							>
 								<Link
 									href={src}
@@ -64,7 +50,7 @@ const Desktop = () => {
 									opacity: 1,
 									transition: {
 										type: 'spring',
-										delay: !value ? 0.5 : 3.1,
+										delay: 0.5,
 									},
 								}}
 							>
@@ -93,7 +79,7 @@ const Desktop = () => {
 					opacity: 1,
 					transition: {
 						type: 'spring',
-						delay: !value ? 0.5 : 3.1,
+						delay: 0.5,
 					},
 				}}
 			>
