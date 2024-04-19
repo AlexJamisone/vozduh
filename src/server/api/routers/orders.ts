@@ -1,4 +1,4 @@
-import type { OrderStatus, Point } from '@prisma/client';
+import type { OrderStatus } from '@prisma/client';
 import { z } from 'zod';
 import {
 	adminProcedure,
@@ -31,7 +31,7 @@ const addressObject = z.object({
 			message:
 				'Укажите ваш номер телефона, чтобы мы могли с вами связаться.',
 		}),
-	point: z.custom<Point>(),
+	point: z.string().min(1, { message: 'Укажи пункт выдачи' }),
 });
 
 const userWithAddressId = z.object({
@@ -78,11 +78,7 @@ export const ordersRouter = createTRPCRouter({
 					createdAt: 'desc',
 				},
 				include: {
-					address: {
-						include: {
-							point: true,
-						},
-					},
+					address: true,
 					orderItem: {
 						include: {
 							product: {
@@ -207,9 +203,6 @@ export const ordersRouter = createTRPCRouter({
 				where: {
 					id: input.addressId,
 				},
-				include: {
-					point: true,
-				},
 			});
 			// here bot req
 			return {
@@ -228,9 +221,7 @@ export const ordersRouter = createTRPCRouter({
 								firstName: input.address.firstName,
 								lastName: input.address.lastName,
 								contactPhone: input.address.contactPhone,
-								point: {
-									create: input.address.point,
-								},
+								point: input.address.point,
 							},
 						},
 						totalSum: input.totalSum,
@@ -256,12 +247,10 @@ export const ordersRouter = createTRPCRouter({
 						},
 					},
 				});
+				// TODO why here
 				const address = await prisma.address.findUnique({
 					where: {
 						id: newOrder.addressId,
-					},
-					include: {
-						point: true,
 					},
 				});
 				// here bot req
@@ -277,9 +266,7 @@ export const ordersRouter = createTRPCRouter({
 								firstName: input.address.firstName,
 								lastName: input.address.lastName,
 								contactPhone: input.address.contactPhone,
-								point: {
-									create: input.address.point,
-								},
+								point: input.address.point,
 								userId: ctx.userId,
 							},
 						},
@@ -316,12 +303,10 @@ export const ordersRouter = createTRPCRouter({
 						},
 					},
 				});
+				// TODO why here
 				const address = await prisma.address.findUnique({
 					where: {
 						id: newOrder.addressId,
-					},
-					include: {
-						point: true,
 					},
 				});
 				// here bot req

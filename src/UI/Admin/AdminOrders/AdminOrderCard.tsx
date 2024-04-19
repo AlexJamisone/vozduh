@@ -18,7 +18,6 @@ import type {
 	Order,
 	OrderItem,
 	OrderStatus,
-	Point,
 	Product,
 	ProductPriceHistory,
 } from '@prisma/client';
@@ -40,9 +39,7 @@ type AdminOrderCardProps = {
 				priceHistory: ProductPriceHistory[];
 			};
 		})[];
-		address: Address & {
-			point: Point | null;
-		};
+		address: Address;
 	};
 };
 const AdminOrderCard = ({ order }: AdminOrderCardProps) => {
@@ -179,7 +176,7 @@ const AdminOrderCard = ({ order }: AdminOrderCardProps) => {
 					/>
 					<HighlightPhrase
 						title="ПВЗ:"
-						text={order.address.point?.addressFullName ?? ''}
+						text={order.address.point ?? ''}
 					/>
 				</Stack>
 				<Button

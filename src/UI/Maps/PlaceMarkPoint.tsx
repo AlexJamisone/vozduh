@@ -1,5 +1,4 @@
 import { Placemark } from '@pbe/react-yandex-maps';
-import type { Point } from '@prisma/client';
 import { useCreateAddressContext } from '~/context/addressContext';
 
 type PlacemarkPointProps = {
