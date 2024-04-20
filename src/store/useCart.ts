@@ -1,23 +1,17 @@
+import { create } from 'zustand';
 import {
 	getFromLocalStorage,
 	saveToLocalStorage,
 } from '~/helpers/getFromLocalStorage';
 
-export type CartState = {
-	items: CartItem[];
-	totalSum: number;
-};
-
-export type CartItem = {
+type CartItem = {
 	id: string;
-	size: {
-		id: string;
-		value: string;
-	};
+	img: string;
 	name: string;
-	image: string;
+	size: string;
 	price: number;
 	quantity: number;
+
 	additionalOptions?: {
 		optionTitle: string;
 		serviceTitle: string;
@@ -25,120 +19,103 @@ export type CartItem = {
 		price: number;
 	}[];
 };
-
-interface SetAddAction {
-	type: 'ADD';
-	payload: CartItem;
-}
-
-interface SetRemoveAction {
-	type: 'REMOVE';
-	payload: {
-		id: string;
-		sizeId: string;
-		additionalOptions?: {
-			optionTitle: string;
-			serviceTitle: string;
-			optionId: string;
-			price: number;
-		}[];
-	};
-}
-
-interface SetUpdateAction {
-	type: 'UPDATE';
-	payload: CartItem;
-}
-
-interface SetClearAction {
-	type: 'CLEAR';
-}
-
-export type Action =
-	| SetAddAction
-	| SetRemoveAction
-	| SetUpdateAction
-	| SetClearAction;
-
-const LOCAL_STORAGE_KEY = 'cart';
-
-const initialState: CartState = {
-	items: [],
-	totalSum: 0,
+type CartState = {
+	items: CartItem[];
+	total: number;
 };
 
-export const initial: CartState =
-	getFromLocalStorage<CartState>(LOCAL_STORAGE_KEY) || initialState;
+type CartAction = {
+	add: (item: CartItem) => void;
+	remove: (
+		id: string,
+		size: string,
+		additionalOptions: CartItem['additionalOptions']
+	) => void;
+	update: (
+		id: string,
+		size: string,
+		quantity: number,
+		additionalOptions: CartItem['additionalOptions']
+	) => void;
+	clear: () => void;
+};
+type Cart = CartState & CartAction;
 
-export function cartReducer(
-	state: CartState = initial,
-	action: Action
-): CartState {
-	switch (action.type) {
-		case 'ADD': {
-			const itemIndex = state.items.findIndex(
-				(item) =>
-					item.id === action.payload.id &&
-					item.size.id === action.payload.size.id &&
-					item.additionalOptions?.length ===
-						action.payload.additionalOptions?.length &&
+const CART_KEY = 'cart';
+
+const init: CartState = {
+	items: [],
+	total: 0,
+};
+
+const initial: CartState = getFromLocalStorage(CART_KEY) ?? { ...init };
+
+export const useCart = create<Cart>((set) => ({
+	...initial,
+	add: (item) =>
+		set((state) => {
+			const idx = state.items.findIndex(
+				(i) =>
+					i.id === item.id &&
+					i.size === item.size &&
+					i.additionalOptions?.length ===
+						item.additionalOptions?.length &&
 					item.additionalOptions?.every(
 						(option, index) =>
 							option.optionId ===
-							action.payload.additionalOptions?.[index]?.optionId
+							item.additionalOptions?.[index]?.optionId
 					)
 			);
-			if (itemIndex === -1) {
-				const newItems: CartItem = {
-					...action.payload,
+			const total =
+				state.total +
+				item.price +
+				(item.additionalOptions?.reduce(
+					(sum, option) => sum + option.price,
+
+					0
+				) || 0);
+			if (idx === -1) {
+				const newItem: CartItem = {
+					...item,
 					quantity: 1,
 				};
-				const newState = {
-					...state,
-					items: [...state.items, newItems],
-					totalSum:
-						state.totalSum +
-						action.payload.price +
-						(action.payload.additionalOptions?.reduce(
-							(sum, option) => sum + Number(option.price),
-							0
-						) || 0),
+				const newState: CartState = {
+					items: [...state.items, newItem],
+					total,
 				};
-				saveToLocalStorage(newState, LOCAL_STORAGE_KEY);
+				saveToLocalStorage(newState, CART_KEY);
 				return newState;
 			} else {
-				const updatedItems = [...state.items];
-				const existingItem = updatedItems[itemIndex];
-				if (existingItem) {
-					const updatedItem = {
-						...existingItem,
-						quantity: existingItem.quantity + 1,
+				const updateItems = [...state.items];
+				const existing = updateItems[idx];
+				if (existing) {
+					const updateItem: CartItem = {
+						...existing,
+						quantity: existing.quantity + 1,
 					};
-					updatedItems[itemIndex] = updatedItem;
-					const newState = {
+					updateItems[idx] = updateItem;
+					const newState: CartState = {
 						...state,
-						items: updatedItems,
-						totalSum:
-							state.totalSum +
-							action.payload.price +
-							(action.payload.additionalOptions?.reduce(
-								(sum, option) => sum + Number(option.price),
-								0
-							) || 0),
+						items: updateItems,
+						total,
 					};
-					saveToLocalStorage(newState, LOCAL_STORAGE_KEY);
+					saveToLocalStorage(newState, CART_KEY);
 					return newState;
+				} else {
+					return {
+						items: [...state.items],
+						total,
+					};
 				}
 			}
-		}
-		case 'UPDATE': {
-			const { id, size, additionalOptions, quantity } = action.payload;
-
+		}),
+	update: (id, size, quantity, additionalOptions) =>
+		set((state) => {
 			const updatedItems = state.items.map((item) => {
 				// Check if the item matches the ID, size ID, and additional options
 				if (
 					item.id === id &&
-					item.size.id === size.id &&
+					item.size === size &&
 					areAdditionalOptionsEqual(
 						item.additionalOptions,
 						additionalOptions
@@ -170,13 +147,11 @@ export function cartReducer(
 				items: updatedItems,
 				totalSum: updatedTotalSum,
 			};
-			saveToLocalStorage(newState, LOCAL_STORAGE_KEY);
+			saveToLocalStorage(newState, CART_KEY);
 			return newState;
-		}
-
-		case 'REMOVE': {
-			const { id, sizeId, additionalOptions } = action.payload;
-
+		}),
+	remove: (id, size, additionalOptions) =>
+		set((state) => {
 			// Initialize the reduction to zero
 			let reduction = 0;
 
@@ -184,7 +159,7 @@ export function cartReducer(
 				// Check if the item matches the ID, size ID, and additional options
 				const isMatchingItem =
 					item.id === id &&
-					item.size.id === sizeId &&
+					item.size === size &&
 					areAdditionalOptionsEqual(
 						item.additionalOptions,
 						additionalOptions
@@ -205,23 +180,17 @@ export function cartReducer(
 			});
 
 			// Calculate the updated totalSum
-			const updatedTotalSum = state.totalSum - reduction;
+			const updatedTotalSum = state.total - reduction;
 			const newState = {
 				...state,
 				items: updatedItems,
 				totalSum: updatedTotalSum,
 			};
-			saveToLocalStorage(newState, LOCAL_STORAGE_KEY);
+			saveToLocalStorage(newState, CART_KEY);
 			return newState;
-		}
-		case 'CLEAR': {
-			saveToLocalStorage(initialState, LOCAL_STORAGE_KEY);
-			return initialState;
-		}
-		default:
-			return state;
-	}
-}
+		}),
+	clear: () => set(init),
+}));
 
 function areAdditionalOptionsEqual(
 	options1: CartItem['additionalOptions'] | undefined,
