@@ -1,42 +1,42 @@
 import {
 	FormControl,
-	FormErrorMessage,
 	FormLabel,
 	Input,
 	InputGroup,
 	InputRightElement,
 	Spinner,
 } from '@chakra-ui/react';
-import { AddressSuggestions } from 'react-dadata';
+import {
+	AddressSuggestions,
+	DaDataAddress,
+	DaDataSuggestion,
+} from 'react-dadata';
 import 'react-dadata/dist/react-dadata.css';
-import { useCreateAddressContext } from '~/context/addressContext';
 import { env } from '~/env.mjs';
+import { useAddress } from '~/store/useAddress';
+import { api } from '~/utils/api';
 
 const AddressSelectCity = () => {
-	const {
-		valueSuggestion,
-		handlPoints,
-		dispatchAddress,
-		isLoadingCdek,
-		address,
-	} = useCreateAddressContext();
+	const [controller, setPoint, point] = useAddress((state) => [
+		state.controller,
+		state.setPoint,
+		state.point,
+	]);
+	const { mutate: getPoints, isLoading } = api.cdek.getPoints.useMutation({
+		onSuccess: (points) => {
+			setPoint({ points });
+		},
+	});
+	const handlChange = (sug?: DaDataSuggestion<DaDataAddress>) => {
+		setPoint({ valueSuggestion: sug, selected: undefined });
+		getPoints({ city: sug?.data.postal_code ?? '' });
+	};
 	return (
 		<InputGroup position="relative" zIndex={99}>
-			<FormControl
-				isDisabled={address.confirmPoint}
-				isInvalid={
-					valueSuggestion === undefined && address.errorConfirm
-				}
-			>
+			<FormControl isDisabled={controller.isSelected}>
 				<FormLabel>Город</FormLabel>
 				<AddressSuggestions
-					onChange={(sug) => {
-						dispatchAddress({
-							type: 'SET_CONFIRM_ERROR',
-							payload: false,
-						});
-						handlPoints(sug);
-					}}
+					onChange={handlChange}
 					autoload
 					selectOnBlur
 					token={env.NEXT_PUBLIC_DADATA_API_KEY}
@@ -47,12 +47,11 @@ const AddressSelectCity = () => {
 					filterFromBound="city"
 					filterToBound="city"
 					renderOption={(sug) => sug.data.city}
-					value={valueSuggestion}
+					value={point?.valueSuggestion}
 				/>
 				<InputRightElement position="absolute" top="45%" right={3}>
-					{isLoadingCdek && <Spinner size="sm" />}
+					{isLoading && <Spinner size="sm" />}
 				</InputRightElement>
-				<FormErrorMessage>Введите ваш город</FormErrorMessage>
 			</FormControl>
 		</InputGroup>
 	);

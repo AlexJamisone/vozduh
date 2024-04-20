@@ -3,63 +3,68 @@ import {
 	FormErrorMessage,
 	FormLabel,
 	Input,
+	Textarea,
 } from '@chakra-ui/react';
 import type { ChangeEvent } from 'react';
 import { IMaskInput } from 'react-imask';
 import { addressInput } from '~/constants/address';
-import { useCreateAddressContext } from '~/context/addressContext';
+import { AddressInputValue, useAddress } from '~/store/useAddress';
 
 const AddressInputs = () => {
-	const { dispatchAddress, address, isError, error, reset } =
-		useCreateAddressContext();
-	const handlInput = (e: ChangeEvent<HTMLInputElement>) => {
-		const { name, value } = e.target;
-		switch (name) {
-			case 'firstName':
-				dispatchAddress({ type: 'SET_FIRSTNAME', payload: value });
-				break;
-			case 'lastName':
-				dispatchAddress({ type: 'SET_LASTNAME', payload: value });
-				break;
-			case 'phone':
-				dispatchAddress({ type: 'SET_PHONE', payload: value });
-				break;
-			default:
-				break;
+	const [input, error, set, reset] = useAddress((state) => [
+		state.input,
+		state.error,
+		state.setInput,
+		state.reset,
+	]);
+	const handlInput = (
+		e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+	) => {
+		if (error?.isError) {
+			reset();
 		}
+		const { name, value } = e.target;
+		set({ [name]: value } as AddressInputValue);
 	};
 	return (
 		<>
-			{addressInput(address).map(
-				({ name, placeholder, value, errorMessage }) => (
+			{addressInput.map(
+				({
+					name,
+					isTextarea,
+					label,
+					type,
+					id,
+					placeholder,
+					isMask,
+				}) => (
 					<FormControl
-						key={name}
+						key={id}
 						isInvalid={
-							isError &&
-							(error?.[name] !== undefined ||
-								(error?.address !== undefined &&
-									error?.address.includes(errorMessage)))
+							error?.isError &&
+							error.path.fieldErrors?.[name] !== undefined
 						}
 					>
-						<FormLabel>{placeholder}</FormLabel>
-						<Input
-							as={IMaskInput}
-							mask={name === 'phone' ? '+{7}(000)000-00-00' : ''}
-							type="text"
-							value={value}
-							placeholder={placeholder}
-							onChange={(e) => {
-								handlInput(e);
-								reset();
-							}}
-							name={name}
-						/>
-						<FormErrorMessage fontWeight={600}>
-							{error?.[name] ||
-								error?.address?.find(
-									(string) => string === errorMessage
-								)}
-						</FormErrorMessage>
+						<FormLabel>{label}</FormLabel>
+						{isTextarea ? (
+							<Textarea
+								onChange={handlInput}
+								value={input[name]}
+							/>
+						) : (
+							<Input
+								as={isMask ? IMaskInput : undefined}
+								mask={isMask ? '+{7}(000)000-00-00' : undefined}
+								type={type}
+								value={input[name]}
+								placeholder={placeholder}
+								onChange={handlInput}
+								name={name}
+							/>
+						)}
+						{error?.path.fieldErrors?.[name]?.map((err) => (
+							<FormErrorMessage key={err}>{err}</FormErrorMessage>
+						))}
 					</FormControl>
 				)
 			)}

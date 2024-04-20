@@ -28,10 +28,7 @@ type ProductState = {
 		id: string;
 		isEdit: boolean;
 	};
-	category: {
-		title: string;
-		type: string;
-	};
+	category: string;
 	error?: {
 		isError: boolean;
 		path: typeToFlattenedError<any, string>;
@@ -58,10 +55,7 @@ type ProductAction = {
 type CreateProduct = ProductState & ProductAction;
 const KEY = 'create';
 const init: ProductState = {
-	category: {
-		title: '',
-		type: '',
-	},
+	category: '',
 	edit: {
 		isEdit: false,
 		id: '',
@@ -100,8 +94,7 @@ export const useCreateProduct = create<CreateProduct>((set) => ({
 				...serviceAvailability,
 			},
 		})),
-	setCategory: (category) =>
-		set((state) => ({ category: { ...state.category, category } })),
+	setCategory: (category) => set({ category }),
 	reset: () => set({ error: undefined }),
 	clear: () => set(init),
 }));

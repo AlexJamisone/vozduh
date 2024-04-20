@@ -1,6 +1,7 @@
 import type { DaDataAddressSuggestion } from 'react-dadata';
 import type { typeToFlattenedError } from 'zod';
 import { create } from 'zustand';
+import type { FiltredPoint } from '~/server/api/routers/cdek';
 
 type AddressState = {
 	input: {
@@ -15,8 +16,9 @@ type AddressState = {
 		isSelected: boolean;
 		saveAddress: boolean;
 	};
-	point: {
-		selected: string;
+	point?: {
+		points?: FiltredPoint[];
+		selected?: FiltredPoint;
 		valueSuggestion?: DaDataAddressSuggestion;
 	};
 	edit: {
@@ -33,9 +35,9 @@ export type AddressInputValue = AddressState['input'];
 
 type AddressAction = {
 	setInput: (input: AddressInputValue) => void;
-	setController: (controller: AddressState['controller']) => void;
+	setController: (controller: Partial<AddressState['controller']>) => void;
 	setEdit: (edit: AddressState['edit']) => void;
-	setPoint: (point: Partial<AddressState['point']>) => void;
+	setPoint: (point: AddressState['point']) => void;
 	setError: (error: AddressState['error']) => void;
 
 	reset: () => void;
@@ -59,9 +61,6 @@ const initial: AddressState = {
 		showPVZ: false,
 		isSelected: false,
 		saveAddress: false,
-	},
-	point: {
-		selected: '',
 	},
 };
 

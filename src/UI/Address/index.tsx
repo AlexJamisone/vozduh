@@ -1,19 +1,13 @@
 import { Stack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import { useCreateAddressContext } from '~/context/addressContext';
 import YandexMap from '../Maps/YandexMap';
 import AddressInputs from './AddressInputs';
 import AddressPointCard from './AddressPointCard';
 import AddressSelectCity from './AddressSelectCity';
 
 const CreateAddress = () => {
-	const { address } = useCreateAddressContext();
 	return (
-		<Stack
-			direction="row"
-			justifyContent="center"
-			gap={address.map || address.point.isPointSelect ? 10 : undefined}
-		>
+		<Stack direction="row" justifyContent="center">
 			<Stack
 				w={300}
 				as={motion.div}

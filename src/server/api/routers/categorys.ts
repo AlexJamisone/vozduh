@@ -31,7 +31,30 @@ export const categorysRouter = createTRPCRouter({
 		return await ctx.prisma.category.findMany();
 	}),
 	create: adminProcedure
-		.input(categoryInput)
+		.input(
+			z.object({
+				title: z
+					.string()
+					.trim()
+					.nonempty({ message: 'Укажите название категории' })
+					.refine(
+						(val) =>
+							val.charAt(0).toUpperCase() +
+							val.slice(1).toLowerCase()
+					),
+				path: z
+					.string()
+					.trim()
+					.nonempty({ message: 'Укажите название пути' })
+					.refine((val) => val.toLowerCase())
+					.refine((value) => /^[a-zA-Z]+$/.test(value), {
+						message: 'Нужно использовать только английский',
+					}),
+				image: z
+					.string()
+					.nonempty({ message: 'Загрузите картинку для категории' }),
+			})
+		)
 		.mutation(async ({ ctx, input }) => {
 			const check = await ctx.prisma.category.findUnique({
 				where: {

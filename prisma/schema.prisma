@@ -129,7 +129,7 @@ model OrderItem {
 model About {
     id        String   @id @default(cuid())
     title     String
-    content   String[]
+    content   String
     createdAt DateTime @default(now())
     updateAt  DateTime @updatedAt
 }
@@ -146,7 +146,7 @@ model Comment {
 model FAQ {
     id        String   @id @unique @default(cuid())
     title     String
-    content   String[]
+    content   String
     createdAt DateTime @default(now())
     updateAt  DateTime @updatedAt
 }

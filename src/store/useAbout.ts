@@ -22,6 +22,7 @@ type AboutAction = {
 	setInput: (input: AboutState['input']) => void;
 	setEdit: (edit: AboutState['edit']) => void;
 	setAll: (state: Partial<AboutState>) => void;
+	setError: (error: AboutState['error']) => void;
 	reset: () => void;
 	clear: () => void;
 };
@@ -42,6 +43,7 @@ export const useAbout = create<About>((set) => ({
 		set((state) => ({ input: { ...state.input, ...input } })),
 	setEdit: (edit) => set((state) => ({ edit: { ...state.edit, ...edit } })),
 	setAll: (s) => set((state) => ({ ...state, ...s })),
+	setError: (error) => set({ error }),
 	reset: () => set((state) => ({ ...state, error: undefined })),
 	clear: () => set(initial),
 }));

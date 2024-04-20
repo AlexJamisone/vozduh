@@ -15,9 +15,7 @@ export const aboutRouter = createTRPCRouter({
 			z.object({
 				id: z.string().optional(),
 				title: z.string().nonempty({ message: 'Придумайте Заголовок' }),
-				content: z
-					.array(z.string())
-					.min(1, { message: 'Заполните контент' }),
+				content: z.string().min(1, { message: 'Заполните контент' }),
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
@@ -25,7 +23,7 @@ export const aboutRouter = createTRPCRouter({
 				const create = await ctx.prisma.about.create({
 					data: {
 						title: input.title,
-						content: input.content.filter(Boolean),
+						content: input.content,
 					},
 				});
 				if (!create) {
@@ -48,7 +46,7 @@ export const aboutRouter = createTRPCRouter({
 					},
 					data: {
 						title: input.title,
-						content: input.content.filter(Boolean),
+						content: input.content,
 					},
 				});
 				if (!update) {
