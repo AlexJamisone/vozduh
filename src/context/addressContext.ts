@@ -1,4 +1,3 @@
-import type { Point } from '@prisma/client';
 import { createContext, useContext, type Dispatch } from 'react';
 import type {
 	DaDataAddress,
@@ -11,7 +10,6 @@ export interface CreateAddressContext {
 	address: AddressState;
 	dispatchAddress: Dispatch<Action>;
 	valueSuggestion: DaDataAddressSuggestion | undefined;
-	points?: Point[];
 	handlPoints: (
 		suggestion: DaDataSuggestion<DaDataAddress> | undefined
 	) => void;
