@@ -43,7 +43,7 @@ type ProductAction = {
 	setService: (
 		serviceAvailability: ProductState['serviceAvailability']
 	) => void;
-	setImage: (image: string) => void;
+	setImage: (image: string[]) => void;
 	setSize: (size: string) => void;
 	setEdit: (edit: ProductState['edit']) => void;
 	setCategory: (category: ProductState['category']) => void;
@@ -86,7 +86,8 @@ export const useCreateProduct = create<CreateProduct>((set) => ({
 				? state.size.filter((s) => s !== size)
 				: [...state.size, size],
 		})),
-	setImage: (image) => set((state) => ({ image: [...state.image, image] })),
+	setImage: (image) =>
+		set((state) => ({ image: [...state.image, ...image] })),
 	setService: (serviceAvailability) =>
 		set((state) => ({
 			serviceAvailability: {

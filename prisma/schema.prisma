@@ -48,18 +48,18 @@ model Category {
 
 model Product {
     id                 String                @id @default(cuid())
-    name               String
-    description        String?
-    image              String[]
-    archived           Boolean               @default(false)
-    comments           Comment[]
-    category           Category?             @relation(fields: [categoryTitle], references: [title])
-    categoryTitle      String?
-    orders             OrderItem[]
-    priceHistory       ProductPriceHistory[]
-    size               Size[]
-    favorites          Favorites[]
-    additionalServices AdditionalService[]
+        name               String
+        description        String?
+        image              String[]
+        archived           Boolean               @default(false)
+        comments           Comment[]
+        category           Category?             @relation(fields: [categoryTitle], references: [title])
+        categoryTitle      String?
+        orders             OrderItem[]
+        price Int
+        size               Size[]
+        favorites          Favorites[]
+        additionalServices AdditionalService[]
 }
 
 model AdditionalService {
@@ -73,15 +73,15 @@ model AdditionalService {
 model AdditionalServiceOption {
     id                 String            @id @default(cuid())
     name               String
-    price              String
+    price              Int
     additionalServices AdditionalService @relation(fields: [addServId], references: [id], onDelete: Cascade)
     addServId          String
 }
 
 model Size {
     id      String    @id @default(cuid())
-    value   String
-    product Product[]
+        value   String    @unique
+        product Product[]
 }
 
 model Favorites {
@@ -91,13 +91,6 @@ model Favorites {
     userId    String
 }
 
-model ProductPriceHistory {
-    id            String   @id @default(cuid())
-    product       Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
-    productId     String
-    price         Int
-    effectiveFrom DateTime @default(now())
-}
 
 model Order {
     id          String      @id @default(cuid())
@@ -112,7 +105,7 @@ model Order {
     viewed      Boolean     @default(false)
     isPayed     Boolean     @default(false)
     orderItem   OrderItem[]
-    totalSum    Float
+    total    Float
 }
 
 model OrderItem {

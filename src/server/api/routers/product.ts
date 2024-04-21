@@ -1,10 +1,10 @@
-import { utapi } from 'uploadthing/server';
 import { z } from 'zod';
 import {
 	adminProcedure,
 	createTRPCRouter,
 	publicProcedure,
 } from '~/server/api/trpc';
+import { utapi } from '~/server/uploadthing';
 
 export const productRouter = createTRPCRouter({
 	getProductByCategory: publicProcedure
@@ -82,13 +82,10 @@ export const productRouter = createTRPCRouter({
 		});
 	}),
 	deletSinglImg: adminProcedure
-		.input(
-			z.object({
-				src: z.string(),
-			})
-		)
-		.mutation(async ({ input }) => {
-			return await utapi.deleteFiles(input.src);
+		.input(z.string())
+		.mutation(async ({ input: key }) => {
+			await utapi.deleteFiles(key);
+			return key;
 		}),
 	create: adminProcedure
 		.input(
@@ -96,12 +93,12 @@ export const productRouter = createTRPCRouter({
 				name: z.string().nonempty({
 					message: 'Пожалуйста, укажите название товара.',
 				}),
-				description: z.array(z.string()).min(1, {
+				description: z.string().min(1, {
 					message: 'Обязательно заполните описание товара',
 				}),
 				price: z
-					.string()
-					.nonempty({ message: 'Пожалуйста, укажите цену товара.' }),
+					.number()
+					.positive({ message: 'Пожалуйста, укажите цену товара.' }),
 				image: z
 					.array(
 						z
@@ -125,7 +122,7 @@ export const productRouter = createTRPCRouter({
 										name: z.string().nonempty({
 											message: 'Придумай имя доп опции',
 										}),
-										price: z.string().nonempty({
+										price: z.number().positive({
 											message: 'Установи цену доп опции',
 										}),
 									})
@@ -138,10 +135,10 @@ export const productRouter = createTRPCRouter({
 		)
 		.mutation(async ({ ctx, input }) => {
 			const sizeId = input.size.map((id) => ({ id }));
-			return await ctx.prisma.product.create({
+			const product = await ctx.prisma.product.create({
 				data: {
 					name: input.name,
-					description: input.description.filter(Boolean),
+					description: input.description,
 					image: input.image,
 					priceHistory: {
 						create: {
@@ -173,6 +170,7 @@ export const productRouter = createTRPCRouter({
 					},
 				},
 			});
+			return product.name;
 		}),
 	update: adminProcedure
 		.input(
@@ -181,12 +179,12 @@ export const productRouter = createTRPCRouter({
 				name: z.string().nonempty({
 					message: 'Пожалуйста, укажите название товара.',
 				}),
-				description: z.array(z.string()).min(1, {
+				description: z.string().min(1, {
 					message: 'Обязательно заполните описание товара',
 				}),
 				price: z
-					.string()
-					.nonempty({ message: 'Пожалуйста, укажите цену товара.' }),
+					.number()
+					.positive({ message: 'Пожалуйста, укажите цену товара.' }),
 				image: z
 					.array(
 						z
@@ -212,7 +210,7 @@ export const productRouter = createTRPCRouter({
 										name: z.string().nonempty({
 											message: 'Придумай имя доп опции',
 										}),
-										price: z.string().nonempty({
+										price: z.number().positive({
 											message: 'Установи цену доп опции',
 										}),
 									})
@@ -247,7 +245,7 @@ export const productRouter = createTRPCRouter({
 					},
 					data: {
 						name: input.name,
-						description: input.description.filter(Boolean),
+						description: input.description,
 						image: input.image,
 						category: {
 							connect: {
@@ -319,7 +317,7 @@ export const productRouter = createTRPCRouter({
 					},
 					data: {
 						name: input.name,
-						description: input.description.filter(Boolean),
+						description: input.description,
 						image: input.image,
 						category: {
 							connect: {

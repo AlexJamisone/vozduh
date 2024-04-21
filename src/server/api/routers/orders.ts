@@ -81,11 +81,7 @@ export const ordersRouter = createTRPCRouter({
 					address: true,
 					orderItem: {
 						include: {
-							product: {
-								include: {
-									priceHistory: true,
-								},
-							},
+							product: true,
 						},
 					},
 				},
@@ -175,7 +171,7 @@ export const ordersRouter = createTRPCRouter({
 			const newOrder = await ctx.prisma.order.create({
 				data: {
 					addressId: input.addressId,
-					totalSum: input.totalSum,
+					total: input.totalSum,
 					userId: ctx.userId,
 					orderItem: {
 						createMany: {
@@ -224,7 +220,7 @@ export const ordersRouter = createTRPCRouter({
 								point: input.address.point,
 							},
 						},
-						totalSum: input.totalSum,
+						total: input.totalSum,
 						orderItem: {
 							createMany: {
 								data: input.cart.map(
@@ -270,7 +266,7 @@ export const ordersRouter = createTRPCRouter({
 								userId: ctx.userId,
 							},
 						},
-						totalSum: input.totalSum,
+						total: input.totalSum,
 						orderItem: {
 							createMany: {
 								data: input.cart.map(

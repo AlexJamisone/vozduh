@@ -1,6 +1,5 @@
 import { Stack, TabPanel } from '@chakra-ui/react';
 import AdditionalService from './AdditionalService';
-import CardWithImage from './CardWithImage';
 import CreateProductAction from './CreateProductAction';
 import CreateProductInputs from './CreateProductInputs';
 import ImageUploader from './ImageUploader';
@@ -35,9 +34,8 @@ const AdminCreateProduct = () => {
 					},
 				}}
 			>
+				<ImageUploader />
 				<CreateProductInputs />
-				<ImageUploader endpoint="imageUploader" />
-				<CardWithImage />
 				<SelectCategory />
 				<SelectSize />
 				<AdditionalService />

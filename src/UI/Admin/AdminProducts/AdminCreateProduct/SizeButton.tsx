@@ -1,29 +1,14 @@
 import { Button } from '@chakra-ui/react';
-import type { Size } from '@prisma/client';
-import { useProductContext } from '~/context/productContext';
+import { useCreateProduct } from '~/store/useCreateProduct';
 type SizeButtonProps = {
-	size: Size;
+	value: string;
 };
 
-const SizeButton = ({ size }: SizeButtonProps) => {
-	const { dispatch, state, errorProduct, isErrorProduct, resetProduct } =
-		useProductContext();
-	const error =
-		isErrorProduct && errorProduct?.fieldErrors.size !== undefined;
+const SizeButton = ({ value }: SizeButtonProps) => {
+	const set = useCreateProduct((state) => state.setSize);
 	return (
-		<Button
-			isActive={state.product.size.includes(size.id)}
-			border={error ? '1px solid' : undefined}
-			borderColor={error ? 'red.300' : undefined}
-			onClick={() => {
-				resetProduct();
-				dispatch({
-					type: 'SET_PRODUCT_SIZE',
-					payload: [size.id],
-				});
-			}}
-		>
-			{size.value}
+		<Button onClick={() => set(value)} size="sm">
+			{value}
 		</Button>
 	);
 };

@@ -1,33 +1,36 @@
-import type { Product } from '~/reducer/productReducer';
+import { HTMLInputTypeAttribute } from 'react';
+import { ProductInputName } from '~/store/useCreateProduct';
 
 type ProdctCreate = {
-	name: string;
+	id: number;
 	placeholder: string;
-	value: string;
+	name: ProductInputName;
 	label: string;
-	textarea?: boolean;
+	type: HTMLInputTypeAttribute;
+	isTextarea?: boolean;
 };
 
-export function productCreate(product: Product): ProdctCreate[] {
-	return [
-		{
-			name: 'name',
-			label: 'Название',
-			placeholder: 'Введите название товара',
-			value: product.name,
-		},
-		{
-			name: 'description',
-			label: 'Описание',
-			placeholder: 'Введите описание',
-			value: product.description,
-			textarea: true,
-		},
-		{
-			name: 'price',
-			label: 'Цена',
-			placeholder: 'Введите цену в ₽',
-			value: product.price,
-		},
-	];
-}
+export const productCreate: ProdctCreate[] = [
+	{
+		id: 1,
+		name: 'name',
+		label: 'Название',
+		placeholder: 'Введите название товара',
+		type: 'text',
+	},
+	{
+		id: 2,
+		name: 'description',
+		label: 'Описание',
+		placeholder: 'Введите описание',
+		isTextarea: true,
+		type: 'text',
+	},
+	{
+		id: 3,
+		name: 'price',
+		label: 'Цена',
+		placeholder: 'Введите цену в ₽',
+		type: 'number',
+	},
+];

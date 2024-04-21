@@ -38,7 +38,7 @@ const CategoryImg = () => {
 						width={100}
 						height={100}
 						style={{ objectFit: 'contain' }}
-						src={`https://utifs.io/f/${img}`}
+						src={`https://utfs.io/f/${img}`}
 						alt="category"
 					/>
 					<IconButton

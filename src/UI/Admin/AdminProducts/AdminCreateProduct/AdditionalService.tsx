@@ -14,44 +14,28 @@ import {
 import { useRef } from 'react';
 import { AiFillDelete } from 'react-icons/ai';
 import { RxCross2 } from 'react-icons/rx';
-import { useProductContext } from '~/context/productContext';
 import productErrorFilter from '~/helpers/productErrorFilter';
+import { useCreateProduct } from '~/store/useCreateProduct';
 
 const AdditionalService = () => {
-	const { dispatch, state, isErrorProduct, errorProduct, resetProduct } =
-		useProductContext();
+	// TODO: NOW HERE
+	const [serviceAvailability] = useCreateProduct((state) => [
+		state.serviceAvailability,
+	]);
 	const inputref = useRef<HTMLInputElement | null>(null);
-	const errorTitle =
-		isErrorProduct &&
-		errorProduct?.fieldErrors.service?.includes(
-			'Укажи заголовок доп операции'
-		);
-	const errorPrice =
-		isErrorProduct &&
-		errorProduct?.fieldErrors.service?.includes('Установи цену доп опции');
-	const errorName =
-		isErrorProduct &&
-		errorProduct?.fieldErrors.service?.includes('Придумай имя доп опции');
 	return (
 		<Stack>
-			{state.product.serviceAvailability.map(
+			{serviceAvailability.map(
 				({ title, additionalOptions }, serviceIndex) => (
 					<Stack key={serviceIndex} justifyContent="center">
 						<Stack direction="row">
-							<FormControl isInvalid={errorTitle}>
+							<FormControl>
 								<Editable
 									defaultValue={title ?? ''}
 									placeholder="Придумай заголовок"
 									w="100%"
 									textAlign="center"
 									fontSize="2xl"
-									border={
-										errorTitle ? '1px solid' : undefined
-									}
-									rounded="base"
-									borderColor={
-										errorTitle ? 'red.300' : undefined
-									}
 								>
 									<EditablePreview />
 									<EditableInput
