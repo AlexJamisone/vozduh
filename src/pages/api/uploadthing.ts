@@ -1,8 +1,7 @@
-import { createNextPageApiHandler } from 'uploadthing/next-legacy';
-
+import { createRouteHandler } from 'uploadthing/next-legacy';
 import { ourFileRouter } from '~/server/uploadthing';
 
-const handler = createNextPageApiHandler({
+const handler = createRouteHandler({
 	router: ourFileRouter,
 });
 

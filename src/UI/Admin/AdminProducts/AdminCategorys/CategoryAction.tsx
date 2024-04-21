@@ -64,7 +64,11 @@ const CategoryAction = () => {
 		create({ image, title, path });
 	};
 	return (
-		<Button onClick={handlCategory}>
+		<Button
+			onClick={handlCategory}
+			colorScheme={edit.is ? 'blue' : 'green'}
+			variant="outline"
+		>
 			{edit.is ? 'Обновить' : 'Создать'}
 		</Button>
 	);

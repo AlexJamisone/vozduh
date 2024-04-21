@@ -4,161 +4,131 @@ import {
 	FormErrorMessage,
 	FormLabel,
 	Input,
-	Skeleton,
 	Stack,
+	TabPanel,
 	useToast,
 } from '@chakra-ui/react';
-import { AnimatePresence } from 'framer-motion';
-import { size } from '~/constants/size';
-import { useProductContext } from '~/context/productContext';
+import { FormEvent, useRef } from 'react';
+import { useCreateSize } from '~/store/useCreateSize';
 import { api } from '~/utils/api';
 import AdminSizeButton from './AdminSizeButton';
 
-const AdminSize = () => {
-	const { state, dispatch } = useProductContext();
-	const { data: sizes, isLoading } = api.size.get.useQuery();
-	const {
-		mutate: create,
-		isLoading: isLoadingCreate,
-		isError: isErrorCreate,
-		error: errorCreate,
-		reset,
-	} = api.size.create.useMutation();
-	const {
-		mutate: update,
-		isLoading: isLoadingUpdate,
-		isError: isErrorUpdate,
-		error: errorUpdate,
-	} = api.size.update.useMutation();
+export default function AdminSize() {
+	const [edit, value, setVal, clear, reset, error, setErr, id] =
+		useCreateSize((state) => [
+			state.edit.is,
+			state.value,
+			state.setValue,
+			state.clear,
+			state.reset,
+			state.error,
+			state.setError,
+			state.edit.id,
+		]);
+	const inputRef = useRef<HTMLInputElement>(null);
 	const ctx = api.useContext();
 	const toast = useToast();
-	const handlClick = () => {
-		if (state.controlView.editSize) {
-			update(
-				{
-					id: state.size.id,
-					value: state.size.value,
-				},
-				{
-					onSuccess: ({ message, success }) => {
-						void ctx.size.invalidate();
-						dispatch({
-							type: 'SET_SIZE',
-							payload: {
-								id: '',
-								value: '',
-							},
-						});
-						toast({
-							description: message,
-							status: success ? 'info' : 'error',
-							duration: 2500,
-							isClosable: true,
-							position: 'top-right',
-						});
-					},
+	const { mutate: create, isLoading: isCreating } =
+		api.size.create.useMutation({
+			onSuccess: ({ message }) => {
+				void ctx.size.invalidate();
+				toast({
+					description: message,
+					status: 'success',
+					isClosable: true,
+					position: 'top-right',
+				});
+				clear();
+				if (inputRef.current) {
+					inputRef.current.focus();
 				}
-			);
-		} else {
-			create(
-				{
-					value: state.size.value,
-				},
-				{
-					onSuccess({ message, success }) {
-						void ctx.size.invalidate();
-						dispatch({
-							type: 'SET_SIZE',
-							payload: {
-								id: '',
-								value: '',
-							},
-						});
-
-						toast({
-							description: message,
-							status: success ? 'success' : 'error',
-							duration: 2500,
-							isClosable: true,
-							position: 'top-right',
-						});
-					},
+			},
+			onError: ({ data, message }) => {
+				if (data?.zodError) {
+					setErr({ is: true, path: data.zodError });
+				} else {
+					toast({
+						description: message,
+						isClosable: true,
+						position: 'top-right',
+						status: 'error',
+					});
 				}
-			);
+			},
+		});
+	const { mutate: update, isLoading: isUpdating } =
+		api.size.update.useMutation({
+			onSuccess: ({ message }) => {
+				void ctx.size.invalidate();
+				toast({
+					description: message,
+					status: 'success',
+					isClosable: true,
+					position: 'top-right',
+				});
+				clear();
+			},
+			onError: ({ data, message }) => {
+				if (data?.zodError) {
+					setErr({ is: true, path: data.zodError });
+				} else {
+					toast({
+						description: message,
+						isClosable: true,
+						position: 'top-right',
+						status: 'error',
+					});
+				}
+			},
+		});
+	const handlValue = (e: FormEvent<HTMLInputElement>) => {
+		if (error?.is) {
+			reset();
 		}
+		const { value } = e.currentTarget;
+		setVal(value);
+	};
+	const handlAction = () => {
+		if (edit) {
+			update({ value, id });
+			return;
+		}
+		create({ value });
 	};
 	return (
-		<Stack alignItems="center" mt={[2, 10]} gap={5}>
+		<TabPanel>
 			<Stack>
-				{size(state.size.value).map(
-					({ id, label, name, placeholder, value }) => (
-						<FormControl
-							key={id}
-							isInvalid={
-								(isErrorCreate &&
-									errorCreate?.data?.zodError?.fieldErrors[
-										'value'
-									] !== undefined) ||
-								(isErrorUpdate &&
-									errorUpdate.data?.zodError?.fieldErrors[
-										'value'
-									] !== undefined)
-							}
-						>
-							<FormLabel textAlign="center">{label}</FormLabel>
-							<Input
-								size={['sm', 'md']}
-								placeholder={placeholder}
-								name={name}
-								value={value}
-								onChange={(e) => {
-									reset();
-									dispatch({
-										type: 'SET_SIZE',
-										payload: {
-											...state.size,
-											value: e.target.value,
-										},
-									});
-								}}
-							/>
-							<FormErrorMessage>
-								{errorCreate?.data?.zodError?.fieldErrors[
-									'value'
-								] ||
-									errorUpdate?.data?.zodError?.fieldErrors[
-										'value'
-									]}
-							</FormErrorMessage>
-						</FormControl>
-					)
-				)}
-			</Stack>
-			<Button
-				onClick={handlClick}
-				isLoading={isLoadingCreate || isLoadingUpdate}
-				colorScheme="telegram"
-				size={['sm', 'md']}
-			>
-				{state.controlView.editSize ? 'Обновить' : 'Сохранить'}
-			</Button>
-			<Skeleton isLoaded={!isLoading}>
-				<Stack
-					direction="row"
-					gap={3}
-					justifyContent="center"
-					maxW={300}
-					flexWrap="wrap"
+				<FormControl
+					isInvalid={
+						error?.is && error.path.fieldErrors?.value !== undefined
+					}
 				>
-					<AnimatePresence>
-						{sizes?.map((size) => (
-							<AdminSizeButton key={size.id} size={size} />
-						))}
-					</AnimatePresence>
-				</Stack>
-			</Skeleton>
-		</Stack>
+					<FormLabel>Размер</FormLabel>
+					<Input
+						value={value}
+						onInput={handlValue}
+						ref={inputRef}
+						placeholder="Придумай размер"
+						onKeyDown={(e) => {
+							if (e.key === 'Enter') {
+								handlAction();
+							}
+						}}
+					/>
+					{error?.path.fieldErrors.value?.map((err) => (
+						<FormErrorMessage key={err}>{err}</FormErrorMessage>
+					))}
+				</FormControl>
+				<AdminSizeButton />
+				<Button
+					isLoading={isCreating || isUpdating}
+					onClick={handlAction}
+					variant="outline"
+					colorScheme={edit ? 'blue' : 'green'}
+				>
+					{edit ? 'Обновить' : 'Создать'}
+				</Button>
+			</Stack>
+		</TabPanel>
 	);
-};
-
-export default AdminSize;
+}
