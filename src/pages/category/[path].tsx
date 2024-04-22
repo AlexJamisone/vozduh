@@ -18,7 +18,6 @@ const ProductCategory = () => {
 						product={product}
 						index={index}
 						role="USER"
-						image={<ProductCard.Image />}
 					/>
 				))}
 			</Stack>

@@ -1,8 +1,8 @@
 import { Stack, TabPanel } from '@chakra-ui/react';
 import AdditionalService from './AdditionalService';
-import CreateProductAction from './CreateProductAction';
 import CreateProductInputs from './CreateProductInputs';
 import ImageUploader from './ImageUploader';
+import ProductAction from './ProductAction';
 import SelectCategory from './SelectCategory';
 import SelectSize from './SelectSize';
 
@@ -39,7 +39,7 @@ const AdminCreateProduct = () => {
 				<SelectCategory />
 				<SelectSize />
 				<AdditionalService />
-				<CreateProductAction />
+				<ProductAction />
 			</Stack>
 		</TabPanel>
 	);

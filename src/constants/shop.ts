@@ -1,7 +1,9 @@
+import { OffilineInputName } from "~/store/useOfflineShop";
+
 type ShopInputs = {
 	id: number;
 	placeholder: string;
-	name: string;
+	name: OffilineInputName;
 	label: string;
 };
 

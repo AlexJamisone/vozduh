@@ -11,12 +11,7 @@ const UserFavorites = () => {
 	return (
 		<>
 			{favoritersProducts?.favorites.map(({ product }, index) => (
-				<ProductCard
-					index={index}
-					product={product}
-					key={product.id}
-					image={<ProductCard.Image />}
-				/>
+				<ProductCard index={index} product={product} key={product.id} />
 			))}
 		</>
 	);

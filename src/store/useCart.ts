@@ -4,7 +4,7 @@ import {
 	saveToLocalStorage,
 } from '~/helpers/getFromLocalStorage';
 
-type CartItem = {
+export type CartItem = {
 	id: string;
 	img: string;
 	name: string;

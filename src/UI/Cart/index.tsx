@@ -14,23 +14,20 @@ import {
 	useDisclosure,
 } from '@chakra-ui/react';
 import { AnimatePresence } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { PiShoppingCartSimpleLight } from 'react-icons/pi';
 import { RiWindyFill } from 'react-icons/ri';
 import NoData from '~/components/NoData';
 import TotalSum from '~/components/TotalSum';
-import { useCart } from '~/context/cartContext';
 import { counterElement } from '~/helpers/counterElement';
+import { useCart } from '~/store/useCart';
 import CartItem from './CartItem';
 
 const Cart = () => {
 	const { isOpen, onClose, onToggle } = useDisclosure();
 	const btnRef = useRef<HTMLButtonElement | null>(null);
 	const [countCart, setCountCart] = useState(0);
-	const { cart } = useCart();
-	useEffect(() => {
-		setCountCart(cart.items.length);
-	}, [cart.items.length]);
+	const cart = useCart();
 	return (
 		<>
 			<Stack position="relative">
@@ -74,7 +71,7 @@ const Cart = () => {
 					</DrawerBody>
 					{cart.items.length !== 0 && (
 						<DrawerFooter justifyContent="space-between" gap={5}>
-							<TotalSum sum={cart.totalSum} />
+							<TotalSum sum={cart.total} />
 							<Button
 								w="50%"
 								colorScheme="telegram"

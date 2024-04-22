@@ -19,7 +19,6 @@ import type {
 } from '@prisma/client';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import type { ReactNode } from 'react';
 import { BsArchive } from 'react-icons/bs';
 import Overlay from '~/components/Overlay';
 import { api } from '~/utils/api';
@@ -35,11 +34,10 @@ type ProductCardProps = {
 		additionalServices: AdditionalServiceWithOption[];
 	};
 	role?: Role;
-	image?: ReactNode;
 	index: number;
 };
 
-const ProductCard = ({ product, role, index, image }: ProductCardProps) => {
+const ProductCard = ({ product, role, index }: ProductCardProps) => {
 	const { mutate: archive, isLoading } = api.product.archive.useMutation();
 	const ctx = api.useContext();
 	const toast = useToast();

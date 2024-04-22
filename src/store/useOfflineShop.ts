@@ -7,9 +7,9 @@ type OfflineShopState = {
 		name: string;
 		fullAddress: string;
 		phone: string;
-		image: string;
 		work_time?: string;
 	};
+	image: string;
 	edit: {
 		is: boolean;
 		id: string;
@@ -26,7 +26,7 @@ type OfflineShopAction = {
 	setInputs: (input: OffilineInputValue) => void;
 	setEdit: (edit: OfflineShopState['edit']) => void;
 	setError: (error: OfflineShopState['error']) => void;
-
+	setImg: (image: string) => void;
 	reset: () => void;
 	clear: () => void;
 };
@@ -40,8 +40,8 @@ const init: OfflineShopState = {
 		is: false,
 		id: '',
 	},
+	image: '',
 	input: {
-		image: '',
 		name: '',
 		phone: '',
 		work_time: '',
@@ -55,6 +55,7 @@ export const useOfflineShop = create<OfflineShop>((set) => ({
 	...initial,
 	setInputs: (input) =>
 		set((state) => ({ input: { ...state.input, ...input } })),
+	setImg: (image) => set({ image }),
 	setEdit: (edit) => set({ edit }),
 	setError: (error) => set({ error }),
 	reset: () => set({ error: undefined }),

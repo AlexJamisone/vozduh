@@ -1,8 +1,4 @@
 import {
-	FormControl,
-	FormErrorMessage,
-	FormLabel,
-	Input,
 	Modal,
 	ModalBody,
 	ModalCloseButton,
@@ -10,9 +6,10 @@ import {
 	ModalFooter,
 	ModalHeader,
 	ModalOverlay,
-	Textarea,
 } from '@chakra-ui/react';
+import { useFaq } from '~/store/useFaq';
 import FAQAction from './FAQAction';
+import FAQInputs from './FAQInputs';
 
 type FAQModalProps = {
 	isOpen: boolean;
@@ -20,6 +17,7 @@ type FAQModalProps = {
 };
 
 const FAQModal = ({ isOpen, onClose }: FAQModalProps) => {
+	const edit = useFaq((state) => state.edit.is);
 	return (
 		<Modal
 			isOpen={isOpen}
@@ -35,57 +33,7 @@ const FAQModal = ({ isOpen, onClose }: FAQModalProps) => {
 				</ModalHeader>
 				<ModalCloseButton />
 				<ModalBody>
-					<FormControl
-						isInvalid={
-							(isErrorCreate || isErrorUpdate) &&
-							(errorOfCreate?.['title'] !== undefined ||
-								errorOfUpdate?.['title'] !== undefined)
-						}
-					>
-						<FormLabel>Заголовок\Вопрос</FormLabel>
-						<Input
-							placeholder="Придумай заголовок\вопрос"
-							value={title}
-							onChange={(e) => {
-								void resetCreate() || void resetUpdate();
-								dispatch({
-									type: 'SET_ABOUT',
-									payload: {
-										...state,
-										title: e.target.value,
-									},
-								});
-							}}
-						/>
-						<FormErrorMessage>
-							{errorOfCreate?.['title'] ||
-								errorOfUpdate?.['title']}
-						</FormErrorMessage>
-					</FormControl>
-					<FormControl
-						isInvalid={
-							(isErrorCreate || isErrorUpdate) &&
-							(errorOfCreate?.['content']?.[0] !== undefined ||
-								errorOfUpdate?.['content']?.[0] !== undefined)
-						}
-					>
-						<FormLabel>Контент</FormLabel>
-						<Textarea
-							h={150}
-							placeholder="Напиши ответ на вопрос"
-							value={content}
-							onChange={(e) => {
-								void resetCreate() || void resetUpdate();
-								dispatch({
-									type: 'SET_ABOUT',
-									payload: {
-										...state,
-										content: e.target.value,
-									},
-								});
-							}}
-						/>
-					</FormControl>
+					<FAQInputs />
 				</ModalBody>
 				<ModalFooter>
 					<FAQAction onClose={onClose} />
