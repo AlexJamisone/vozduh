@@ -9,11 +9,12 @@ export default function UserAddressAction({
 }) {
 	const ctx = api.useContext();
 	const toast = useToast();
-	const [input, selected, clear, setErr] = useAddress((state) => [
+	const [input, selected, clear, setErr, isSelected] = useAddress((state) => [
 		state.input,
 		state.point?.selected,
 		state.clear,
 		state.setError,
+		state.controller.isSelected,
 	]);
 	const { mutate: create, isLoading: isLoadingCreate } =
 		api.address.create.useMutation({
@@ -29,25 +30,29 @@ export default function UserAddressAction({
 			onError: ({ message, data }) => {
 				if (data?.zodError) {
 					setErr({ isError: true, path: data.zodError });
-				} else {
-					toast({
-						description: message,
-						status: 'error',
-					});
+					return;
 				}
+				toast({
+					description: message,
+					status: 'error',
+				});
 			},
 		});
 	const handlAction = () => {
-		const { lastName, firstName, contactPhone: phone } = input;
+		if (!isSelected) {
+			toast({ description: 'Потверди пункт выдачи', status: 'warning' });
+			return;
+		}
+		const { lastName, firstName, contactPhone } = input;
 		create({
 			firstName,
 			lastName,
-			phone,
+			contactPhone,
 			point: selected?.addressFullName ?? '',
 		});
 	};
 	return (
-		<Stack>
+		<Stack direction="row">
 			<Button
 				colorScheme="twitter"
 				isLoading={isLoadingCreate}
@@ -55,7 +60,7 @@ export default function UserAddressAction({
 			>
 				Сохранить
 			</Button>
-			<Button onClick={() => {}}>Отмена</Button>
+			<Button onClick={onClose}>Отмена</Button>
 		</Stack>
 	);
 }

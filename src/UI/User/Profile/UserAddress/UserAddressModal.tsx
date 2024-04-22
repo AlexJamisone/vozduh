@@ -13,6 +13,7 @@ import AddressInputs from '~/UI/Address/AddressInputs';
 import AddressPointCard from '~/UI/Address/AddressPointCard';
 import AddressSelectCity from '~/UI/Address/AddressSelectCity';
 import YandexMap from '~/UI/Maps/YandexMap';
+import { useAddress } from '~/store/useAddress';
 import UserAddressAction from './UserAddressAction';
 
 type UserAddressModalProps = {
@@ -20,6 +21,7 @@ type UserAddressModalProps = {
 	onClose: () => void;
 };
 const UserAddressModal = ({ isOpen, onClose }: UserAddressModalProps) => {
+	const show = useAddress((state) => state.controller.showMap);
 	return (
 		<Modal isOpen={isOpen} onClose={onClose}>
 			<ModalOverlay />
@@ -30,7 +32,7 @@ const UserAddressModal = ({ isOpen, onClose }: UserAddressModalProps) => {
 					<AddressInputs />
 					<AddressSelectCity />
 					<AddressPointCard />
-					<YandexMap />
+					{show && <YandexMap />}
 				</ModalBody>
 				<ModalFooter>
 					<UserAddressAction onClose={onClose} />

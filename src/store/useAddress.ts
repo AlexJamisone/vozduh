@@ -62,6 +62,7 @@ const initial: AddressState = {
 		isSelected: false,
 		saveAddress: false,
 	},
+	point: undefined,
 };
 
 export const useAddress = create<Address>((set) => ({

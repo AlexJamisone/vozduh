@@ -3,8 +3,11 @@ import {
 	FormErrorMessage,
 	FormLabel,
 	Input,
+	Stack,
 	Textarea,
 } from '@chakra-ui/react';
+import { useAuth } from '@clerk/nextjs';
+import { useRouter } from 'next/router';
 import type { ChangeEvent } from 'react';
 import { IMaskInput } from 'react-imask';
 import { addressInput } from '~/constants/address';
@@ -17,6 +20,8 @@ const AddressInputs = () => {
 		state.setInput,
 		state.reset,
 	]);
+	const { isSignedIn } = useAuth();
+	const router = useRouter();
 	const handlInput = (
 		e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
 	) => {
@@ -26,9 +31,13 @@ const AddressInputs = () => {
 		const { name, value } = e.target;
 		set({ [name]: value } as AddressInputValue);
 	};
+	const inputs =
+		!isSignedIn && router.pathname === '/new-order'
+			? addressInput
+			: addressInput.filter((input) => input.name !== 'comment');
 	return (
-		<>
-			{addressInput.map(
+		<Stack>
+			{inputs.map(
 				({
 					name,
 					isTextarea,
@@ -50,6 +59,7 @@ const AddressInputs = () => {
 							<Textarea
 								onChange={handlInput}
 								value={input[name]}
+								placeholder={placeholder}
 							/>
 						) : (
 							<Input
@@ -68,7 +78,7 @@ const AddressInputs = () => {
 					</FormControl>
 				)
 			)}
-		</>
+		</Stack>
 	);
 };
 

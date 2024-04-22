@@ -1,5 +1,6 @@
 import { Button, FormLabel, Select, Stack, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+import { useProductDitails } from '~/store/useProductDitails';
 import { api } from '~/utils/api';
 import ProductDitalsAction from './ProductDitalsAction';
 
@@ -8,6 +9,8 @@ const ProductDitalsInfo = () => {
 	const { data: product } = api.product.getSinglProduct.useQuery({
 		id: query.id as string,
 	});
+	const setSize = useProductDitails((state) => state.setSize);
+	const size = useProductDitails((state) => state.size);
 	if (!product) return null;
 	return (
 		<Stack
@@ -26,7 +29,7 @@ const ProductDitalsInfo = () => {
 				maxW={300}
 			>
 				{product.size.map(({ id, value }) => (
-					<Button key={id} onClick={() => {}}>
+					<Button key={id} onClick={() => setSize(value)}>
 						{value}
 					</Button>
 				))}
@@ -73,7 +76,7 @@ const ProductDitalsInfo = () => {
 					img: product.image[0] ?? '',
 					price: product.price,
 					name: product.name,
-					size: '', // TODO real value
+					size,
 				}}
 			/>
 			<Stack>

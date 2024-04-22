@@ -17,13 +17,15 @@ import { useAddress } from '~/store/useAddress';
 import { api } from '~/utils/api';
 
 const AddressSelectCity = () => {
-	const [controller, setPoint, point] = useAddress((state) => [
+	const [controller, setPoint, point, setCtrl] = useAddress((state) => [
 		state.controller,
 		state.setPoint,
 		state.point,
+		state.setController,
 	]);
 	const { mutate: getPoints, isLoading } = api.cdek.getPoints.useMutation({
 		onSuccess: (points) => {
+			setCtrl({ showMap: true });
 			setPoint({ points });
 		},
 	});

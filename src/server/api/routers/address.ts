@@ -43,10 +43,10 @@ export const addressRouter = createTRPCRouter({
 			z.object({
 				firstName: z.string().nonempty({ message: 'Введите имя' }),
 				lastName: z.string().nonempty({ message: 'Введите фамилию' }),
-				phone: z
+				contactPhone: z
 					.string()
 					.min(16, { message: 'Проверьте правильность номера' }),
-				point: z.string(),
+				point: z.string().min(1, {message: "Потверди ПВЗ"}),
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
@@ -65,7 +65,7 @@ export const addressRouter = createTRPCRouter({
 			});
 			const createAddress = ctx.prisma.address.create({
 				data: {
-					contactPhone: input.phone,
+					contactPhone: input.contactPhone,
 					firstName: input.firstName,
 					lastName: input.lastName,
 					userId: ctx.userId,
