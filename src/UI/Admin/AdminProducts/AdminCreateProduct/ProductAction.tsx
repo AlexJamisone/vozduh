@@ -12,8 +12,6 @@ export default function ProductAction() {
 				toast({
 					description: `Товар ${name} успешно создан`,
 					status: 'success',
-					position: 'top-right',
-					isClosable: true,
 				});
 				clear();
 				setTab(0);
@@ -25,8 +23,6 @@ export default function ProductAction() {
 					toast({
 						description: message,
 						status: 'error',
-						position: 'top-right',
-						isClosable: true,
 					});
 				}
 			},
@@ -38,8 +34,6 @@ export default function ProductAction() {
 				toast({
 					description: `Товар ${name} успешно создан`,
 					status: 'success',
-					position: 'top-right',
-					isClosable: true,
 				});
 				clear();
 				setTab(0);
@@ -51,8 +45,6 @@ export default function ProductAction() {
 					toast({
 						description: message,
 						status: 'error',
-						position: 'top-right',
-						isClosable: true,
 					});
 				}
 			},

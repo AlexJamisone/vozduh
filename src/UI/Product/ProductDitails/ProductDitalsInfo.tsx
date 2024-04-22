@@ -1,9 +1,14 @@
 import { Button, FormLabel, Select, Stack, Text } from '@chakra-ui/react';
-import { useProductDitalsContext } from '~/context/productDitailsContext';
+import { useRouter } from 'next/router';
+import { api } from '~/utils/api';
 import ProductDitalsAction from './ProductDitalsAction';
 
 const ProductDitalsInfo = () => {
-	const { product, dispatch, state } = useProductDitalsContext();
+	const { query } = useRouter();
+	const { data: product } = api.product.getSinglProduct.useQuery({
+		id: query.id as string,
+	});
+	if (!product) return null;
 	return (
 		<Stack
 			w={['100%', '50%']}
@@ -21,25 +26,7 @@ const ProductDitalsInfo = () => {
 				maxW={300}
 			>
 				{product.size.map(({ id, value }) => (
-					<Button
-						border={
-							state.size.errorSelect ? '1px solid' : undefined
-						}
-						borderColor={
-							state.size.errorSelect ? 'orange.300' : undefined
-						}
-						key={id}
-						isActive={state.size.id === id}
-						onClick={() => {
-							dispatch({
-								type: 'SIZE',
-								payload: {
-									id: state.size.id === id ? '' : id,
-									value,
-								},
-							});
-						}}
-					>
+					<Button key={id} onClick={() => {}}>
 						{value}
 					</Button>
 				))}
@@ -63,20 +50,7 @@ const ProductDitalsInfo = () => {
 									const name = selectedOption
 										? selectedOption.name
 										: '';
-									dispatch({
-										type: 'SERVICE',
-										payload: {
-											serviceId: id,
-											optionId: e.target.value,
-											price: Number(price),
-											serviceTitle: title,
-											optionTitle: name,
-										},
-									});
 								}}
-								value={
-									state.additionalServ[index]?.optionId ?? ''
-								}
 							>
 								{additionalServicesOption.map(
 									({ id, name, price }) => (
@@ -91,13 +65,19 @@ const ProductDitalsInfo = () => {
 				)}
 			</Stack>
 			<Text fontSize="2xl" fontWeight={600}>
-				{product.priceHistory[0]?.price} ₽
+				{product.price} ₽
 			</Text>
-			<ProductDitalsAction />
+			<ProductDitalsAction
+				item={{
+					id: product.id,
+					img: product.image[0] ?? '',
+					price: product.price,
+					name: product.name,
+					size: '', // TODO real value
+				}}
+			/>
 			<Stack>
-				{product.description.map((description, index) => (
-					<Text key={index}>{description}</Text>
-				))}
+				<Text>{product.description}</Text>
 			</Stack>
 		</Stack>
 	);

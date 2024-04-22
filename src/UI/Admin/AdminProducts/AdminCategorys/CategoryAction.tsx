@@ -17,7 +17,6 @@ const CategoryAction = () => {
 			toast({
 				description: message,
 				status: 'success',
-				position: 'top-right',
 			});
 		},
 		onError: ({ message, data }) => {
@@ -27,8 +26,6 @@ const CategoryAction = () => {
 				toast({
 					description: message,
 					status: 'error',
-					isClosable: true,
-					position: 'top-right',
 				});
 			}
 		},
@@ -39,7 +36,6 @@ const CategoryAction = () => {
 			toast({
 				description: message,
 				status: 'info',
-				position: 'top-right',
 			});
 		},
 		onError: ({ message, data }) => {
@@ -49,8 +45,6 @@ const CategoryAction = () => {
 				toast({
 					description: message,
 					status: 'error',
-					isClosable: true,
-					position: 'top-right',
 				});
 			}
 		},

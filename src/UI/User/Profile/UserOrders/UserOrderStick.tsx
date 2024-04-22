@@ -14,7 +14,7 @@ type UserOrderStickProps = {
 };
 
 const UserOrderStick = ({ order, index }: UserOrderStickProps) => {
-	const { createdAt, id, orderItem, orderNumber, status, totalSum, viewed } =
+	const { createdAt, id, orderItem, orderNumber, status, total, viewed } =
 		order;
 	return (
 		<Tr
@@ -59,7 +59,7 @@ const UserOrderStick = ({ order, index }: UserOrderStickProps) => {
 					))}
 				</Stack>
 			</Td>
-			<Td>{totalSum} ₽</Td>
+			<Td>{total} ₽</Td>
 		</Tr>
 	);
 };

@@ -16,14 +16,7 @@ const AdminRouter = () => {
 			case 'orders':
 				return <AdminOrders />;
 			case 'products':
-				return (
-					<AdminProducts
-						product={<AdminProducts.Product />}
-						size={<AdminProducts.Size />}
-						category={<AdminProducts.Category />}
-						menu={<AdminProducts.Menu />}
-					/>
-				);
+				return <AdminProducts />;
 		}
 	};
 	return (

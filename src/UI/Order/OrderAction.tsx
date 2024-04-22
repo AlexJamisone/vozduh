@@ -1,17 +1,12 @@
 import { Button } from '@chakra-ui/react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCreateAddressContext } from '~/context/addressContext';
-type OrderActionProps = {
-	action: () => void;
-	isLoading?: boolean;
-};
-const OrderAction = ({ action, isLoading }: OrderActionProps) => {
-	const { address } = useCreateAddressContext();
+import { api } from '~/utils/api';
+const OrderAction = () => {
+	const {} = api.order.createNoAddreess.useMutation();
+	const {} = api.order.createIsAuthHaveAddress.useMutation();
 	return (
 		<AnimatePresence>
 			<Button
-				border={address.errorConfirm ? '1px solid' : undefined}
-				borderColor={address.errorConfirm ? 'orange.300' : undefined}
 				as={motion.button}
 				initial={{ opacity: 0, y: 50 }}
 				animate={{
@@ -30,8 +25,7 @@ const OrderAction = ({ action, isLoading }: OrderActionProps) => {
 						type: 'spring',
 					},
 				}}
-				onClick={action}
-				isLoading={isLoading}
+				onClick={() => {}}
 			>
 				Заказать
 			</Button>

@@ -24,11 +24,6 @@ export const productRouter = createTRPCRouter({
 					},
 				},
 				include: {
-					priceHistory: {
-						orderBy: {
-							effectiveFrom: 'desc',
-						},
-					},
 					size: true,
 					additionalServices: {
 						include: {
@@ -50,11 +45,6 @@ export const productRouter = createTRPCRouter({
 					id: input.id,
 				},
 				include: {
-					priceHistory: {
-						orderBy: {
-							effectiveFrom: 'desc',
-						},
-					},
 					size: true,
 					additionalServices: {
 						include: {
@@ -67,11 +57,6 @@ export const productRouter = createTRPCRouter({
 	getForAdmin: adminProcedure.query(async ({ ctx }) => {
 		return await ctx.prisma.product.findMany({
 			include: {
-				priceHistory: {
-					orderBy: {
-						effectiveFrom: 'desc',
-					},
-				},
 				size: true,
 				additionalServices: {
 					include: {
@@ -140,11 +125,7 @@ export const productRouter = createTRPCRouter({
 					name: input.name,
 					description: input.description,
 					image: input.image,
-					priceHistory: {
-						create: {
-							price: Number(input.price),
-						},
-					},
+					price: input.price,
 					category: {
 						connect: {
 							title: input.category,
@@ -226,168 +207,77 @@ export const productRouter = createTRPCRouter({
 			const existingServiceIds = input.service
 				?.filter((service) => service.id !== '')
 				.map((service) => service.id);
-			const prevPrice = await ctx.prisma.product.findUnique({
+			return await ctx.prisma.product.update({
 				where: {
 					id: input.producId,
 				},
-				include: {
-					priceHistory: {
-						orderBy: {
-							effectiveFrom: 'desc',
+				data: {
+					name: input.name,
+					description: input.description,
+					image: input.image,
+					category: {
+						connect: {
+							title: input.category,
 						},
+					},
+					price: input.price,
+					size: {
+						set: sizeId,
+					},
+					additionalServices: {
+						deleteMany: {
+							id: {
+								notIn: existingServiceIds as string[],
+							},
+						},
+						upsert: input.service?.map((service) => ({
+							where: {
+								id: service.id,
+							},
+							update: {
+								title: service.title,
+								additionalServicesOption: {
+									upsert: service.additionalOptions.map(
+										(option) => ({
+											where: {
+												id: option.id,
+											},
+											update: {
+												name: option.name,
+												price: option.price,
+											},
+											create: {
+												name: option.name,
+												price: option.price,
+											},
+										})
+									),
+									deleteMany: {
+										id: {
+											notIn: service.additionalOptions
+												.filter(
+													(option) => option.id !== ''
+												)
+												.map((option) => option.id),
+										},
+									},
+								},
+							},
+							create: {
+								additionalServicesOption: {
+									create: service.additionalOptions.map(
+										(option) => ({
+											name: option.name,
+											price: option.price,
+										})
+									),
+								},
+								title: service.title,
+							},
+						})),
 					},
 				},
 			});
-			if (prevPrice?.priceHistory[0]?.price === Number(input.price)) {
-				return await ctx.prisma.product.update({
-					where: {
-						id: input.producId,
-					},
-					data: {
-						name: input.name,
-						description: input.description,
-						image: input.image,
-						category: {
-							connect: {
-								title: input.category,
-							},
-						},
-						size: {
-							set: sizeId,
-						},
-						additionalServices: {
-							deleteMany: {
-								id: {
-									notIn: existingServiceIds as string[],
-								},
-							},
-							upsert: input.service?.map((service) => ({
-								where: {
-									id: service.id,
-								},
-								update: {
-									title: service.title,
-									additionalServicesOption: {
-										upsert: service.additionalOptions.map(
-											(option) => ({
-												where: {
-													id: option.id,
-												},
-												update: {
-													name: option.name,
-													price: option.price,
-												},
-												create: {
-													name: option.name,
-													price: option.price,
-												},
-											})
-										),
-										deleteMany: {
-											id: {
-												notIn: service.additionalOptions
-													.filter(
-														(option) =>
-															option.id !== ''
-													)
-													.map((option) => option.id),
-											},
-										},
-									},
-								},
-								create: {
-									additionalServicesOption: {
-										create: service.additionalOptions.map(
-											(option) => ({
-												name: option.name,
-												price: option.price,
-											})
-										),
-									},
-									title: service.title,
-								},
-							})),
-						},
-					},
-				});
-			} else {
-				return await ctx.prisma.product.update({
-					where: {
-						id: input.producId,
-					},
-					data: {
-						name: input.name,
-						description: input.description,
-						image: input.image,
-						category: {
-							connect: {
-								title: input.category,
-							},
-						},
-						priceHistory: {
-							create: {
-								price: Number(input.price),
-							},
-						},
-						size: {
-							set: sizeId,
-						},
-						additionalServices: {
-							deleteMany: {
-								id: {
-									notIn: existingServiceIds as string[],
-								},
-							},
-							upsert: input.service?.map((service) => ({
-								where: {
-									id: service.id,
-								},
-								update: {
-									title: service.title,
-									additionalServicesOption: {
-										upsert: service.additionalOptions.map(
-											(option) => ({
-												where: {
-													id: option.id,
-												},
-												update: {
-													name: option.name,
-													price: option.price,
-												},
-												create: {
-													name: option.name,
-													price: option.price,
-												},
-											})
-										),
-										deleteMany: {
-											id: {
-												notIn: service.additionalOptions
-													.filter(
-														(option) =>
-															option.id !== ''
-													)
-													.map((option) => option.id),
-											},
-										},
-									},
-								},
-								create: {
-									additionalServicesOption: {
-										create: service.additionalOptions.map(
-											(option) => ({
-												name: option.name,
-												price: option.price,
-											})
-										),
-									},
-									title: service.title,
-								},
-							})),
-						},
-					},
-				});
-			}
 		}),
 	archive: adminProcedure
 		.input(

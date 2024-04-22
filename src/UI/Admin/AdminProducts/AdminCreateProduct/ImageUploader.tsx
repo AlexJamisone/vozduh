@@ -12,8 +12,6 @@ const ImageUploader = () => {
 				toast({
 					description: 'Фото успешно удалено',
 					status: 'info',
-					position: 'top-right',
-					isClosable: true,
 				});
 				set(image.filter((key) => key !== id));
 			},

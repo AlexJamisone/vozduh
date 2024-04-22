@@ -6,15 +6,13 @@ import {
 	Text,
 	useToast,
 } from '@chakra-ui/react';
-import type { Address, Point } from '@prisma/client';
+import type { Address } from '@prisma/client';
 import { motion } from 'framer-motion';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { api } from '~/utils/api';
 
 type UserAddressCardProps = {
-	address: Address & {
-		point: Point | null;
-	};
+	address: Address;
 	index: number;
 };
 
@@ -53,16 +51,12 @@ const UserAddressCard = ({ address, index }: UserAddressCardProps) => {
 								toast({
 									description: 'Адрес успешно удалён.',
 									isClosable: true,
-									position: 'top-right',
-									status: 'info',
 								});
 							},
 							onError: ({ message }) => {
 								toast({
 									description: `${message}`,
 									status: 'error',
-									isClosable: true,
-									position: 'top-right',
 								});
 							},
 						}
@@ -73,7 +67,7 @@ const UserAddressCard = ({ address, index }: UserAddressCardProps) => {
 				<Text>Имя: {address.firstName}</Text>
 				<Text>Фамилия: {address.lastName}</Text>
 				<Text>Телефон: {address.contactPhone}</Text>
-				<Text>ПВЗ: {address.point?.addressFullName}</Text>
+				<Text>ПВЗ: {address.point}</Text>
 			</CardBody>
 		</Card>
 	);

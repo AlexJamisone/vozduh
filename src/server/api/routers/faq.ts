@@ -17,9 +17,7 @@ export const faqRouter = createTRPCRouter({
 		.input(
 			z.object({
 				title: z.string().nonempty({ message: 'Придумай вопрос' }),
-				content: z
-					.array(z.string())
-					.min(1, { message: 'Не забудь ответ' }),
+				content: z.string().min(1, { message: 'Не забудь ответ' }),
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
@@ -27,7 +25,7 @@ export const faqRouter = createTRPCRouter({
 			const create = await ctx.prisma.fAQ.create({
 				data: {
 					title,
-					content: content.filter(Boolean),
+					content: content,
 				},
 			});
 			if (!create) {
@@ -47,9 +45,7 @@ export const faqRouter = createTRPCRouter({
 			z.object({
 				id: z.string(),
 				title: z.string().nonempty({ message: 'Придумай вопрос' }),
-				content: z
-					.array(z.string())
-					.min(1, { message: 'Не забудь ответ' }),
+				content: z.string().min(1, { message: 'Не забудь ответ' }),
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
@@ -60,7 +56,7 @@ export const faqRouter = createTRPCRouter({
 				},
 				data: {
 					title,
-					content: content.filter(Boolean),
+					content: content,
 				},
 			});
 			if (!update) {

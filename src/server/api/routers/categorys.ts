@@ -1,10 +1,10 @@
-import { utapi } from 'uploadthing/server';
 import { z } from 'zod';
 import {
 	adminProcedure,
 	createTRPCRouter,
 	publicProcedure,
 } from '~/server/api/trpc';
+import { utapi } from '~/server/uploadthing';
 
 const categoryInput = z.object({
 	id: z.string(),

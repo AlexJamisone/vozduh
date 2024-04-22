@@ -19,7 +19,6 @@ import type {
 	OrderItem,
 	OrderStatus,
 	Product,
-	ProductPriceHistory,
 } from '@prisma/client';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
@@ -35,9 +34,7 @@ dayjs().locale('ru');
 type AdminOrderCardProps = {
 	order: Order & {
 		orderItem: (OrderItem & {
-			product: Product & {
-				priceHistory: ProductPriceHistory[];
-			};
+			product: Product;
 		})[];
 		address: Address;
 	};
@@ -45,11 +42,39 @@ type AdminOrderCardProps = {
 const AdminOrderCard = ({ order }: AdminOrderCardProps) => {
 	const { isOpen, onClose, onToggle } = useDisclosure();
 	const { mutate: changeStatus, isLoading } =
-		api.order.changeStatus.useMutation();
+		api.order.changeStatus.useMutation({
+			onSuccess: () => {
+				void ctx.order.invalidate();
+			},
+		});
 	const { mutate: changeView, isLoading: isLoadingChangeView } =
-		api.order.changeView.useMutation();
+		api.order.changeView.useMutation({
+			onSuccess: ({ message }) => {
+				void ctx.order.invalidate();
+				toast({
+					description: message,
+					status: 'info',
+					duration: 2000,
+				});
+			},
+		});
 	const { mutate: changePay, isLoading: isLoadedPay } =
-		api.order.changePay.useMutation();
+		api.order.changePay.useMutation({
+			onSuccess: ({ message }) => {
+				void ctx.order.invalidate();
+				toast({
+					description: message,
+					status: 'info',
+					duration: 2500,
+				});
+			},
+			onError: ({ message }) => {
+				toast({
+					description: message,
+					status: 'error',
+				});
+			},
+		});
 	const ctx = api.useContext();
 	const toast = useToast();
 	return (
@@ -93,23 +118,9 @@ const AdminOrderCard = ({ order }: AdminOrderCardProps) => {
 							}}
 							isLoading={isLoadingChangeView}
 							onClick={() =>
-								changeView(
-									{
-										orderId: order.id,
-									},
-									{
-										onSuccess: ({ message }) => {
-											void ctx.order.invalidate();
-											toast({
-												description: message,
-												status: 'info',
-												isClosable: true,
-												duration: 2000,
-												position: 'top-right',
-											});
-										},
-									}
-								)
+								changeView({
+									orderId: order.id,
+								})
 							}
 							aria-label="watch"
 							size="sm"
@@ -130,31 +141,9 @@ const AdminOrderCard = ({ order }: AdminOrderCardProps) => {
 					isDisabled={order.isPayed}
 					isLoading={isLoadedPay}
 					onClick={() =>
-						changePay(
-							{
-								orderId: order.id,
-							},
-							{
-								onSuccess: ({ message }) => {
-									void ctx.order.invalidate();
-									toast({
-										description: message,
-										status: 'info',
-										isClosable: true,
-										duration: 2500,
-										position: 'top-right',
-									});
-								},
-								onError: ({ message }) => {
-									toast({
-										description: message,
-										status: 'error',
-										isClosable: true,
-										position: 'top-right',
-									});
-								},
-							}
-						)
+						changePay({
+							orderId: order.id,
+						})
 					}
 				>
 					{order.isPayed ? 'Оплачено' : 'Не оплачено'}
@@ -193,22 +182,15 @@ const AdminOrderCard = ({ order }: AdminOrderCardProps) => {
 					onClose={onClose}
 					orderItem={order.orderItem}
 				/>
-				<TotalSum sum={order.totalSum} />
+				<TotalSum sum={order.total} />
 			</CardBody>
 			<CardFooter justifyContent="space-between">
 				<RadioGroup
 					onChange={(value) =>
-						changeStatus(
-							{
-								orderId: order.id,
-								status: value as OrderStatus,
-							},
-							{
-								onSuccess: () => {
-									void ctx.order.invalidate();
-								},
-							}
-						)
+						changeStatus({
+							orderId: order.id,
+							status: value as OrderStatus,
+						})
 					}
 					value={order.status}
 				>

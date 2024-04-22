@@ -37,11 +37,6 @@ export const favoritesRouter = createTRPCRouter({
 					select: {
 						product: {
 							include: {
-								priceHistory: {
-									orderBy: {
-										effectiveFrom: 'desc',
-									},
-								},
 								size: true,
 								additionalServices: {
 									include: {
@@ -55,7 +50,7 @@ export const favoritesRouter = createTRPCRouter({
 			},
 		});
 	}),
-	countOfFavorites: publicProcedure.query(async ({ ctx, input }) => {
+	countOfFavorites: publicProcedure.query(async ({ ctx }) => {
 		if (!ctx.userId) return null;
 		const count = await ctx.prisma.favorites.findMany({
 			where: {

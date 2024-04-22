@@ -5,9 +5,7 @@ import {
 	MdOutlineKeyboardArrowLeft,
 	MdOutlineKeyboardArrowRight,
 } from 'react-icons/md';
-import { useProductDitalsContext } from '~/context/productDitailsContext';
-const ImageSlider = () => {
-	const { product } = useProductDitalsContext();
+const ImageSlider = ({ images }: { images: string[] }) => {
 	const [selectedIndex, setSelectedIndex] = useState(0);
 	const [emblaRef, emblaApi] = useEmblaCarousel({
 		startIndex: 0,
@@ -39,7 +37,7 @@ const ImageSlider = () => {
 		<Stack w="100%">
 			<Stack ref={emblaRef} overflow="hidden" position="relative">
 				<Stack direction="row">
-					{product.image.map((src, index) => (
+					{images.map((src, index) => (
 						<Image
 							key={index}
 							alt={`${src}`}
@@ -88,7 +86,7 @@ const ImageSlider = () => {
 				justifyContent="center"
 				overflow="hidden"
 			>
-				{product.image.map((src, index) => (
+				{images.map((src, index) => (
 					<Image
 						alt={`${src}`}
 						src={`https://utfs.io/f/${src}`}

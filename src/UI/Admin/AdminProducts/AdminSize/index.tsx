@@ -35,8 +35,6 @@ export default function AdminSize() {
 				toast({
 					description: message,
 					status: 'success',
-					isClosable: true,
-					position: 'top-right',
 				});
 				clear();
 				if (inputRef.current) {
@@ -49,8 +47,6 @@ export default function AdminSize() {
 				} else {
 					toast({
 						description: message,
-						isClosable: true,
-						position: 'top-right',
 						status: 'error',
 					});
 				}
@@ -63,8 +59,6 @@ export default function AdminSize() {
 				toast({
 					description: message,
 					status: 'success',
-					isClosable: true,
-					position: 'top-right',
 				});
 				clear();
 			},
@@ -74,8 +68,6 @@ export default function AdminSize() {
 				} else {
 					toast({
 						description: message,
-						isClosable: true,
-						position: 'top-right',
 						status: 'error',
 					});
 				}

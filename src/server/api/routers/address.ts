@@ -1,5 +1,4 @@
 import { clerkClient } from '@clerk/nextjs';
-import type { Point } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import {
@@ -17,9 +16,6 @@ export const addressRouter = createTRPCRouter({
 				NOT: {
 					archived: true,
 				},
-			},
-			include: {
-				point: true,
 			},
 			orderBy: {
 				createdAt: 'desc',
@@ -50,7 +46,7 @@ export const addressRouter = createTRPCRouter({
 				phone: z
 					.string()
 					.min(16, { message: 'Проверьте правильность номера' }),
-				point: z.custom<Point>(),
+				point: z.string(),
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
@@ -73,9 +69,7 @@ export const addressRouter = createTRPCRouter({
 					firstName: input.firstName,
 					lastName: input.lastName,
 					userId: ctx.userId,
-					point: {
-						create: input.point,
-					},
+					point: input.point,
 				},
 			});
 			const call = await Promise.all([

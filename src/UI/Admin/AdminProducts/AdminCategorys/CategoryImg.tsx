@@ -19,15 +19,12 @@ const CategoryImg = () => {
 						toast({
 							description: 'Картинка успешно загружена!',
 							status: 'success',
-							isClosable: true,
-							position: 'top-right',
 						});
 					}}
 					onUploadError={({ name, code }) =>
 						toast({
 							description: `${name} ${code}`,
 							status: 'error',
-							position: 'top-right',
 						})
 					}
 				/>

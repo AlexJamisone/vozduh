@@ -1,30 +1,15 @@
 import { Placemark } from '@pbe/react-yandex-maps';
-import { useCreateAddressContext } from '~/context/addressContext';
+import { FiltredPoint } from '~/server/api/routers/cdek';
 
-type PlacemarkPointProps = {
-	point: Point;
-};
-
-const PlacemarkPoint = ({ point }: PlacemarkPointProps) => {
-	const { dispatchAddress, address } = useCreateAddressContext();
+const PlacemarkPoint = ({ point }: { point: FiltredPoint }) => {
 	return (
 		<Placemark
 			geometry={[point.latitude, point.longitude]}
-			onClick={() => {
-				dispatchAddress({
-					type: 'SET_POINT',
-					payload: {
-						selected: point,
-						selectedLat: point.latitude,
-						selectedLon: point.longitude,
-					},
-				});
-				dispatchAddress({ type: 'SET_SELECT_POINT', payload: true });
-			}}
+			onClick={() => {}}
 			fillColor="ff0000"
 			options={{
 				preset:
-					address.point?.selected?.name === point.name
+					point.name === ''
 						? 'islands#darkGreenCircleIcon'
 						: 'islands#blueCircleIcon',
 			}}

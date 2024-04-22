@@ -1,15 +1,16 @@
 import { Stack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import type { ReactNode } from 'react';
+import { useRouter } from 'next/router';
+import { api } from '~/utils/api';
 import ImageSlider from './ImageSlider';
 import ProductDitalsInfo from './ProductDitalsInfo';
 
-type ProductDitailsProps = {
-	info?: ReactNode;
-	photo?: ReactNode;
-};
-
-const ProductDitails = ({ info, photo }: ProductDitailsProps) => {
+const ProductDitails = () => {
+	const { query } = useRouter();
+	const { data: product } = api.product.getSinglProduct.useQuery({
+		id: query.id as string,
+	});
+	if (!product) return null;
 	return (
 		<Stack
 			direction={['column', 'row']}
@@ -25,12 +26,10 @@ const ProductDitails = ({ info, photo }: ProductDitailsProps) => {
 				},
 			}}
 		>
-			{photo}
-			{info}
+			<ImageSlider images={product.image} />
+			<ProductDitalsInfo />
 		</Stack>
 	);
 };
-ProductDitails.Photo = ImageSlider;
-ProductDitails.Info = ProductDitalsInfo;
 
 export default ProductDitails;

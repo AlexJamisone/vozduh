@@ -25,7 +25,7 @@ type CartState = {
 };
 
 type CartAction = {
-	add: (item: CartItem) => void;
+	add: (item: Omit<CartItem, 'quantity'>) => void;
 	remove: (
 		id: string,
 		size: string,

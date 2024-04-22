@@ -11,24 +11,31 @@ import {
 	useToast,
 } from '@chakra-ui/react';
 import type { FAQ } from '@prisma/client';
-import { type Dispatch } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { CiEdit } from 'react-icons/ci';
-import type { Action } from '~/reducer/aboutReducer';
+import { useAbout } from '~/store/useAbout';
 import { api } from '~/utils/api';
 
 type FAQAccordionProps = {
 	faq: FAQ;
 	onToggle: () => void;
-	dispatch: Dispatch<Action>;
 };
 
-const FAQAccordion = ({ faq, onToggle, dispatch }: FAQAccordionProps) => {
+const FAQAccordion = ({ faq, onToggle }: FAQAccordionProps) => {
 	const { title, content } = faq;
-	const { mutate: deleteFaq, isLoading } = api.faq.delete.useMutation();
+	const { mutate: deleteFaq, isLoading } = api.faq.delete.useMutation({
+		onSuccess: () => {
+			void ctx.faq.invalidate();
+			toast({
+				description: `FAQ: "${faq.title}" успешно удалён!`,
+				status: 'loading',
+			});
+		},
+	});
 	const { data: role } = api.user.getRole.useQuery();
 	const ctx = api.useContext();
 	const toast = useToast();
+	const setAll = useAbout((state) => state.setAll);
 	const handlButton = (
 		operation: 'edit' | 'delet',
 		action: () => void,
@@ -70,36 +77,18 @@ const FAQAccordion = ({ faq, onToggle, dispatch }: FAQAccordionProps) => {
 					</Box>
 					<Stack direction="row" mr={10}>
 						{handlButton('edit', () => {
-							dispatch({
-								type: 'SET_ABOUT',
-								payload: {
-									id: faq.id,
-									content: faq.content.join('\n\n'),
-									edit: true,
-									title: faq.title,
-								},
+							setAll({
+								edit: { id: faq.id, is: true },
+								input: { title, content },
 							});
 							onToggle();
 						})}
 						{handlButton(
 							'delet',
 							() => {
-								deleteFaq(
-									{
-										id: faq.id,
-									},
-									{
-										onSuccess: () => {
-											void ctx.faq.invalidate();
-											toast({
-												description: `FAQ: "${faq.title}" успешно удалён!`,
-												status: 'loading',
-												isClosable: true,
-												position: 'top-right',
-											});
-										},
-									}
-								);
+								deleteFaq({
+									id: faq.id,
+								});
 							},
 							isLoading
 						)}
@@ -108,9 +97,7 @@ const FAQAccordion = ({ faq, onToggle, dispatch }: FAQAccordionProps) => {
 				</AccordionButton>
 			</h2>
 			<AccordionPanel as={Stack} gap={5}>
-				{content.map((cont, index) => (
-					<Text key={index}>{cont}</Text>
-				))}
+				<Text>{content}</Text>
 			</AccordionPanel>
 		</AccordionItem>
 	);

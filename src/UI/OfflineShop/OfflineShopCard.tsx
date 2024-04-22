@@ -16,7 +16,6 @@ import type { OfflineShop, Role } from '@prisma/client';
 import type { TRPCError } from '@trpc/server';
 import { motion } from 'framer-motion';
 import { AiOutlineDelete } from 'react-icons/ai';
-import { useOfflineShopContext } from '~/context/offlineShopContext';
 import { api } from '~/utils/api';
 
 type OfflineShopCardProps = {
@@ -33,10 +32,20 @@ const styleHiglight: SystemStyleObject = {
 const OfflineShopCard = ({ shop, role, onToggle }: OfflineShopCardProps) => {
 	const { name, image, fullAddress, phone, work_time, id } = shop;
 	const { mutate: deleteOfflineShop, isLoading: isLoadedDelet } =
-		api.shop.delete.useMutation();
-	const { dispatch } = useOfflineShopContext();
+		api.shop.delete.useMutation({
+			onSuccess: () => {
+				void ctx.shop.invalidate();
+				toast({
+					description: `Магазин ${name} успешно удален`,
+					isClosable: true,
+					duration: 2500,
+				});
+				onToggle();
+			},
+		});
 	const ctx = api.useContext();
 	const toast = useToast();
+	function handlShop() {}
 	return (
 		<Card
 			as={motion.div}
@@ -60,23 +69,7 @@ const OfflineShopCard = ({ shop, role, onToggle }: OfflineShopCardProps) => {
 			cursor={role === 'ADMIN' ? 'pointer' : 'default'}
 			rounded="2xl"
 			p={3}
-			onClick={() => {
-				if (role === 'ADMIN') {
-					dispatch({
-						type: 'SET_SHOP',
-						payload: {
-							fullAddress: shop.fullAddress,
-							id: shop.id,
-							image: shop.image,
-							name: shop.name,
-							phone: shop.phone,
-							shopEdit: true,
-							work_time: shop.work_time ?? '',
-						},
-					});
-					onToggle();
-				}
-			}}
+			onClick={handlShop}
 		>
 			<CardHeader
 				as={Stack}
@@ -97,24 +90,10 @@ const OfflineShopCard = ({ shop, role, onToggle }: OfflineShopCardProps) => {
 						colorScheme="red"
 						onClick={(e) => {
 							e.stopPropagation();
-							deleteOfflineShop(
-								{
-									id,
-									image,
-								},
-								{
-									onSuccess: () => {
-										void ctx.shop.invalidate();
-										toast({
-											description: `Магазин ${name} успешно удален`,
-											isClosable: true,
-											duration: 2500,
-											position: 'top-right',
-											status: 'info',
-										});
-									},
-								}
-							);
+							deleteOfflineShop({
+								id,
+								image,
+							});
 						}}
 						isLoading={isLoadedDelet}
 					/>

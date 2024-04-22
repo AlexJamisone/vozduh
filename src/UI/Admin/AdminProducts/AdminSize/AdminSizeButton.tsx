@@ -20,8 +20,6 @@ export default function AdminSizeButton() {
 			toast({
 				description: 'Размер успешно удалён',
 				status: 'info',
-				position: 'top-right',
-				isClosable: true,
 			});
 		},
 	});

@@ -212,8 +212,6 @@ const OfflineShopModal = ({ isOpen, onClose }: OfflineShopModalProps) => {
 													status: success
 														? 'success'
 														: 'error',
-													isClosable: true,
-													position: 'top-right',
 												});
 											dispatch({ type: 'CLEAR' });
 											onClose();
@@ -233,8 +231,6 @@ const OfflineShopModal = ({ isOpen, onClose }: OfflineShopModalProps) => {
 												status: success
 													? 'success'
 													: 'error',
-												isClosable: true,
-												position: 'top-right',
 											});
 											dispatch({ type: 'CLEAR' });
 											onClose();

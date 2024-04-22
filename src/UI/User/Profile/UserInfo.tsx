@@ -26,15 +26,11 @@ const UserInfo = () => {
 				toast({
 					description: 'Аватарка успешно обновленна!',
 					status: 'success',
-					isClosable: true,
-					position: 'top-right',
 				});
 			} catch (error) {
 				toast({
 					description: `Произошла ошибка в обновлении аватарки!`,
 					status: 'error',
-					isClosable: true,
-					position: 'top-right',
 				});
 			}
 		}
