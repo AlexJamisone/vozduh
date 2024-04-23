@@ -1,10 +1,11 @@
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
+import { Tab, TabList, TabPanels, Tabs } from '@chakra-ui/react';
 import { useCreateProduct } from '~/store/useCreateProduct';
 import AdminCategorys from './AdminCategorys';
 import AdminCreateProduct from './AdminCreateProduct';
+import AdminProduc from './AdminProduct';
 import AdminSize from './AdminSize';
 
-const AdminProducts = () => {
+export default function AdminCreate() {
 	const setTab = useCreateProduct((state) => state.setTab);
 	const edit = useCreateProduct((state) => state.edit.isEdit);
 	const tab = useCreateProduct((state) => state.tab);
@@ -17,13 +18,11 @@ const AdminProducts = () => {
 				<Tab>Размеры</Tab>
 			</TabList>
 			<TabPanels>
-				<TabPanel>Товары</TabPanel>
+				<AdminProduc />
 				<AdminCreateProduct />
 				<AdminCategorys />
 				<AdminSize />
 			</TabPanels>
 		</Tabs>
 	);
-};
-
-export default AdminProducts;
+}

@@ -14,9 +14,7 @@ export default function ProductAction() {
 					description: `Товар ${name} успешно создан`,
 					status: 'success',
 				});
-				clear();
-				clears();
-				setTab(0);
+				handlCancel();
 			},
 			onError: ({ data, message }) => {
 				if (data?.zodError) {
@@ -37,9 +35,7 @@ export default function ProductAction() {
 					description: `Товар ${name} успешно создан`,
 					status: 'success',
 				});
-				clear();
-				clears();
-				setTab(0);
+				handlCancel();
 			},
 			onError: ({ data, message }) => {
 				if (data?.zodError) {
@@ -52,17 +48,20 @@ export default function ProductAction() {
 				}
 			},
 		});
-	const [edit, state, clear, setTab, setError] = useCreateProduct((state) => [
+	const [edit, state, clear, setError] = useCreateProduct((state) => [
 		state.edit,
 		state,
 		state.clear,
-		state.setTab,
 		state.setError,
 	]);
 	const [serviceAvailability, clears] = useAdditionalService((state) => [
 		state.additionalServices,
 		state.clear,
 	]);
+	function handlCancel() {
+		clear();
+		clears();
+	}
 	function handlAction() {
 		const {
 			category,
@@ -119,9 +118,19 @@ export default function ProductAction() {
 				onClick={handlAction}
 				isLoading={isCreate || isUpdate}
 				size="md"
+				colorScheme={edit.isEdit ? 'blue' : 'green'}
 			>
 				{edit.isEdit ? 'Обновить' : 'Создать'}
 			</Button>
+			{edit.isEdit && (
+				<Button
+					variant="outline"
+					colorScheme="blue"
+					onClick={handlCancel}
+				>
+					Отмена
+				</Button>
+			)}
 		</Stack>
 	);
 }

@@ -35,6 +35,7 @@ type ProductAction = {
 
 	reset: () => void;
 	clear: () => void;
+	setAll: (state: ProductState) => void;
 };
 type CreateProduct = ProductState & ProductAction;
 const KEY = 'create';
@@ -73,4 +74,5 @@ export const useCreateProduct = create<CreateProduct>((set) => ({
 	setCategory: (category) => set({ category }),
 	reset: () => set({ error: undefined }),
 	clear: () => set(init),
+	setAll: (state) => set(state),
 }));

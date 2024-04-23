@@ -21,6 +21,8 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { BsArchive } from 'react-icons/bs';
 import Overlay from '~/components/Overlay';
+import { useAdditionalService } from '~/store/useAdditionalServise';
+import { useCreateProduct } from '~/store/useCreateProduct';
 import { api } from '~/utils/api';
 import ProductCardImg from './ProductCardImg';
 
@@ -42,8 +44,30 @@ const ProductCard = ({ product, role, index }: ProductCardProps) => {
 	const ctx = api.useContext();
 	const toast = useToast();
 	const CardContainer = chakra(motion.div);
+	const setProd = useCreateProduct((state) => state.setAll);
+	const setServ = useAdditionalService((state) => state.setAll);
 
-	const handlClickOnCard = () => {};
+	const handlClickOnCard = () => {
+		setProd({
+			edit: { id: product.id, isEdit: true },
+			image: product.image,
+			size: product.size.map((s) => s.value),
+			input: {
+				name: product.name,
+				price: product.price,
+				description: product.description ?? '',
+			},
+			tab: 1,
+			category: product.categoryTitle ?? '',
+		});
+		setServ({
+			additionalServices: product.additionalServices.map((serv) => ({
+				id: serv.id,
+				title: serv.title,
+				additionalOptions: serv.additionalServicesOption,
+			})),
+		});
+	};
 	return (
 		<CardContainer
 			layout
@@ -55,10 +79,10 @@ const ProductCard = ({ product, role, index }: ProductCardProps) => {
 					delay: 0.2 * index,
 				},
 			}}
-			onClick={role === 'ADMIN' ? handlClickOnCard : undefined}
 			cursor="pointer"
 		>
 			<Card
+				onClick={role === 'ADMIN' ? handlClickOnCard : undefined}
 				as={role === 'USER' || !role ? Link : undefined}
 				href={`/product/${product.id}`}
 				size={['sm', null, null, 'md']}

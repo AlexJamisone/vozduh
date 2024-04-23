@@ -28,6 +28,7 @@ type AdditionalServiceAction = {
 	) => void;
 	removeOption: (serviceId: string, optionId: string) => void;
 	clear: () => void;
+	setAll: (state: AdditionalServiceState) => void;
 };
 
 type Additional = AdditionalServiceState & AdditionalServiceAction;
@@ -107,4 +108,5 @@ export const useAdditionalService = create<Additional>((set) => ({
 			),
 		})),
 	clear: () => set({ additionalServices: [] }),
+	setAll: (state) => set(state),
 }));
