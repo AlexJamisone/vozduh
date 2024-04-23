@@ -1,20 +1,24 @@
 import {
 	Button,
+	ButtonGroup,
 	FormControl,
 	FormErrorMessage,
 	FormLabel,
+	Icon,
+	IconButton,
 	Input,
 	Stack,
 	TabPanel,
 	useToast,
 } from '@chakra-ui/react';
 import { FormEvent, useRef } from 'react';
+import { MdOutlineCancel } from 'react-icons/md';
 import { useCreateSize } from '~/store/useCreateSize';
 import { api } from '~/utils/api';
 import AdminSizeButton from './AdminSizeButton';
 
 export default function AdminSize() {
-	const [edit, value, setVal, clear, reset, error, setErr, id] =
+	const [edit, value, setVal, clear, reset, error, setErr, id, setEdit] =
 		useCreateSize((state) => [
 			state.edit.is,
 			state.value,
@@ -24,13 +28,14 @@ export default function AdminSize() {
 			state.error,
 			state.setError,
 			state.edit.id,
+			state.setEdit,
 		]);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const ctx = api.useContext();
 	const toast = useToast();
 	const { mutate: create, isLoading: isCreating } =
 		api.size.create.useMutation({
-			onSuccess: ({ message }) => {
+			onSuccess: (message) => {
 				void ctx.size.invalidate();
 				toast({
 					description: message,
@@ -85,7 +90,7 @@ export default function AdminSize() {
 			update({ value, id });
 			return;
 		}
-		create({ value });
+		create(value);
 	};
 	return (
 		<TabPanel>
@@ -112,14 +117,27 @@ export default function AdminSize() {
 					))}
 				</FormControl>
 				<AdminSizeButton />
-				<Button
-					isLoading={isCreating || isUpdating}
-					onClick={handlAction}
-					variant="outline"
-					colorScheme={edit ? 'blue' : 'green'}
-				>
-					{edit ? 'Обновить' : 'Создать'}
-				</Button>
+				<ButtonGroup isAttached>
+					<Button
+						width="100%"
+						isLoading={isCreating || isUpdating}
+						onClick={handlAction}
+						variant="outline"
+						colorScheme={edit ? 'blue' : 'green'}
+					>
+						{edit ? 'Обновить' : 'Создать'}
+					</Button>
+					{edit && (
+						<IconButton
+							aria-label="cancel"
+							colorScheme="blue"
+							icon={<Icon as={MdOutlineCancel} />}
+							onClick={() => {
+								clear();
+							}}
+						/>
+					)}
+				</ButtonGroup>
 			</Stack>
 		</TabPanel>
 	);

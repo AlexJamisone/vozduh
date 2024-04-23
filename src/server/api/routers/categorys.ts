@@ -106,11 +106,12 @@ export const categorysRouter = createTRPCRouter({
 		)
 		.mutation(async ({ ctx, input }) => {
 			await utapi.deleteFiles(input.image);
-			return await ctx.prisma.category.delete({
+			await ctx.prisma.category.delete({
 				where: {
 					id: input.id,
 				},
 			});
+            return "Категория успешно удалена"
 		}),
 	deletImg: adminProcedure
 		.input(z.string())

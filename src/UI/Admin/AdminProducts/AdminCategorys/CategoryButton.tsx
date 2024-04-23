@@ -1,13 +1,28 @@
-import { Button, ButtonGroup, Icon, IconButton, Stack } from '@chakra-ui/react';
+import {
+	Button,
+	ButtonGroup,
+	Icon,
+	IconButton,
+	Stack,
+	useToast,
+} from '@chakra-ui/react';
 import { MdDelete } from 'react-icons/md';
 import { useCreateCategory } from '~/store/useCreateCategory';
 import { api } from '~/utils/api';
 
 export default function CategoryButton() {
 	const { data: categorys } = api.categorys.get.useQuery();
-	const { mutate: deletCat, isLoading } = api.categorys.delete.useMutation(
-		{}
-	);
+	const ctx = api.useContext();
+	const toast = useToast();
+	const { mutate: deletCat, isLoading } = api.categorys.delete.useMutation({
+		onSuccess: (message) => {
+			void ctx.categorys.invalidate();
+			toast({
+				description: message,
+                status: 'info'
+			});
+		},
+	});
 	const setEdit = useCreateCategory((state) => state.setEdit);
 	const setInputs = useCreateCategory((state) => state.setInputs);
 	const setImg = useCreateCategory((state) => state.setImg);

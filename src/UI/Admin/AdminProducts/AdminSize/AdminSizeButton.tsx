@@ -23,17 +23,29 @@ export default function AdminSizeButton() {
 			});
 		},
 	});
-	const setVal = useCreateSize((state) => state.setValue);
-	const setEdit = useCreateSize((state) => state.setEdit);
+	const [setVal, setEdit, edit] = useCreateSize((state) => [
+		state.setValue,
+		state.setEdit,
+		state.edit,
+	]);
 	const handlEdit = (id: string, value: string) => {
 		setEdit({ id, is: true });
 		setVal(value);
 	};
 	return (
-		<Stack>
+		<Stack
+			direction="row"
+			flexWrap="wrap"
+			justifyContent="center"
+			maxW="385px"
+			gap={3}
+		>
 			{sizes?.map(({ id, value }) => (
 				<ButtonGroup key={id} isAttached size="sm" variant="outline">
-					<Button onClick={() => handlEdit(id, value)}>
+					<Button
+						onClick={() => handlEdit(id, value)}
+						isActive={edit.id === id}
+					>
 						{value}
 					</Button>
 					<IconButton

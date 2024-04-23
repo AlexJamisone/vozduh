@@ -1,15 +1,25 @@
-import { Button, useToast } from '@chakra-ui/react';
+import {
+	Button,
+	ButtonGroup,
+	Icon,
+	IconButton,
+	useToast,
+} from '@chakra-ui/react';
+import { MdOutlineCancel } from 'react-icons/md';
 import { useCreateCategory } from '~/store/useCreateCategory';
 import { api } from '~/utils/api';
 
 const CategoryAction = () => {
-	const [edit, input, setError, image, clear] = useCreateCategory((state) => [
-		state.edit,
-		state.input,
-		state.setError,
-		state.image,
-		state.clear,
-	]);
+	const [edit, input, setError, image, clear, setEdit] = useCreateCategory(
+		(state) => [
+			state.edit,
+			state.input,
+			state.setError,
+			state.image,
+			state.clear,
+			state.setEdit,
+		]
+	);
 	const toast = useToast();
 	const ctx = api.useContext();
 	const { mutate: create, isLoading: isCreating } =
@@ -63,14 +73,28 @@ const CategoryAction = () => {
 		create({ image, title, path });
 	};
 	return (
-		<Button
-			onClick={handlCategory}
-			colorScheme={edit.is ? 'blue' : 'green'}
-			variant="outline"
-			isLoading={isCreating || isUpdating}
-		>
-			{edit.is ? 'Обновить' : 'Создать'}
-		</Button>
+		<ButtonGroup>
+			<Button
+				w="100%"
+				onClick={handlCategory}
+				colorScheme={edit.is ? 'blue' : 'green'}
+				variant="outline"
+				isLoading={isCreating || isUpdating}
+			>
+				{edit.is ? 'Обновить' : 'Создать'}
+			</Button>
+			{edit.is && (
+				<IconButton
+					aria-label="cancel"
+					colorScheme="blue"
+					icon={<Icon as={MdOutlineCancel} />}
+					onClick={() => {
+						setEdit({ is: false, id: '' });
+						clear();
+					}}
+				/>
+			)}
+		</ButtonGroup>
 	);
 };
 export default CategoryAction;
