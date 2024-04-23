@@ -1,8 +1,9 @@
 import { HTMLInputTypeAttribute } from 'react';
+import { v4 as uuid } from 'uuid';
 import type { AboutInputName } from '~/store/useAbout';
 
 type AboutInput = {
-	id: number;
+	id: string;
 	name: AboutInputName;
 	placeholder: string;
 	type: HTMLInputTypeAttribute;
@@ -11,14 +12,14 @@ type AboutInput = {
 };
 export const about: AboutInput[] = [
 	{
-		id: 1,
+		id: uuid(),
 		name: 'title',
 		placeholder: 'Укажи заголовок секции',
 		type: 'text',
 		label: 'Заголовок',
 	},
 	{
-		id: 2,
+		id: uuid(),
 		name: 'content',
 		placeholder: 'Укажи контект секции',
 		type: 'text',

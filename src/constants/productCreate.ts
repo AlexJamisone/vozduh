@@ -1,8 +1,9 @@
 import { HTMLInputTypeAttribute } from 'react';
+import { v4 as uuid } from 'uuid';
 import { ProductInputName } from '~/store/useCreateProduct';
 
 type ProdctCreate = {
-	id: number;
+	id: string;
 	placeholder: string;
 	name: ProductInputName;
 	label: string;
@@ -12,14 +13,14 @@ type ProdctCreate = {
 
 export const productCreate: ProdctCreate[] = [
 	{
-		id: 1,
+		id: uuid(),
 		name: 'name',
 		label: 'Название',
 		placeholder: 'Введите название товара',
 		type: 'text',
 	},
 	{
-		id: 2,
+		id: uuid(),
 		name: 'description',
 		label: 'Описание',
 		placeholder: 'Введите описание',
@@ -27,7 +28,7 @@ export const productCreate: ProdctCreate[] = [
 		type: 'text',
 	},
 	{
-		id: 3,
+		id: uuid(),
 		name: 'price',
 		label: 'Цена',
 		placeholder: 'Введите цену в ₽',

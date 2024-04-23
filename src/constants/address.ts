@@ -1,8 +1,9 @@
 import { HTMLInputTypeAttribute } from 'react';
 import { AddressInputName } from '~/store/useAddress';
+import {v4 as uuid} from 'uuid'
 
 type AddressInputType = {
-	id: number;
+	id: string;
 	name: AddressInputName;
 	placeholder: string;
 	label: string;
@@ -14,7 +15,7 @@ export const addressInput: AddressInputType[] = [
 	{
 		placeholder: 'Введите ваше имя',
 		name: 'firstName',
-		id: 1,
+		id: uuid(),
 		type: 'text',
 		label: 'Имя',
 	},
@@ -23,12 +24,12 @@ export const addressInput: AddressInputType[] = [
 		name: 'lastName',
 		label: 'Фамилия',
 		type: 'text',
-		id: 2,
+		id: uuid(),
 	},
 	{
 		placeholder: 'Введите ваш телефон',
 		name: 'contactPhone',
-		id: 3,
+		id: uuid(),
 		type: 'text',
 		label: 'Телефон',
 		isMask: true,
@@ -36,7 +37,7 @@ export const addressInput: AddressInputType[] = [
 	{
 		placeholder: 'Ваши пожелания к заказу',
 		name: 'comment',
-		id: 4,
+		id: uuid(),
 		type: 'text',
 		label: 'Комметарий',
 		isTextarea: true,

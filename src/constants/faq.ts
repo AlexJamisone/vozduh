@@ -1,7 +1,8 @@
 import { FaqInputName } from '~/store/useFaq';
+import {v4 as uuid} from 'uuid'
 
 type FAQInput = {
-	id: number;
+	id: string;
 	name: FaqInputName;
     placeholder: string
     label: string
@@ -9,13 +10,13 @@ type FAQInput = {
 };
 export const faq: FAQInput[] = [
     {
-        id: 1,
+        id: uuid(),
         name: "title",
         placeholder: "Придумай/укажи вопрос",
         label: "Вопрос",
     },
     {
-        id: 2,
+        id: uuid(),
         name: "content",
         placeholder: "Укажи развернутый ответ!",
         isTextarea: true,

@@ -1,8 +1,9 @@
 import { HTMLInputTypeAttribute } from 'react';
 import type { CategoryInputName } from '~/store/useCreateCategory';
+import {v4 as uuid} from 'uuid'
 
 type CategoryInput = {
-	id: number;
+	id: string;
 	placeholder: string;
 	name: CategoryInputName;
 	label: string;
@@ -12,14 +13,14 @@ type CategoryInput = {
 
 export const categoryInputs: CategoryInput[] = [
 	{
-		id: 1,
+		id: uuid(),
 		label: 'Название',
 		name: 'title',
 		placeholder: 'Название категории',
 		type: 'text',
 	},
 	{
-		id: 2,
+		id: uuid(),
 		label: 'Путь',
 		name: 'path',
 		placeholder: 'Название пути',

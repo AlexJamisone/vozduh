@@ -1,6 +1,6 @@
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
 import { ruRU } from '@clerk/localizations';
-import { ClerkProvider, SignedIn } from '@clerk/nextjs';
+import { ClerkProvider } from '@clerk/nextjs';
 import '@uploadthing/react/styles.css';
 import { type AppType } from 'next/app';
 import Head from 'next/head';
@@ -28,9 +28,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
 				<Navigation />
-				<SignedIn>
-					<Menu />
-				</SignedIn>
+				<Menu />
 				<Component {...pageProps} />
 				<FAQButton />
 			</ClerkProvider>

@@ -1,7 +1,8 @@
-import { OffilineInputName } from "~/store/useOfflineShop";
+import { OffilineInputName } from '~/store/useOfflineShop';
+import {v4 as uuid} from 'uuid'
 
 type ShopInputs = {
-	id: number;
+	id: string;
 	placeholder: string;
 	name: OffilineInputName;
 	label: string;
@@ -9,25 +10,25 @@ type ShopInputs = {
 
 export const shopInputs: ShopInputs[] = [
 	{
-		id: 1,
+		id: uuid(),
 		label: 'Название магазина',
 		name: 'name',
 		placeholder: 'Введите название магазина',
 	},
 	{
-		id: 2,
+		id: uuid(),
 		label: 'Адрес',
 		name: 'fullAddress',
 		placeholder: 'например: Севастополь, улица Героев Сталинграда 27',
 	},
 	{
-		id: 3,
+		id: uuid(),
 		label: 'Телефон',
 		name: 'phone',
 		placeholder: 'Введите телефон',
 	},
 	{
-		id: 4,
+		id: uuid(),
 		label: 'Режим работы',
 		name: 'work_time',
 		placeholder: 'Рабочее время',

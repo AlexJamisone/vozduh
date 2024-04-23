@@ -17,7 +17,6 @@ import { api } from '~/utils/api';
 
 const Menu = () => {
 	const { data: role } = api.user.getRole.useQuery();
-	const { data: ordersIncome } = api.order.getIncomeOrder.useQuery();
 	const { data: favoritesCount } = api.favorites.countOfFavorites.useQuery();
 	const { query } = useRouter();
 	const { path: qpath } = query;

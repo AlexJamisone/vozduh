@@ -6,9 +6,10 @@ import { GoHeart } from 'react-icons/go';
 import { LiaRingSolid, LiaUserSolid } from 'react-icons/lia';
 import type { IconType } from 'react-icons/lib';
 import { SlSettings } from 'react-icons/sl';
+import {v4 as uuid} from 'uuid'
 
 type MenuActions = {
-	id: number;
+	id: string;
 	path: string;
 	icon: IconType;
 	title: string;
@@ -19,7 +20,6 @@ type MenuActions = {
 	};
 	target?: HTMLAttributeAnchorTarget;
 };
-
 export const menu_link = (
 	role: Role,
 	value?: number
@@ -28,7 +28,7 @@ export const menu_link = (
 		case 'ADMIN':
 			return [
 				{
-					id: 1,
+					id: uuid(),
 					path: '/admin/orders',
 					title: 'Заказы',
 					icon: FaRegRectangleList,
@@ -39,14 +39,14 @@ export const menu_link = (
 					},
 				},
 				{
-					id: 2,
+					id: uuid(),
 					path: '/admin/products',
 					title: 'Товары',
 					icon: LiaRingSolid,
 					name: 'products',
 				},
 				{
-					id: 3,
+					id: uuid(),
 					path: process.env.NEXT_PUBLIC_ANALISTIC_URL as string,
 					title: 'Посещения',
 					icon: AiOutlineLineChart,
@@ -57,14 +57,14 @@ export const menu_link = (
 		case 'USER':
 			return [
 				{
-					id: 4,
+					id: uuid(),
 					path: '/profile/main',
 					icon: LiaUserSolid,
 					title: 'Профиль',
 					name: 'main',
 				},
 				{
-					id: 5,
+					id: uuid(),
 					path: '/profile/favorites',
 					icon: GoHeart,
 					title: 'Избранное',
@@ -75,7 +75,7 @@ export const menu_link = (
 					},
 				},
 				{
-					id: 6,
+					id: uuid(),
 					path: '/profile/settings',
 					icon: SlSettings,
 					title: 'Настройки',
