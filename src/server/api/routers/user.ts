@@ -40,7 +40,7 @@ export const userRouter = createTRPCRouter({
 			},
 		});
 		if (!user)
-			return new TRPCError({
+			throw new TRPCError({
 				code: 'UNAUTHORIZED',
 				message: 'Пользователь не найден',
 			});

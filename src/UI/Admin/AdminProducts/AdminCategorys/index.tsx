@@ -1,12 +1,16 @@
-import { TabPanel } from '@chakra-ui/react';
+import { Stack, TabPanel } from '@chakra-ui/react';
+import CategoryAction from './CategoryAction';
 import CategoryImg from './CategoryImg';
 import CategoryInput from './CategoryInput';
 
 const AdminCategorys = () => {
 	return (
 		<TabPanel>
-			<CategoryInput />
-			<CategoryImg />
+			<Stack gap={3}>
+				<CategoryInput />
+				<CategoryImg />
+				<CategoryAction />
+			</Stack>
 		</TabPanel>
 	);
 };

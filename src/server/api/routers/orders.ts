@@ -98,14 +98,6 @@ export const ordersRouter = createTRPCRouter({
 				nextCursor,
 			};
 		}),
-	getIncomeOrder: publicProcedure.query(async ({ ctx }) => {
-		const orders = await ctx.prisma.order.findMany({
-			where: {
-				viewed: false,
-			},
-		});
-		return orders.length;
-	}),
 	changeStatus: adminProcedure
 		.input(
 			z.object({

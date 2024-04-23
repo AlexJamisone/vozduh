@@ -6,7 +6,7 @@ import { GoHeart } from 'react-icons/go';
 import { LiaRingSolid, LiaUserSolid } from 'react-icons/lia';
 import type { IconType } from 'react-icons/lib';
 import { SlSettings } from 'react-icons/sl';
-import {v4 as uuid} from 'uuid'
+import { v4 as uuid } from 'uuid';
 
 type MenuActions = {
 	id: string;
@@ -14,16 +14,9 @@ type MenuActions = {
 	icon: IconType;
 	title: string;
 	name: string;
-	income?: {
-		is: boolean;
-		value?: number;
-	};
 	target?: HTMLAttributeAnchorTarget;
 };
-export const menu_link = (
-	role: Role,
-	value?: number
-): MenuActions[] | undefined => {
+export const menu_link = (role: Role): MenuActions[] | undefined => {
 	switch (role) {
 		case 'ADMIN':
 			return [
@@ -33,10 +26,6 @@ export const menu_link = (
 					title: 'Заказы',
 					icon: FaRegRectangleList,
 					name: 'orders',
-					income: {
-						is: true,
-						value,
-					},
 				},
 				{
 					id: uuid(),
@@ -47,7 +36,7 @@ export const menu_link = (
 				},
 				{
 					id: uuid(),
-					path: process.env.NEXT_PUBLIC_ANALISTIC_URL as string,
+					path: 'https://analytics.umami.is/share/9lahb1FmsCgHDYXh/vozduh',
 					title: 'Посещения',
 					icon: AiOutlineLineChart,
 					name: 'some_ref',
@@ -69,10 +58,6 @@ export const menu_link = (
 					icon: GoHeart,
 					title: 'Избранное',
 					name: 'favorites',
-					income: {
-						is: true,
-						value,
-					},
 				},
 				{
 					id: uuid(),

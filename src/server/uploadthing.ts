@@ -1,4 +1,4 @@
-import { auth } from '@clerk/nextjs';
+import { getAuth } from '@clerk/nextjs/server';
 import { createUploadthing, type FileRouter } from 'uploadthing/next-legacy';
 import { UploadThingError, UTApi } from 'uploadthing/server';
 import { prisma } from './db';
@@ -16,8 +16,8 @@ async function isAdmin(id: string): Promise<void> {
 
 export const ourFileRouter = {
 	categoryImage: f({ image: { maxFileSize: '16MB', maxFileCount: 1 } })
-		.middleware(async () => {
-			const { userId } = auth();
+		.middleware(async ({ req }) => {
+			const { userId } = getAuth(req);
 			if (!userId) throw new UploadThingError('Unauthorized');
 			await isAdmin(userId);
 			return { userId };
@@ -31,8 +31,8 @@ export const ourFileRouter = {
 	createProduct: f({
 		image: { maxFileSize: '16MB', maxFileCount: 5 },
 	})
-		.middleware(async () => {
-			const { userId } = auth();
+		.middleware(async ({ req }) => {
+			const { userId } = getAuth(req);
 			if (!userId) throw new UploadThingError('Unauthorized');
 			await isAdmin(userId);
 			return { userId };
@@ -46,8 +46,8 @@ export const ourFileRouter = {
 	offlineShop: f({
 		image: { maxFileSize: '16MB', maxFileCount: 1 },
 	})
-		.middleware(async () => {
-			const { userId } = auth();
+		.middleware(async ({ req }) => {
+			const { userId } = getAuth(req);
 			if (!userId) throw new UploadThingError('Unauthorized');
 			await isAdmin(userId);
 			return { userId };

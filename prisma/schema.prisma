@@ -40,10 +40,10 @@ model Address {
 
 model Category {
     id      String    @id @default(cuid())
-    title   String    @unique
-    path    String
-    image   String
-    product Product[]
+        title   String    @unique
+        path    String  @unique
+        image   String
+        product Product[]
 }
 
 model Product {

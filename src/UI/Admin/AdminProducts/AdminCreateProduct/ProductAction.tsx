@@ -1,4 +1,4 @@
-import { Button, useToast } from '@chakra-ui/react';
+import { Button, Stack, useToast } from '@chakra-ui/react';
 import { useCreateProduct } from '~/store/useCreateProduct';
 import { api } from '~/utils/api';
 
@@ -108,8 +108,14 @@ export default function ProductAction() {
 		});
 	}
 	return (
-		<Button onClick={handlAction} isLoading={isCreate || isUpdate}>
-			{edit.isEdit ? 'Обновить' : 'Создать'}
-		</Button>
+		<Stack>
+			<Button
+				onClick={handlAction}
+				isLoading={isCreate || isUpdate}
+				size="md"
+			>
+				{edit.isEdit ? 'Обновить' : 'Создать'}
+			</Button>
+		</Stack>
 	);
 }

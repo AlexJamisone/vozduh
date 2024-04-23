@@ -1,6 +1,6 @@
-import { Image } from '@chakra-ui/next-js';
 import { Center, Stack, useColorMode } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import Category from '~/UI/Category';
 import { api } from '~/utils/api';
 
@@ -24,6 +24,10 @@ export default function Home() {
 					}
 					fill
 					quality={100}
+					style={{
+						objectFit: 'cover',
+						userSelect: 'none',
+					}}
 				/>
 			</Center>
 			<Category />

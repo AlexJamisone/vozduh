@@ -54,7 +54,7 @@ export const useCreateCategory = create<Category>((set) => ({
 		set((state) => {
 			const newState: CategoryInputValue = { ...state.input, ...input };
 			saveToLocalStorage(newState, CAT_KEY);
-			return { ...state, newState };
+			return { ...state, input: { ...newState } };
 		});
 	},
 	setEdit: (edit) => set({ edit }),

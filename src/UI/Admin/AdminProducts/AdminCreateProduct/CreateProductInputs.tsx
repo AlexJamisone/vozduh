@@ -14,12 +14,16 @@ import {
 } from '~/store/useCreateProduct';
 
 const CreateProductInputs = () => {
-	const [input, set, error] = useCreateProduct((state) => [
+	const [input, set, error, reset] = useCreateProduct((state) => [
 		state.input,
 		state.setInputs,
 		state.error,
+		state.reset,
 	]);
 	function handlInput(e: FormEvent<HTMLInputElement>) {
+		if (error?.isError) {
+			reset();
+		}
 		const { value, name, type } = e.currentTarget;
 		set({
 			[name]: type === 'number' ? +value : value,
@@ -40,8 +44,9 @@ const CreateProductInputs = () => {
 						<Input
 							name={name}
 							type={type}
-							value={input[name]}
+							value={input[name] === 0 ? '' : input[name]}
 							as={isTextarea ? Textarea : undefined}
+							height={isTextarea ? '160px' : undefined}
 							placeholder={placeholder}
 							onInput={handlInput}
 						/>
