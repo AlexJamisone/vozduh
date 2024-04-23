@@ -98,12 +98,14 @@ export const productRouter = createTRPCRouter({
 				service: z
 					.array(
 						z.object({
+							id: z.string(),
 							title: z.string().nonempty({
 								message: 'Укажи заголовок доп операции',
 							}),
 							additionalOptions: z
 								.array(
 									z.object({
+										id: z.string(),
 										name: z.string().nonempty({
 											message: 'Придумай имя доп опции',
 										}),
@@ -119,7 +121,6 @@ export const productRouter = createTRPCRouter({
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
-			const sizeId = input.size.map((id) => ({ id }));
 			const product = await ctx.prisma.product.create({
 				data: {
 					name: input.name,
@@ -132,7 +133,7 @@ export const productRouter = createTRPCRouter({
 						},
 					},
 					size: {
-						connect: sizeId,
+						connect: input.size.map((value) => ({ value })),
 					},
 					additionalServices: {
 						create: input.service?.map((service) => ({
@@ -142,11 +143,13 @@ export const productRouter = createTRPCRouter({
 										(option) => ({
 											name: option.name,
 											price: option.price,
+											id: option.id,
 										})
 									),
 								},
 							},
 							title: service.title,
+							id: service.id,
 						})),
 					},
 				},
@@ -180,7 +183,7 @@ export const productRouter = createTRPCRouter({
 				service: z
 					.array(
 						z.object({
-							id: z.string().optional(),
+							id: z.string(),
 							title: z.string().nonempty({
 								message: 'Укажи название доп операции',
 							}),
@@ -203,7 +206,6 @@ export const productRouter = createTRPCRouter({
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
-			const sizeId = input.size.map((id) => ({ id }));
 			const existingServiceIds = input.service
 				?.filter((service) => service.id !== '')
 				.map((service) => service.id);
@@ -222,7 +224,7 @@ export const productRouter = createTRPCRouter({
 					},
 					price: input.price,
 					size: {
-						set: sizeId,
+						set: input.size.map((value) => ({ value })),
 					},
 					additionalServices: {
 						deleteMany: {
@@ -247,6 +249,7 @@ export const productRouter = createTRPCRouter({
 												price: option.price,
 											},
 											create: {
+												id: option.id,
 												name: option.name,
 												price: option.price,
 											},
@@ -267,12 +270,14 @@ export const productRouter = createTRPCRouter({
 								additionalServicesOption: {
 									create: service.additionalOptions.map(
 										(option) => ({
+											id: option.id,
 											name: option.name,
 											price: option.price,
 										})
 									),
 								},
 								title: service.title,
+								id: service.id,
 							},
 						})),
 					},

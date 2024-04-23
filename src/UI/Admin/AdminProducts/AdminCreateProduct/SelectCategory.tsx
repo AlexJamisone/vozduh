@@ -12,7 +12,11 @@ const SelectCategory = () => {
 	]);
 	if (!categorys) return null;
 	return (
-		<FormControl>
+		<FormControl
+			isInvalid={
+				error?.isError && error.path.fieldErrors.category !== undefined
+			}
+		>
 			<Select
 				placeholder="Выбери категорию"
 				onChange={(e) => {

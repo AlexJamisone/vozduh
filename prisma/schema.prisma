@@ -63,7 +63,7 @@ model Product {
 }
 
 model AdditionalService {
-    id                       String                    @id @default(cuid())
+    id                       String                    @id 
     title                    String
     additionalServicesOption AdditionalServiceOption[]
     product                  Product                   @relation(fields: [productId], references: [id], onDelete: Cascade)
@@ -71,7 +71,7 @@ model AdditionalService {
 }
 
 model AdditionalServiceOption {
-    id                 String            @id @default(cuid())
+    id                 String            @id 
     name               String
     price              Int
     additionalServices AdditionalService @relation(fields: [addServId], references: [id], onDelete: Cascade)

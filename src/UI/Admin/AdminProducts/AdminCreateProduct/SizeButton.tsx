@@ -6,8 +6,13 @@ type SizeButtonProps = {
 
 const SizeButton = ({ value }: SizeButtonProps) => {
 	const set = useCreateProduct((state) => state.setSize);
+	const sizes = useCreateProduct((state) => state.size);
 	return (
-		<Button onClick={() => set(value)} size="sm">
+		<Button
+			onClick={() => set(value)}
+			size="sm"
+			isActive={sizes.includes(value)}
+		>
 			{value}
 		</Button>
 	);

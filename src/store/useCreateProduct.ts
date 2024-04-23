@@ -2,18 +2,6 @@ import type { typeToFlattenedError } from 'zod';
 import { create } from 'zustand';
 import { getFromLocalStorage } from '~/helpers/getFromLocalStorage';
 
-type AdditionalService = {
-	id: string;
-	title: string;
-	additionalOptions: AdditionalServiceOption[];
-};
-
-type AdditionalServiceOption = {
-	id: string;
-	name: string;
-	price: number;
-};
-
 type ProductState = {
 	tab: number;
 	input: {
@@ -21,7 +9,6 @@ type ProductState = {
 		description: string;
 		price: number;
 	};
-	serviceAvailability: AdditionalService[];
 	image: string[];
 	size: string[];
 	edit: {
@@ -40,9 +27,6 @@ export type ProductInputValue = ProductState['input'];
 type ProductAction = {
 	setInputs: (input: ProductInputValue) => void;
 	setTab: (idx: number) => void;
-	setService: (
-		serviceAvailability: ProductState['serviceAvailability']
-	) => void;
 	setImage: (image: string[]) => void;
 	setSize: (size: string) => void;
 	setEdit: (edit: ProductState['edit']) => void;
@@ -60,7 +44,6 @@ const init: ProductState = {
 		isEdit: false,
 		id: '',
 	},
-	serviceAvailability: [],
 	input: {
 		price: 0,
 		name: '',
@@ -86,15 +69,7 @@ export const useCreateProduct = create<CreateProduct>((set) => ({
 				? state.size.filter((s) => s !== size)
 				: [...state.size, size],
 		})),
-	setImage: (image) =>
-		set((state) => ({ image: [...state.image, ...image] })),
-	setService: (serviceAvailability) =>
-		set((state) => ({
-			serviceAvailability: {
-				...state.serviceAvailability,
-				...serviceAvailability,
-			},
-		})),
+	setImage: (image) => set({ image }),
 	setCategory: (category) => set({ category }),
 	reset: () => set({ error: undefined }),
 	clear: () => set(init),
