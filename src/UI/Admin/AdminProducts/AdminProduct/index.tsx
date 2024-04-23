@@ -7,11 +7,10 @@ export default function AdminProduc() {
 	return (
 		<TabPanel>
 			<Stack direction="row" flexWrap="wrap">
-				{products?.map((product, idx) => (
+				{products?.map((product) => (
 					<ProductCard
 						key={product.id}
 						product={product}
-						index={idx}
 						role="ADMIN"
 					/>
 				))}

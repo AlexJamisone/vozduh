@@ -7,7 +7,6 @@ import {
 	Stack,
 	Tag,
 	Text,
-	chakra,
 	useToast,
 } from '@chakra-ui/react';
 import type {
@@ -36,18 +35,29 @@ type ProductCardProps = {
 		additionalServices: AdditionalServiceWithOption[];
 	};
 	role?: Role;
-	index: number;
 };
 
-const ProductCard = ({ product, role, index }: ProductCardProps) => {
-	const { mutate: archive, isLoading } = api.product.archive.useMutation();
+const ProductCard = ({ product, role }: ProductCardProps) => {
+	const { mutate: archive, isLoading } = api.product.archive.useMutation({
+		onSuccess: () => {
+			void ctx.product.invalidate();
+			toast({
+				description: `Товар ${product.name} успешно ${
+					product.archived ? 'разархивирован' : 'архивирован'
+				}`,
+				status: product.archived ? 'loading' : 'info',
+			});
+		},
+	});
 	const ctx = api.useContext();
 	const toast = useToast();
-	const CardContainer = chakra(motion.div);
 	const setProd = useCreateProduct((state) => state.setAll);
 	const setServ = useAdditionalService((state) => state.setAll);
 
 	const handlClickOnCard = () => {
+		if (product.archived) {
+			return;
+		}
 		setProd({
 			edit: { id: product.id, isEdit: true },
 			image: product.image,
@@ -69,14 +79,14 @@ const ProductCard = ({ product, role, index }: ProductCardProps) => {
 		});
 	};
 	return (
-		<CardContainer
-			layout
+		<Stack
+			as={motion.div}
 			initial={{ opacity: 0 }}
 			animate={{
 				opacity: 1,
 				transition: {
 					type: 'spring',
-					delay: 0.2 * index,
+					duration: 0.4,
 				},
 			}}
 			cursor="pointer"
@@ -112,36 +122,18 @@ const ProductCard = ({ product, role, index }: ProductCardProps) => {
 							right={3}
 							bottom={3}
 							isLoading={isLoading}
-							onClick={() =>
-								archive(
-									{
-										archive: !product.archived,
-										id: product.id,
-									},
-									{
-										onSuccess: () => {
-											void ctx.product.invalidate();
-											toast({
-												description: `Товар ${
-													product.name
-												} успешно ${
-													product.archived
-														? 'разархивирован'
-														: 'архивирован'
-												}`,
-												status: product.archived
-													? 'loading'
-													: 'info',
-											});
-										},
-									}
-								)
-							}
+							onClick={(e) => {
+								e.stopPropagation();
+								archive({
+									archive: !product.archived,
+									id: product.id,
+								});
+							}}
 						/>
 					)}
 				</CardBody>
 			</Card>
-		</CardContainer>
+		</Stack>
 	);
 };
 
