@@ -102,4 +102,15 @@ export const shopRouter = createTRPCRouter({
 				},
 			});
 		}),
+	deletImg: adminProcedure
+		.input(z.string())
+		.mutation(async ({ input: key }) => {
+			const del = await utapi.deleteFiles(key);
+			if (!del.success)
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'Проблема с удалением',
+				});
+			return del.success;
+		}),
 });

@@ -5,6 +5,7 @@ import { api } from '~/utils/api';
 export default function OfflineAction({ onClose }: { onClose: () => void }) {
 	const ctx = api.useContext();
 	const toast = useToast();
+    const {mutate: deletImg} = api.shop.deletImg.useMutation()
 	const { mutate: create, isLoading: isCreating } =
 		api.shop.create.useMutation({
 			onSuccess: ({ message }) => {
@@ -61,8 +62,16 @@ export default function OfflineAction({ onClose }: { onClose: () => void }) {
 		}
 		create({ image, name, work_time, phone, fullAddress });
 	}
+    function handlCancel() {
+        if(image) {
+            deletImg(image)
+        }
+        clear()
+        onClose()
+    }
+	// TODO NOW HERE
 	return (
-		<Stack>
+		<Stack direction='row'>
 			<Button
 				colorScheme="telegram"
 				isLoading={isCreating || isUpdating}
@@ -70,7 +79,8 @@ export default function OfflineAction({ onClose }: { onClose: () => void }) {
 			>
 				{edit ? 'Обновить' : 'Сохранить'}
 			</Button>
-			<Button colorScheme="red" onClick={() => {}}>
+
+			<Button colorScheme="red" onClick={handlCancel}>
 				Отмена
 			</Button>
 		</Stack>
