@@ -14,7 +14,7 @@ import {
 	useDisclosure,
 } from '@chakra-ui/react';
 import { AnimatePresence } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { PiShoppingCartSimpleLight } from 'react-icons/pi';
 import { RiWindyFill } from 'react-icons/ri';
 import NoData from '~/components/NoData';
@@ -26,7 +26,6 @@ import CartItem from './CartItem';
 const Cart = () => {
 	const { isOpen, onClose, onToggle } = useDisclosure();
 	const btnRef = useRef<HTMLButtonElement | null>(null);
-	const [countCart, setCountCart] = useState(0);
 	const cart = useCart();
 	return (
 		<>
@@ -38,7 +37,7 @@ const Cart = () => {
 					icon={<Icon as={PiShoppingCartSimpleLight} />}
 					onClick={onToggle}
 					position="relative"
-					{...counterElement(countCart)}
+					{...counterElement(cart.items.length)}
 				/>
 			</Stack>
 			<Drawer

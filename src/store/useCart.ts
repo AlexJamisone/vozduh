@@ -3,6 +3,7 @@ import {
 	getFromLocalStorage,
 	saveToLocalStorage,
 } from '~/helpers/getFromLocalStorage';
+import { Service } from './useProductDitails';
 
 export type CartItem = {
 	id: string;
@@ -11,13 +12,7 @@ export type CartItem = {
 	size: string;
 	price: number;
 	quantity: number;
-
-	additionalOptions?: {
-		optionTitle: string;
-		serviceTitle: string;
-		optionId: string;
-		price: number;
-	}[];
+	service: Service[];
 };
 type CartState = {
 	items: CartItem[];
@@ -26,16 +21,12 @@ type CartState = {
 
 type CartAction = {
 	add: (item: Omit<CartItem, 'quantity'>) => void;
-	remove: (
-		id: string,
-		size: string,
-		additionalOptions: CartItem['additionalOptions']
-	) => void;
+	remove: (id: string, size: string, service: CartItem['service']) => void;
 	update: (
 		id: string,
 		size: string,
 		quantity: number,
-		additionalOptions: CartItem['additionalOptions']
+		additionalOptions: CartItem['service']
 	) => void;
 	clear: () => void;
 };
@@ -55,28 +46,24 @@ export const useCart = create<Cart>((set) => ({
 	add: (item) =>
 		set((state) => {
 			const idx = state.items.findIndex(
-				(i) =>
+				(i, index) =>
 					i.id === item.id &&
 					i.size === item.size &&
-					i.additionalOptions?.length ===
-						item.additionalOptions?.length &&
-					item.additionalOptions?.every(
-						(option, index) =>
-							option.optionId ===
-							item.additionalOptions?.[index]?.optionId
-					)
+					i.service?.[index]?.optionId ===
+						item.service?.[index]?.optionId
 			);
 			const total =
 				state.total +
 				item.price +
-				(item.additionalOptions?.reduce(
-					(sum, option) => sum + option.price,
-
-					0
-				) || 0);
+				(item.service.reduce((acc, curr) => acc + curr.price, 0) ?? 0);
 			if (idx === -1) {
 				const newItem: CartItem = {
-					...item,
+					id: item.id,
+					name: item.name,
+					price: item.price,
+					service: item.service,
+					size: item.size,
+					img: item.img,
 					quantity: 1,
 				};
 				const newState: CartState = {
@@ -86,73 +73,65 @@ export const useCart = create<Cart>((set) => ({
 				saveToLocalStorage(newState, CART_KEY);
 				return newState;
 			} else {
+				const updItem: CartItem = {
+					id: item.id,
+					name: item.name,
+					price: item.price,
+					service: item.service,
+					img: item.img,
+					size: item.size,
+					quantity: (state.items?.[idx]?.quantity ?? 0) + 1,
+				};
 				const updateItems = [...state.items];
-				const existing = updateItems[idx];
-				if (existing) {
-					const updateItem: CartItem = {
-						...existing,
-						quantity: existing.quantity + 1,
-					};
-					updateItems[idx] = updateItem;
-					const newState: CartState = {
-						...state,
-						items: updateItems,
-						total,
-					};
-					saveToLocalStorage(newState, CART_KEY);
-					return newState;
-				} else {
-					return {
-						items: [...state.items],
-						total,
-					};
-				}
+				updateItems[idx] = updItem;
+				const newState: CartState = {
+					items: updateItems,
+					total,
+				};
+				saveToLocalStorage(newState, CART_KEY);
+				return newState;
 			}
 		}),
-	update: (id, size, quantity, additionalOptions) =>
+	update: (id, size, quantity, service) =>
 		set((state) => {
-			const updatedItems = state.items.map((item) => {
-				// Check if the item matches the ID, size ID, and additional options
+			const update = state.items.map((itm) => {
 				if (
-					item.id === id &&
-					item.size === size &&
-					areAdditionalOptionsEqual(
-						item.additionalOptions,
-						additionalOptions
-					)
-				) {
-					// Update the quantity and additional options of the item
+					itm.id === id &&
+					itm.size === size &&
+					areAdditionalOptionsEqual(itm.service, service)
+				)
 					return {
-						...item,
-						quantity: quantity,
-						additionalOptions: additionalOptions || [],
+						...itm,
+						quantity,
+						service,
 					};
-				}
-				return item;
+				return itm;
 			});
-
-			// Calculate the total sum for the updated items
-			const updatedTotalSum = updatedItems.reduce(
+			const updateTotal = update.reduce(
 				(sum, item) =>
 					sum +
-					item.price * (item.quantity || 0) +
-					(item.additionalOptions || []).reduce(
-						(optionSum, option) => optionSum + option.price,
-						0
-					),
+					(item.price +
+						item.service.reduce(
+							(optionSum, option) => optionSum + option.price,
+							0
+						)) *
+						item.quantity,
 				0
 			);
-			const newState = {
-				...state,
-				items: updatedItems,
-				totalSum: updatedTotalSum,
+			const newState: CartState = {
+				items: update,
+				total: updateTotal,
 			};
 			saveToLocalStorage(newState, CART_KEY);
 			return newState;
 		}),
-	remove: (id, size, additionalOptions) =>
+	clear: () =>
+		set(() => {
+			saveToLocalStorage(init, CART_KEY);
+			return init;
+		}),
+	remove: (id, size, service) =>
 		set((state) => {
-			// Initialize the reduction to zero
 			let reduction = 0;
 
 			const updatedItems = state.items.filter((item) => {
@@ -160,16 +139,13 @@ export const useCart = create<Cart>((set) => ({
 				const isMatchingItem =
 					item.id === id &&
 					item.size === size &&
-					areAdditionalOptionsEqual(
-						item.additionalOptions,
-						additionalOptions
-					);
+					areAdditionalOptionsEqual(item.service, service);
 
 				// Calculate the reduction for the matching item
 				if (isMatchingItem) {
 					reduction =
 						item.price * (item.quantity || 0) +
-						(item.additionalOptions || []).reduce(
+						(item.service || []).reduce(
 							(optionSum, option) => optionSum + option.price,
 							0
 						);
@@ -184,17 +160,15 @@ export const useCart = create<Cart>((set) => ({
 			const newState = {
 				...state,
 				items: updatedItems,
-				totalSum: updatedTotalSum,
+				total: updatedTotalSum,
 			};
 			saveToLocalStorage(newState, CART_KEY);
 			return newState;
 		}),
-	clear: () => set(init),
 }));
-
 function areAdditionalOptionsEqual(
-	options1: CartItem['additionalOptions'] | undefined,
-	options2: CartItem['additionalOptions'] | undefined
+	options1: CartItem['service'] | undefined,
+	options2: CartItem['service'] | undefined
 ): boolean {
 	if (!options1 && !options2) {
 		return true;

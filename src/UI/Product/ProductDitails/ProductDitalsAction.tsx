@@ -8,6 +8,7 @@ import {
 import { SignedIn } from '@clerk/nextjs';
 import { GoHeart } from 'react-icons/go';
 import { useCart } from '~/store/useCart';
+import { useProductDitails } from '~/store/useProductDitails';
 import { api } from '~/utils/api';
 
 const ProductDitalsAction = ({
@@ -22,6 +23,7 @@ const ProductDitalsAction = ({
 	};
 }) => {
 	const [add] = useCart((state) => [state.add]);
+	const service = useProductDitails((state) => state.service);
 	const { data: userFav } = api.favorites.get.useQuery();
 	const { mutate: addOrRemove } = api.favorites.addOrRemove.useMutation({
 		onSuccess: () => {
@@ -35,15 +37,14 @@ const ProductDitalsAction = ({
 	});
 	const toast = useToast();
 	const ctx = api.useContext();
+	function handlAdd() {
+		const { price, name, size, img, id } = item;
+		add({ price, name, size, img, id, service });
+	}
+	console.log(service);
 	return (
 		<ButtonGroup isAttached w="100%" gap={1}>
-			<Button
-				onClick={() => {
-					add(item);
-				}}
-				colorScheme="telegram"
-				w="100%"
-			>
+			<Button onClick={handlAdd} colorScheme="telegram" w="100%">
 				Добавить в корзину
 			</Button>
 			<SignedIn>

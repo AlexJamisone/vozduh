@@ -1,6 +1,6 @@
 import { Button, FormLabel, Select, Stack, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { useProductDitails } from '~/store/useProductDitails';
+import { useProductDitails, type Service } from '~/store/useProductDitails';
 import { api } from '~/utils/api';
 import ProductDitalsAction from './ProductDitalsAction';
 
@@ -9,9 +9,15 @@ const ProductDitalsInfo = () => {
 	const { data: product } = api.product.getSinglProduct.useQuery({
 		id: query.id as string,
 	});
-	const setSize = useProductDitails((state) => state.setSize);
-	const size = useProductDitails((state) => state.size);
+	const [size, setSize, setService] = useProductDitails((state) => [
+		state.size,
+		state.setSize,
+		state.setService,
+	]);
 	if (!product) return null;
+	function handlService(service: Service) {
+		setService(service);
+	}
 	return (
 		<Stack
 			w={['100%', '50%']}
@@ -36,28 +42,31 @@ const ProductDitalsInfo = () => {
 			</Stack>
 			<Stack w={['90%', '100%']}>
 				{product.additionalServices?.map(
-					({ id, additionalServicesOption, title }, index) => (
+					({ id, additionalServicesOption, title }) => (
 						<Stack key={id}>
 							<FormLabel>{title}</FormLabel>
 							<Select
 								placeholder="Стандарт"
 								onChange={(e) => {
-									const selectedOption =
-										additionalServicesOption.find(
-											(option) =>
-												option.id === e.target.value
-										);
-									const price = selectedOption
-										? selectedOption.price
-										: 0;
-									const name = selectedOption
-										? selectedOption.name
-										: '';
+									const option = e.target.value.split(',');
+									const optionId = option[0] ?? '';
+									const price = Number(option[2] ?? 0);
+									const optionTitle = option[1] ?? '';
+									handlService({
+										title,
+										serviceId: id,
+										optionId,
+										price,
+										optionTitle,
+									});
 								}}
 							>
 								{additionalServicesOption.map(
 									({ id, name, price }) => (
-										<option key={id} value={id}>
+										<option
+											key={id}
+											value={`${id},${name},${price}`}
+										>
 											{name} {price} ₽
 										</option>
 									)
@@ -80,7 +89,7 @@ const ProductDitalsInfo = () => {
 				}}
 			/>
 			<Stack>
-				<Text>{product.description}</Text>
+				<Text whiteSpace="pre-wrap">{product.description}</Text>
 			</Stack>
 		</Stack>
 	);

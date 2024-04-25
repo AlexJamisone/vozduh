@@ -20,7 +20,7 @@ type CartItemProps = {
 	index: number;
 };
 const CartItem = ({
-	item: { name, id, size, price, img, quantity, additionalOptions },
+	item: { name, id, size, price, img, quantity, service },
 	index,
 }: CartItemProps) => {
 	const [isLowerThan400] = useMediaQuery('(max-width: 400px)');
@@ -64,8 +64,8 @@ const CartItem = ({
 					<Text fontSize={['smaller', 'md']}>{name}</Text>
 					<Stack textAlign="center" fontSize="small">
 						<Text fontSize={['smaller']}>Размер: {size}</Text>
-						{additionalOptions?.map(
-							({ optionTitle, serviceTitle, price }, index) => (
+						{service?.map(
+							({ optionTitle, price, title }, index) => (
 								<Stack
 									key={index + 1}
 									direction="row"
@@ -73,31 +73,33 @@ const CartItem = ({
 									justifyContent="center"
 								>
 									<Text>
-										{serviceTitle} {optionTitle} · {price} ₽
+										{title} {optionTitle} · {price} ₽
 									</Text>
 								</Stack>
 							)
 						)}
 					</Stack>
 				</Stack>
-				<Stack direction="row">
+				<Stack direction="row" alignItems="center">
 					<IconButton
 						aria-label="minus"
 						variant="ghost"
 						icon={<Icon as={MdArrowBackIos} />}
 						size={['xs', 'sm']}
-						onClick={() =>
-							update(id, size, quantity - 1, additionalOptions)
-						}
+						onClick={() => {
+							if (quantity - 1 === 0) {
+								remove(id, size, service);
+								return;
+							}
+							update(id, size, quantity - 1, service);
+						}}
 					/>
 					<Text>{quantity}</Text>
 					<IconButton
 						aria-label="plus"
 						icon={<Icon as={MdOutlineArrowForwardIos} />}
 						variant="ghost"
-						onClick={() =>
-							update(id, size, quantity + 1, additionalOptions)
-						}
+						onClick={() => update(id, size, quantity + 1, service)}
 						size={['xs', 'sm']}
 					/>
 				</Stack>
@@ -107,7 +109,7 @@ const CartItem = ({
 					icon={<Icon as={MdDelete} />}
 					colorScheme="red"
 					size={['xs', 'sm']}
-					onClick={() => remove(id, size, additionalOptions)}
+					onClick={() => remove(id, size, service)}
 				/>
 			</Stack>
 			<Divider />
