@@ -13,7 +13,7 @@ import {
 import type { FAQ } from '@prisma/client';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { CiEdit } from 'react-icons/ci';
-import { useAbout } from '~/store/useAbout';
+import { useFaq } from '~/store/useFaq';
 import { api } from '~/utils/api';
 
 type FAQAccordionProps = {
@@ -35,7 +35,7 @@ const FAQAccordion = ({ faq, onToggle }: FAQAccordionProps) => {
 	const { data: role } = api.user.getRole.useQuery();
 	const ctx = api.useContext();
 	const toast = useToast();
-	const setAll = useAbout((state) => state.setAll);
+	const setAll = useFaq((state) => state.setAll);
 	const handlButton = (
 		operation: 'edit' | 'delet',
 		action: () => void,
@@ -97,7 +97,7 @@ const FAQAccordion = ({ faq, onToggle }: FAQAccordionProps) => {
 				</AccordionButton>
 			</h2>
 			<AccordionPanel as={Stack} gap={5}>
-				<Text>{content}</Text>
+				<Text whiteSpace="pre-wrap">{content}</Text>
 			</AccordionPanel>
 		</AccordionItem>
 	);

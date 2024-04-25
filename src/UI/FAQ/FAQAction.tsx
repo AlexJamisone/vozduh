@@ -53,7 +53,7 @@ export default function FAQAction({ onClose }: { onClose: () => void }) {
 		create({ content, title });
 	}
 	return (
-		<Stack>
+		<Stack direction="row">
 			<Button
 				colorScheme="red"
 				onClick={() => {

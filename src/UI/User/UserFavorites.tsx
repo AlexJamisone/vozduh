@@ -10,8 +10,8 @@ const UserFavorites = () => {
 		return <NoData title="Нет товаров в избранном" icon={RiHeartsFill} />;
 	return (
 		<>
-			{favoritersProducts?.favorites.map(({ product }, index) => (
-				<ProductCard index={index} product={product} key={product.id} />
+			{favoritersProducts?.favorites.map(({ product }) => (
+				<ProductCard product={product} key={product.id} />
 			))}
 		</>
 	);
