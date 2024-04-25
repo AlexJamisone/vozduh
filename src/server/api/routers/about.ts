@@ -1,4 +1,3 @@
-import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import {
 	adminProcedure,
@@ -10,58 +9,58 @@ export const aboutRouter = createTRPCRouter({
 	get: publicProcedure.query(async ({ ctx }) => {
 		return await ctx.prisma.about.findFirst();
 	}),
-	createOrUpdate: adminProcedure
+	setAbout: adminProcedure
 		.input(
 			z.object({
 				id: z.string().optional(),
-				title: z.string().nonempty({ message: 'Придумайте Заголовок' }),
-				content: z.string().min(1, { message: 'Заполните контент' }),
+				value: z.string().min(1, { message: 'Заполни поле' }),
+				type: z.enum(['title', 'content']),
 			})
 		)
-		.mutation(async ({ ctx, input }) => {
-			if (!input.id) {
-				const create = await ctx.prisma.about.create({
-					data: {
-						title: input.title,
-						content: input.content,
-					},
-				});
-				if (!create) {
-					throw new TRPCError({
-						code: 'BAD_REQUEST',
-						cause: {
-							error: create,
-							message: `Проблемы с созданием`,
+		.mutation(async ({ input, ctx }) => {
+			const { type, id, value } = input;
+			if (!id) {
+				if (type === 'title') {
+					await ctx.prisma.about.create({
+						data: {
+							title: value,
+							content: '',
 						},
 					});
+					return `Титул успешно создан`;
 				}
-				return {
-					message: `Секция "${input.title}" успешно создана!`,
-					success: true,
-				};
+				if (type === 'content') {
+					await ctx.prisma.about.create({
+						data: {
+							title: '',
+							content: value,
+						},
+					});
+					return `Контет успешно создан`;
+				}
 			} else {
-				const update = await ctx.prisma.about.update({
-					where: {
-						id: input.id,
-					},
-					data: {
-						title: input.title,
-						content: input.content,
-					},
-				});
-				if (!update) {
-					throw new TRPCError({
-						code: 'BAD_REQUEST',
-						cause: {
-							error: update,
-							message: `Проблемы с обновлением`,
+				if (type === 'title') {
+					await ctx.prisma.about.update({
+						where: {
+							id,
+						},
+						data: {
+							title: value,
 						},
 					});
+					return `Титул успешно обновлён`;
 				}
-				return {
-					message: `Секция о нас успешно обновленна!`,
-					success: true,
-				};
+				if (type === 'content') {
+					await ctx.prisma.about.update({
+						where: {
+							id,
+						},
+						data: {
+							content: value,
+						},
+					});
+					return `Контент успешно обновлён`;
+				}
 			}
 		}),
 });
