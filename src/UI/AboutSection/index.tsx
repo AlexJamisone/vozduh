@@ -92,13 +92,13 @@ const AboutSection = () => {
 			</Stack>
 		);
 	return (
-		<Stack justifyContent="center" maxW={500} pb={100}>
+		<Stack justifyContent="center" maxW={600} pb={100}>
 			<Editable
 				isPreviewFocusable={isAdmin}
 				defaultValue={about?.title}
 				placeholder="Заголовок (сейчас здесь пусто)"
 			>
-				<EditablePreview as="h1" fontSize="3xl" />
+				<EditablePreview as="h1" fontSize="3xl" textAlign="center" />
 				<HStack>
 					<EditableInput
 						onChange={(e) => setInput({ title: e.target.value })}
