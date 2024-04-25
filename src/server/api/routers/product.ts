@@ -47,8 +47,16 @@ export const productRouter = createTRPCRouter({
 				include: {
 					size: true,
 					additionalServices: {
-						include: {
-							additionalServicesOption: true,
+						select: {
+							id: true,
+							title: true,
+							additionalServicesOption: {
+								select: {
+									id: true,
+									price: true,
+									name: true,
+								},
+							},
 						},
 					},
 				},

@@ -1,7 +1,10 @@
-import { Button, FormLabel, Select, Stack, Text } from '@chakra-ui/react';
+import { Stack, Text, VStack } from '@chakra-ui/react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/router';
-import { useProductDitails, type Service } from '~/store/useProductDitails';
+import { useProductDitails } from '~/store/useProductDitails';
 import { api } from '~/utils/api';
+import ProducService from './ProducService';
+import ProductDitailsSizeBtn from './ProductDitailsSizeBtn';
 import ProductDitalsAction from './ProductDitalsAction';
 
 const ProductDitalsInfo = () => {
@@ -9,15 +12,8 @@ const ProductDitalsInfo = () => {
 	const { data: product } = api.product.getSinglProduct.useQuery({
 		id: query.id as string,
 	});
-	const [size, setSize, setService] = useProductDitails((state) => [
-		state.size,
-		state.setSize,
-		state.setService,
-	]);
+	const warn = useProductDitails((state) => state.warn);
 	if (!product) return null;
-	function handlService(service: Service) {
-		setService(service);
-	}
 	return (
 		<Stack
 			w={['100%', '50%']}
@@ -27,54 +23,51 @@ const ProductDitalsInfo = () => {
 			maxW={[null, 350]}
 			px={[5, null]}
 		>
-			<Text fontSize="2xl">{product.name}</Text>
-			<Stack
-				direction="row"
-				flexWrap="wrap"
-				justifyContent="center"
-				maxW={300}
-			>
-				{product.size.map(({ id, value }) => (
-					<Button key={id} onClick={() => setSize(value)}>
-						{value}
-					</Button>
-				))}
-			</Stack>
+			<Text fontSize="4xl" as="h1">
+				{product.name}
+			</Text>
+			<VStack>
+				<Stack
+					direction="row"
+					flexWrap="wrap"
+					justifyContent="center"
+					maxW={300}
+				>
+					{product.size.map(({ id, value }) => (
+						<ProductDitailsSizeBtn value={value} key={id} />
+					))}
+				</Stack>
+				<AnimatePresence>
+					{warn && (
+						<Text
+							as={motion.p}
+							initial={{ opacity: 0, y: 50 }}
+							animate={{
+								opacity: 1,
+								y: 0,
+								transition: {
+									type: 'spring',
+									mass: 0.2,
+									stiffness: 150,
+									duration: 0.4,
+								},
+							}}
+							fontSize="sm"
+							textColor="orange.400"
+							exit={{
+								opacity: 0,
+								transition: { duration: 0.3, stiffness: 150 },
+							}}
+						>
+							Выбери размер
+						</Text>
+					)}
+				</AnimatePresence>
+			</VStack>
 			<Stack w={['90%', '100%']}>
-				{product.additionalServices?.map(
-					({ id, additionalServicesOption, title }) => (
-						<Stack key={id}>
-							<FormLabel>{title}</FormLabel>
-							<Select
-								placeholder="Стандарт"
-								onChange={(e) => {
-									const option = e.target.value.split(',');
-									const optionId = option[0] ?? '';
-									const price = Number(option[2] ?? 0);
-									const optionTitle = option[1] ?? '';
-									handlService({
-										title,
-										serviceId: id,
-										optionId,
-										price,
-										optionTitle,
-									});
-								}}
-							>
-								{additionalServicesOption.map(
-									({ id, name, price }) => (
-										<option
-											key={id}
-											value={`${id},${name},${price}`}
-										>
-											{name} {price} ₽
-										</option>
-									)
-								)}
-							</Select>
-						</Stack>
-					)
-				)}
+				{product.additionalServices?.map((service) => (
+					<ProducService key={service.id} service={service} />
+				))}
 			</Stack>
 			<Text fontSize="2xl" fontWeight={600}>
 				{product.price} ₽
@@ -85,7 +78,6 @@ const ProductDitalsInfo = () => {
 					img: product.image[0] ?? '',
 					price: product.price,
 					name: product.name,
-					size,
 				}}
 			/>
 			<Stack>

@@ -19,11 +19,16 @@ const ProductDitalsAction = ({
 		price: number;
 		img: string;
 		name: string;
-		size: string;
 	};
 }) => {
-	const [add] = useCart((state) => [state.add]);
-	const service = useProductDitails((state) => state.service);
+	const add = useCart((state) => state.add);
+	const [service, isSelect, setWarn, size] = useProductDitails((state) => [
+		state.service,
+		state.isSelect,
+		state.setWarn,
+		state.size,
+        state.clear
+	]);
 	const { data: userFav } = api.favorites.get.useQuery();
 	const { mutate: addOrRemove } = api.favorites.addOrRemove.useMutation({
 		onSuccess: () => {
@@ -38,10 +43,18 @@ const ProductDitalsAction = ({
 	const toast = useToast();
 	const ctx = api.useContext();
 	function handlAdd() {
-		const { price, name, size, img, id } = item;
+		if (!isSelect) {
+			setWarn(true);
+			toast({
+				description: 'Выбери размер',
+				status: 'warning',
+				duration: 2000,
+			});
+			return;
+		}
+		const { price, name, img, id } = item;
 		add({ price, name, size, img, id, service });
 	}
-	console.log(service);
 	return (
 		<ButtonGroup isAttached w="100%" gap={1}>
 			<Button onClick={handlAdd} colorScheme="telegram" w="100%">
