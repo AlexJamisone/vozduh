@@ -1,10 +1,16 @@
 import { Button, useToast } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 import { useAddress } from '~/store/useAddress';
 import { useCart } from '~/store/useCart';
 import { api } from '~/utils/api';
 const OrderAction = () => {
+	const route = useRouter();
 	const { mutate: create, isLoading } = api.order.create.useMutation({
-		onSuccess: () => {},
+		onSuccess: (id) => {
+			void ctx.order.invalidate();
+			clear();
+			route.push(`/order/${id}`);
+		},
 		onError: ({ data, message }) => {
 			if (data?.zodError) {
 				setError({ isError: true, path: data.zodError });
@@ -13,19 +19,25 @@ const OrderAction = () => {
 			toast({ description: message, status: 'error' });
 		},
 	});
-	const [total, items, clear] = useCart((state) => [
+	const [total, items, clearCart] = useCart((state) => [
 		state.total,
 		state.items,
 		state.clear,
 	]);
-	const [input, id, ctrl, setError] = useAddress((state) => [
+	const [input, id, ctrl, setError, point, clearAdr] = useAddress((state) => [
 		state.input,
 		state.edit.id,
 		state.controller,
 		state.setError,
+		state.point?.selected,
+		state.clear,
 	]);
 	const ctx = api.useContext();
 	const toast = useToast();
+	function clear() {
+		clearCart();
+		clearAdr();
+	}
 	function handlAction() {
 		if (!id && !ctrl.isSelected) {
 			toast({
@@ -42,7 +54,13 @@ const OrderAction = () => {
 			comment,
 			contactPhone,
 			total,
-			cart: items,
+			cart: items.map((item) => ({
+				...item,
+				additionalServiceOption: item.service.map(
+					(o) => `${o.title}: ${o.optionTitle}`
+				),
+			})),
+			point: point?.addressFullName,
 		});
 	}
 	return (

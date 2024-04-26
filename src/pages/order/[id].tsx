@@ -1,4 +1,4 @@
-import { Text } from '@chakra-ui/react';
+import { Text, useColorMode } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 import AnimataedLayout from '~/components/AnumationLayout';
@@ -6,6 +6,7 @@ import { api } from '~/utils/api';
 
 export default function Order() {
 	const router = useRouter();
+	const { colorMode } = useColorMode();
 	const id = router.query.id as string;
 	const {
 		data: order,
@@ -25,6 +26,7 @@ export default function Order() {
 					autoPlay
 					loop
 					src="https://cdnl.iconscout.com/lottie/premium/thumb/rotating-rainbow-spinner-9966359-8129402.mp4"
+					className="load-order"
 				/>
 			)}
 			{order && (
@@ -34,12 +36,19 @@ export default function Order() {
 					gap={5}
 				>
 					<video
-						src="https://cdnl.iconscout.com/lottie/premium/thumb/success-8929513-7271830.mp4"
+						className="success-v"
+						src={
+							colorMode === 'dark'
+								? 'https://cdnl.iconscout.com/lottie/premium/thumb/success-7178171-5842336.mp4'
+								: 'https://cdnl.iconscout.com/lottie/premium/thumb/success-8929513-7271830.mp4'
+						}
 						muted
 						autoPlay
 						width={300}
 						height={300}
-						style={{ marginTop: '-50px' }}
+						style={{
+							marginTop: '-50px',
+						}}
 					/>
 					<Text
 						as={motion.p}
@@ -64,7 +73,7 @@ export default function Order() {
 						<br />
 						Заказа №{order.orderNumber}
 						<br />
-						На сумму {order.total} ₽.
+						На сумму {order.total.toLocaleString('ru-RU')} ₽.
 						<br />
 						Мы свяжемся с вами для подтверждения в ближайшее время.
 						<br /> Спасибо!
@@ -85,6 +94,11 @@ export default function Order() {
 							scale: 1.05,
 						}}
 						className="order-link"
+						style={{
+							color: colorMode === 'dark' ? 'white' : undefined,
+							borderColor:
+								colorMode === 'dark' ? 'white' : undefined,
+						}}
 					>
 						На главную
 					</motion.a>

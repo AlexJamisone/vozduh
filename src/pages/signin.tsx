@@ -2,16 +2,12 @@ import { useColorMode } from '@chakra-ui/react';
 import { SignIn } from '@clerk/nextjs';
 import { dark } from '@clerk/themes';
 import Head from 'next/head';
-import AnumationLayout from '~/components/AnumationLayout';
+import AnimataedLayout from '~/components/AnumationLayout';
 
 const SigInPage = () => {
 	const { colorMode } = useColorMode();
 	return (
-		<AnumationLayout
-			container={{
-				pt: 200,
-			}}
-		>
+		<AnimataedLayout>
 			<Head>
 				<title>Vozduh | Вход</title>
 			</Head>
@@ -22,7 +18,7 @@ const SigInPage = () => {
 				signUpUrl="/signup"
 				afterSignInUrl="/"
 			/>
-		</AnumationLayout>
+		</AnimataedLayout>
 	);
 };
 

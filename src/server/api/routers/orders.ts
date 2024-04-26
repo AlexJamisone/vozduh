@@ -7,7 +7,6 @@ import {
 	privetProcedure,
 	publicProcedure,
 } from '~/server/api/trpc';
-import { prisma } from '~/server/db';
 
 const cartItems = z.array(
 	z.object({
@@ -17,33 +16,6 @@ const cartItems = z.array(
 		additionalServiceOption: z.array(z.string()).or(z.undefined()),
 	})
 );
-
-const addressObject = z.object({
-	firstName: z
-		.string()
-		.nonempty({ message: 'Пожалуйста, укажите своё имя.' }),
-	lastName: z.string().nonempty({ message: 'Не забудьте указать фамилию.' }),
-	contactPhone: z
-		.string()
-		.min(16, { message: 'Проверьте телефон, в нём есть ошибка' })
-		.nonempty({
-			message:
-				'Укажите ваш номер телефона, чтобы мы могли с вами связаться.',
-		}),
-	point: z.string().min(1, { message: 'Укажи пункт выдачи' }),
-});
-
-const userWithAddressId = z.object({
-	addressId: z.string(),
-	cart: cartItems,
-	total: z.number(),
-});
-
-const withNoAddress = z.object({
-	address: addressObject,
-	cart: cartItems,
-	totalSum: z.number(),
-});
 
 export const ordersRouter = createTRPCRouter({
 	get: publicProcedure.input(z.string()).query(async ({ ctx, input: id }) => {
@@ -173,153 +145,6 @@ export const ordersRouter = createTRPCRouter({
 				message: `Заказ #${updatedOrder.orderNumber} был оплачен!`,
 			};
 		}),
-	createIsAuthHaveAddress: privetProcedure
-		.input(userWithAddressId)
-		.mutation(async ({ ctx, input }) => {
-			const newOrder = await ctx.prisma.order.create({
-				data: {
-					addressId: input.addressId,
-					total: input.total,
-					userId: ctx.userId,
-					orderItem: {
-						createMany: {
-							data: input.cart.map(
-								({
-									id,
-									quantity,
-									size,
-									additionalServiceOption,
-								}) => ({
-									productId: id,
-									quantity,
-									additionalServiceOption:
-										additionalServiceOption?.map(
-											(opt) => opt
-										),
-									size,
-								})
-							),
-						},
-					},
-				},
-			});
-			const address = await prisma.address.findUnique({
-				where: {
-					id: input.addressId,
-				},
-			});
-			// here bot req
-			return {
-				success: `Заказ №${newOrder.orderNumber} успешно создан! В ближайшее время с вами свяжутся по указанным данным!`,
-				route: '/profile/main',
-			};
-		}),
-	createNoAddreess: publicProcedure
-		.input(withNoAddress)
-		.mutation(async ({ ctx, input }) => {
-			if (!ctx.userId) {
-				const newOrder = await ctx.prisma.order.create({
-					data: {
-						address: {
-							create: {
-								firstName: input.address.firstName,
-								lastName: input.address.lastName,
-								contactPhone: input.address.contactPhone,
-								point: input.address.point,
-							},
-						},
-						total: input.totalSum,
-						orderItem: {
-							createMany: {
-								data: input.cart.map(
-									({
-										id,
-										quantity,
-										size,
-										additionalServiceOption,
-									}) => ({
-										productId: id,
-										quantity,
-										additionalServiceOption:
-											additionalServiceOption?.map(
-												(opt) => opt
-											),
-										size,
-									})
-								),
-							},
-						},
-					},
-				});
-				// TODO why here
-				const address = await prisma.address.findUnique({
-					where: {
-						id: newOrder.addressId,
-					},
-				});
-				// here bot req
-				return {
-					success: `Заказ №${newOrder.orderNumber} успешно создан! В ближайшее время с вами свяжутся по указанным данным!`,
-					route: '/',
-				};
-			} else {
-				const newOrder = await ctx.prisma.order.create({
-					data: {
-						address: {
-							create: {
-								firstName: input.address.firstName,
-								lastName: input.address.lastName,
-								contactPhone: input.address.contactPhone,
-								point: input.address.point,
-								userId: ctx.userId,
-							},
-						},
-						total: input.totalSum,
-						orderItem: {
-							createMany: {
-								data: input.cart.map(
-									({
-										id,
-										quantity,
-										size,
-										additionalServiceOption,
-									}) => ({
-										productId: id,
-										quantity,
-										additionalServiceOption:
-											additionalServiceOption?.map(
-												(opt) => opt
-											),
-										size,
-									})
-								),
-							},
-						},
-					},
-				});
-				await ctx.prisma.user.update({
-					where: {
-						id: ctx.userId,
-					},
-					data: {
-						orders: {
-							connect: { id: newOrder.id },
-						},
-					},
-				});
-				// TODO why here
-				const address = await prisma.address.findUnique({
-					where: {
-						id: newOrder.addressId,
-					},
-				});
-				// here bot req
-				return {
-					success: `Заказ №${newOrder.orderNumber} успешно создан! В ближайшее время с вами свяжутся по указанным данным!`,
-					route: '/profile/main',
-				};
-			}
-		}),
 	create: publicProcedure
 		.input(
 			z
@@ -403,14 +228,10 @@ export const ordersRouter = createTRPCRouter({
 						},
 					},
 					select: {
-						orderNumber: true,
 						id: true,
 					},
 				});
-				return {
-					orderNum: create.orderNumber,
-					id: create.id,
-				};
+				return create.id;
 			}
 			const create = await ctx.prisma.order.create({
 				data: {
@@ -433,12 +254,8 @@ export const ordersRouter = createTRPCRouter({
 				},
 				select: {
 					id: true,
-					orderNumber: true,
 				},
 			});
-			return {
-				orderNum: create.orderNumber,
-				id: create.id,
-			};
+			return create.id;
 		}),
 });

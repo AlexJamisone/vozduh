@@ -5,6 +5,7 @@ const AnimataedLayout = ({ children, ...props }: CenterProps) => {
 	return (
 		<Center
 			as={motion.div}
+            pt={150}
 			initial={{
 				opacity: 0,
 				y: -100,

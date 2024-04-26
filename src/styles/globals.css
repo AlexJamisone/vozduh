@@ -23,6 +23,13 @@ a {
 .order-link {
 	padding: 5px 15px;
 	border: 1px solid rgba(0, 0, 0, 0.64);
-    color: rgba(0, 0, 0, 0.75);
-    border-radius: 8px;
+	color: rgba(0, 0, 0, 0.75);
+	border-radius: 8px;
+}
+
+.success-v {
+	mix-blend-mode: multiply;
+}
+.load-order {
+	mix-blend-mode: multiply;
 }

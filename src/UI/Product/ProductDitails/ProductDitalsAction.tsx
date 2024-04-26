@@ -22,7 +22,7 @@ const ProductDitalsAction = ({
 	};
 }) => {
 	const add = useCart((state) => state.add);
-	const [service, isSelect, setWarn, size] = useProductDitails((state) => [
+	const [service, isSelect, setWarn, size, clear] = useProductDitails((state) => [
 		state.service,
 		state.isSelect,
 		state.setWarn,
@@ -54,6 +54,7 @@ const ProductDitalsAction = ({
 		}
 		const { price, name, img, id } = item;
 		add({ price, name, size, img, id, service });
+        clear()
 	}
 	return (
 		<ButtonGroup isAttached w="100%" gap={1}>
