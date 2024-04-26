@@ -1,4 +1,5 @@
 import type { OrderStatus } from '@prisma/client';
+import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import {
 	adminProcedure,
@@ -10,12 +11,10 @@ import { prisma } from '~/server/db';
 
 const cartItems = z.array(
 	z.object({
-		productId: z.string(),
+		id: z.string(),
 		quantity: z.number(),
-		sizeValue: z.string(),
+		size: z.string(),
 		additionalServiceOption: z.array(z.string()).or(z.undefined()),
-		name: z.string(),
-		image: z.string(),
 	})
 );
 
@@ -37,7 +36,7 @@ const addressObject = z.object({
 const userWithAddressId = z.object({
 	addressId: z.string(),
 	cart: cartItems,
-	totalSum: z.number(),
+	total: z.number(),
 });
 
 const withNoAddress = z.object({
@@ -47,6 +46,23 @@ const withNoAddress = z.object({
 });
 
 export const ordersRouter = createTRPCRouter({
+	get: publicProcedure.input(z.string()).query(async ({ ctx, input: id }) => {
+		const order = await ctx.prisma.order.findUnique({
+			where: {
+				id,
+			},
+			select: {
+				total: true,
+				orderNumber: true,
+			},
+		});
+		if (!order)
+			throw new TRPCError({
+				message: 'Такого заказа нет',
+				code: 'NOT_FOUND',
+			});
+		return order;
+	}),
 	getForUsers: privetProcedure.query(async ({ ctx }) => {
 		return await ctx.prisma.order.findMany({
 			where: {
@@ -163,24 +179,24 @@ export const ordersRouter = createTRPCRouter({
 			const newOrder = await ctx.prisma.order.create({
 				data: {
 					addressId: input.addressId,
-					total: input.totalSum,
+					total: input.total,
 					userId: ctx.userId,
 					orderItem: {
 						createMany: {
 							data: input.cart.map(
 								({
-									productId,
+									id,
 									quantity,
-									sizeValue,
+									size,
 									additionalServiceOption,
 								}) => ({
-									productId,
+									productId: id,
 									quantity,
 									additionalServiceOption:
 										additionalServiceOption?.map(
 											(opt) => opt
 										),
-									size: sizeValue,
+									size,
 								})
 							),
 						},
@@ -217,18 +233,18 @@ export const ordersRouter = createTRPCRouter({
 							createMany: {
 								data: input.cart.map(
 									({
-										productId,
+										id,
 										quantity,
-										sizeValue,
+										size,
 										additionalServiceOption,
 									}) => ({
-										productId,
+										productId: id,
 										quantity,
 										additionalServiceOption:
 											additionalServiceOption?.map(
 												(opt) => opt
 											),
-										size: sizeValue,
+										size,
 									})
 								),
 							},
@@ -263,18 +279,18 @@ export const ordersRouter = createTRPCRouter({
 							createMany: {
 								data: input.cart.map(
 									({
-										productId,
+										id,
 										quantity,
-										sizeValue,
+										size,
 										additionalServiceOption,
 									}) => ({
-										productId,
+										productId: id,
 										quantity,
 										additionalServiceOption:
 											additionalServiceOption?.map(
 												(opt) => opt
 											),
-										size: sizeValue,
+										size,
 									})
 								),
 							},
@@ -303,5 +319,126 @@ export const ordersRouter = createTRPCRouter({
 					route: '/profile/main',
 				};
 			}
+		}),
+	create: publicProcedure
+		.input(
+			z
+				.object({
+					id: z.string(),
+					firstName: z
+						.string()
+						.min(1, { message: 'Укажи имя' })
+						.optional(),
+					lastName: z
+						.string()
+						.min(1, { message: 'Укажи фамилию' })
+						.optional(),
+					contactPhone: z
+						.string()
+						.min(16, { message: 'Укажи телефон' })
+						.optional(),
+					comment: z.string().optional(),
+					point: z
+						.string()
+						.min(1, { message: 'Укажи ПВЗ' })
+						.optional(),
+					cart: cartItems,
+					total: z.number().positive(),
+				})
+				.refine((data) => {
+					if (!data.id) {
+						if (
+							!data.firstName ||
+							!data.lastName ||
+							!data.contactPhone ||
+							!data.point
+						) {
+							return false;
+						}
+					}
+					return true;
+				})
+		)
+		.mutation(async ({ input, ctx }) => {
+			const {
+				total,
+				cart,
+				id,
+				point,
+				firstName,
+				lastName,
+				contactPhone,
+				comment,
+			} = input;
+			if (!id && firstName && lastName && contactPhone && point) {
+				const adr = await ctx.prisma.address.create({
+					data: {
+						firstName,
+						lastName,
+						contactPhone,
+						point,
+						userId: null,
+					},
+					select: {
+						id: true,
+					},
+				});
+				const create = await ctx.prisma.order.create({
+					data: {
+						addressId: adr.id,
+						comment,
+						total,
+						orderItem: {
+							createMany: {
+								data: cart.map((item) => ({
+									productId: item.id,
+									size: item.size,
+									quantity: item.quantity,
+									additionalServiceOption:
+										item.additionalServiceOption?.map(
+											(opt) => opt
+										),
+								})),
+							},
+						},
+					},
+					select: {
+						orderNumber: true,
+						id: true,
+					},
+				});
+				return {
+					orderNum: create.orderNumber,
+					id: create.id,
+				};
+			}
+			const create = await ctx.prisma.order.create({
+				data: {
+					total,
+					addressId: id,
+					comment,
+					orderItem: {
+						createMany: {
+							data: cart.map((item) => ({
+								productId: item.id,
+								size: item.size,
+								quantity: item.quantity,
+								additionalServiceOption:
+									item.additionalServiceOption?.map(
+										(opt) => opt
+									),
+							})),
+						},
+					},
+				},
+				select: {
+					id: true,
+					orderNumber: true,
+				},
+			});
+			return {
+				orderNum: create.orderNumber,
+				id: create.id,
+			};
 		}),
 });

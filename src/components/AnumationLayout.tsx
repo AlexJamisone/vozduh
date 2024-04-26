@@ -1,18 +1,7 @@
 import { Center, type CenterProps } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import type { ReactNode } from 'react';
 
-type AnimataedLayoutProps = {
-	children: ReactNode;
-	container?: CenterProps;
-	delay?: number;
-};
-
-const AnimataedLayout = ({
-	children,
-	container,
-	delay,
-}: AnimataedLayoutProps) => {
+const AnimataedLayout = ({ children, ...props }: CenterProps) => {
 	return (
 		<Center
 			as={motion.div}
@@ -26,10 +15,9 @@ const AnimataedLayout = ({
 				transition: {
 					type: 'spring',
 					duration: 0.5,
-					delay: delay ?? 0.5,
 				},
 			}}
-			{...container}
+			{...props}
 		>
 			{children}
 		</Center>

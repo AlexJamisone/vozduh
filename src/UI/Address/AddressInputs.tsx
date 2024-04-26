@@ -60,6 +60,7 @@ const AddressInputs = () => {
 								onChange={handlInput}
 								value={input[name]}
 								placeholder={placeholder}
+								name={name}
 							/>
 						) : (
 							<Input

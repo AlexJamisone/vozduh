@@ -1,11 +1,13 @@
 import { Stack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
+import { useAddress } from '~/store/useAddress';
 import YandexMap from '../Maps/YandexMap';
 import AddressInputs from './AddressInputs';
 import AddressPointCard from './AddressPointCard';
 import AddressSelectCity from './AddressSelectCity';
 
 const CreateAddress = () => {
+	const show = useAddress((state) => state.controller.showMap);
 	return (
 		<Stack direction="row" justifyContent="center">
 			<Stack
@@ -26,7 +28,7 @@ const CreateAddress = () => {
 			</Stack>
 			<Stack gap={8} as={motion.div} layout>
 				<AddressPointCard />
-				<YandexMap width={400} height={200} />
+				{show && <YandexMap width={400} height={200} />}
 			</Stack>
 		</Stack>
 	);

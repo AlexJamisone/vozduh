@@ -20,3 +20,9 @@ a {
 .react-dadata__suggestions {
 	color: #121212;
 }
+.order-link {
+	padding: 5px 15px;
+	border: 1px solid rgba(0, 0, 0, 0.64);
+    color: rgba(0, 0, 0, 0.75);
+    border-radius: 8px;
+}
