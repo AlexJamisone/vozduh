@@ -153,19 +153,23 @@ export const ordersRouter = createTRPCRouter({
 					firstName: z
 						.string()
 						.min(1, { message: 'Укажи имя' })
+						.or(z.optional(z.string()))
 						.optional(),
 					lastName: z
 						.string()
 						.min(1, { message: 'Укажи фамилию' })
+						.or(z.optional(z.string()))
 						.optional(),
 					contactPhone: z
 						.string()
 						.min(16, { message: 'Укажи телефон' })
+						.or(z.optional(z.string()))
 						.optional(),
 					comment: z.string().optional(),
 					point: z
 						.string()
 						.min(1, { message: 'Укажи ПВЗ' })
+						.or(z.optional(z.string()))
 						.optional(),
 					cart: cartItems,
 					total: z.number().positive(),
@@ -251,6 +255,7 @@ export const ordersRouter = createTRPCRouter({
 							})),
 						},
 					},
+					userId: ctx.userId,
 				},
 				select: {
 					id: true,

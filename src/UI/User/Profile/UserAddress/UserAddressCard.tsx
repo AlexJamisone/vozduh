@@ -8,6 +8,7 @@ import {
 } from '@chakra-ui/react';
 import type { Address } from '@prisma/client';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/router';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { api } from '~/utils/api';
 
@@ -18,9 +19,25 @@ type UserAddressCardProps = {
 
 const UserAddressCard = ({ address, index }: UserAddressCardProps) => {
 	const { mutate: archiveAddress, isLoading } =
-		api.address.archive.useMutation();
+		api.address.archive.useMutation({
+			onSuccess: () => {
+				void ctx.address.invalidate();
+				toast({
+					description: 'Адрес успешно удалён.',
+					isClosable: true,
+				});
+			},
+			onError: ({ message }) => {
+				toast({
+					description: `${message}`,
+					status: 'error',
+				});
+			},
+		});
 	const ctx = api.useContext();
 	const toast = useToast();
+	const router = useRouter();
+	const show = router.pathname !== '/new-order';
 	return (
 		<Card
 			position="relative"
@@ -33,36 +50,19 @@ const UserAddressCard = ({ address, index }: UserAddressCardProps) => {
 			}}
 			exit={{ opacity: 0 }}
 		>
-			<IconButton
-				aria-label="delet-address"
-				position="absolute"
-				size="xs"
-				top={3}
-				right={3}
-				colorScheme="red"
-				icon={<Icon as={AiOutlineDelete} />}
-				isLoading={isLoading}
-				onClick={() =>
-					archiveAddress(
-						{ id: address.id },
-						{
-							onSuccess: () => {
-								void ctx.address.invalidate();
-								toast({
-									description: 'Адрес успешно удалён.',
-									isClosable: true,
-								});
-							},
-							onError: ({ message }) => {
-								toast({
-									description: `${message}`,
-									status: 'error',
-								});
-							},
-						}
-					)
-				}
-			/>
+			{show && (
+				<IconButton
+					aria-label="delet-address"
+					position="absolute"
+					size="xs"
+					top={3}
+					right={3}
+					colorScheme="red"
+					icon={<Icon as={AiOutlineDelete} />}
+					isLoading={isLoading}
+					onClick={() => archiveAddress({ id: address.id })}
+				/>
+			)}
 			<CardBody fontSize={12}>
 				<Text>Имя: {address.firstName}</Text>
 				<Text>Фамилия: {address.lastName}</Text>

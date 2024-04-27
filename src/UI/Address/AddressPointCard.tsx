@@ -12,11 +12,11 @@ import { useAddress } from '~/store/useAddress';
 
 const AddressPointCard = () => {
 	const { colorMode } = useColorMode();
-	const [controller, point, setCtrl, setPoint] = useAddress((state) => [
+	const [controller, point, setCtrl] = useAddress((state) => [
 		state.controller,
 		state.point,
 		state.setController,
-        state.setPoint
+		state.setPoint,
 	]);
 	const handlPvz = () => {
 		setCtrl({ isSelected: true, showMap: false });

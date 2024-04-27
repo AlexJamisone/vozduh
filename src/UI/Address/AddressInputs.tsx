@@ -6,21 +6,19 @@ import {
 	Stack,
 	Textarea,
 } from '@chakra-ui/react';
-import { useAuth } from '@clerk/nextjs';
 import { useRouter } from 'next/router';
 import type { ChangeEvent } from 'react';
 import { IMaskInput } from 'react-imask';
 import { addressInput } from '~/constants/address';
 import { AddressInputValue, useAddress } from '~/store/useAddress';
 
-const AddressInputs = () => {
+const AddressInputs = ({ adrLen = 0 }: { adrLen?: number }) => {
 	const [input, error, set, reset] = useAddress((state) => [
 		state.input,
 		state.error,
 		state.setInput,
 		state.reset,
 	]);
-	const { isSignedIn } = useAuth();
 	const router = useRouter();
 	const handlInput = (
 		e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -32,8 +30,10 @@ const AddressInputs = () => {
 		set({ [name]: value } as AddressInputValue);
 	};
 	const inputs =
-		!isSignedIn && router.pathname === '/new-order'
-			? addressInput
+		router.pathname === '/new-order'
+			? adrLen === 0
+				? addressInput
+				: addressInput.filter((input) => input.name === 'comment')
 			: addressInput.filter((input) => input.name !== 'comment');
 	return (
 		<Stack>
