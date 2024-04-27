@@ -1,24 +1,26 @@
-import { Icon, Stack, Td, Text, Tr } from '@chakra-ui/react';
+import { Td, Tr } from '@chakra-ui/react';
 import type { Order, OrderItem, Product } from '@prisma/client';
 import dayjs from 'dayjs';
 import { motion } from 'framer-motion';
-import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
-import { status as statusHelper } from '~/helpers/status';
+import UserOrderProduct from './UserOrderProduct';
+import UserOrderStatus from './UserOrderStatus';
 dayjs.locale('ru');
 
 type UserOrderStickProps = {
 	order: Order & {
 		orderItem: (OrderItem & { product: Product })[];
+		address: {
+			point: string;
+		};
 	};
 	index: number;
 };
 
 const UserOrderStick = ({ order, index }: UserOrderStickProps) => {
-	const { createdAt, id, orderItem, orderNumber, status, total, viewed } =
+	const { createdAt, orderItem, orderNumber, status, total, viewed } =
 		order;
 	return (
 		<Tr
-			key={id}
 			textAlign="center"
 			as={motion.tr}
 			initial={{ opacity: 0 }}
@@ -34,30 +36,15 @@ const UserOrderStick = ({ order, index }: UserOrderStickProps) => {
 			<Td>{dayjs(createdAt).format('DD.MM.YYYY HH:mm')}</Td>
 			<Td>№ {orderNumber}</Td>
 			<Td>
-				<Stack direction="row" alignItems="center">
-					<Icon
-						as={statusHelper(status)?.icon}
-						boxSize={4}
-						textColor={statusHelper(status)?.color}
-					/>
-					<Text>{statusHelper(status)?.text}</Text>
-				</Stack>
-				<Stack direction="row" alignItems="center">
-					<Icon
-						as={viewed ? AiOutlineEye : AiOutlineEyeInvisible}
-						boxSize={4}
-					/>
-					<Text>{viewed ? 'Просмотренно' : 'Не просмотренно'}</Text>
-				</Stack>
+				<UserOrderStatus status={status} viewed={viewed} />
 			</Td>
 			<Td>
-				<Stack>
-					{orderItem.map(({ id, product: { name }, quantity }) => (
-						<Text key={id}>
-							{name} x{quantity}
-						</Text>
-					))}
-				</Stack>
+				<UserOrderProduct
+                    orderNum={orderNumber}
+					orderItem={orderItem}
+					total={total}
+					point={order.address.point}
+				/>
 			</Td>
 			<Td>{total} ₽</Td>
 		</Tr>

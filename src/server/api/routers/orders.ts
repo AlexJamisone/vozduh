@@ -43,10 +43,16 @@ export const ordersRouter = createTRPCRouter({
 			orderBy: {
 				createdAt: 'desc',
 			},
+			take: 5,
 			include: {
 				orderItem: {
 					include: {
 						product: true,
+					},
+				},
+				address: {
+					select: {
+						point: true,
 					},
 				},
 			},

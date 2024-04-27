@@ -3,7 +3,7 @@ import type { IconType } from 'react-icons';
 import { IoCheckmark } from 'react-icons/io5';
 import { TbRotateDot, TbTruckDelivery } from 'react-icons/tb';
 import { TiCancel } from 'react-icons/ti';
-export function status(
+export function helperStatus(
 	status: OrderStatus
 ): { icon: IconType; text: string; color: string } | undefined {
 	switch (status) {
