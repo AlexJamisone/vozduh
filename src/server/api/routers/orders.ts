@@ -230,6 +230,7 @@ export const ordersRouter = createTRPCRouter({
 								})),
 							},
 						},
+						userId: ctx.userId,
 					},
 					select: {
 						id: true,

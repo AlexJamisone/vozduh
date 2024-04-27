@@ -1,4 +1,5 @@
 # DEBUG
 
 -   [x] Comment when auth in new-order
--   [] Deselect card PVZ and choose point again
+-   [x] Deselect card PVZ and choose point again
+-   [] make in user order tabel product stuff

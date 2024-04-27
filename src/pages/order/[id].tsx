@@ -1,10 +1,12 @@
 import { Text, useColorMode } from '@chakra-ui/react';
+import { useAuth } from '@clerk/nextjs';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 import AnimataedLayout from '~/components/AnumationLayout';
 import { api } from '~/utils/api';
 
 export default function Order() {
+    const {isSignedIn} = useAuth()
 	const router = useRouter();
 	const { colorMode } = useColorMode();
 	const id = router.query.id as string;
@@ -79,7 +81,7 @@ export default function Order() {
 						<br /> Спасибо!
 					</Text>
 					<motion.a
-						href="/"
+						href={isSignedIn ? "/profile/main" : "/"}
 						initial={{ opacity: 0 }}
 						animate={{
 							opacity: 1,
@@ -100,7 +102,7 @@ export default function Order() {
 								colorMode === 'dark' ? 'white' : undefined,
 						}}
 					>
-						На главную
+						{isSignedIn ? "В личный кабинет" :"На главную"}
 					</motion.a>
 				</AnimataedLayout>
 			)}

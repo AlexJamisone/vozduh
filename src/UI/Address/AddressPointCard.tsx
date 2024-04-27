@@ -19,6 +19,10 @@ const AddressPointCard = () => {
 		state.setPoint,
 	]);
 	const handlPvz = () => {
+		if (controller.isSelected) {
+			setCtrl({ isSelected: false, showMap: true });
+            return
+		}
 		setCtrl({ isSelected: true, showMap: false });
 	};
 	return (
