@@ -6,7 +6,6 @@ import { useState } from 'react';
 const ProductCardImg = ({ images }: { images: string[] }) => {
 	const [isLoadedImg, setIsLoadedImg] = useState(false);
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
-	const point = useBreakpoint({ ssr: true });
 	return (
 		<Stack
 			w={[130, 260]}
@@ -18,6 +17,8 @@ const ProductCardImg = ({ images }: { images: string[] }) => {
 			{images.map((src, index) => (
 				<Skeleton
 					position="absolute"
+                    width='100%'
+                    height='100%'
 					key={src}
 					isLoaded={isLoadedImg}
 					onMouseEnter={() =>
@@ -41,12 +42,11 @@ const ProductCardImg = ({ images }: { images: string[] }) => {
 					}}
 				>
 					<Image
-						width={point === 'base' ? 130 : 260}
-						height={point === 'base' ? 100 : 270}
+						fill
 						alt={`product:${src}`}
 						src={`https://utfs.io/f/${src}`}
 						style={{
-							objectFit: 'cover',
+							objectFit: 'contain',
 						}}
 						quality={100}
 						onLoadingComplete={() => setIsLoadedImg(true)}

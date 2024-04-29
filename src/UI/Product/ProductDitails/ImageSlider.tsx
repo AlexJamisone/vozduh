@@ -43,7 +43,9 @@ const ImageSlider = ({ images }: { images: string[] }) => {
 							alt={`${src}`}
 							src={`https://utfs.io/f/${src}`}
 							flex="0 0 100%"
-							w={['100%', 300]}
+							w={['100%', 250, 300, 300]}
+							h={[100, 300]}
+							objectFit="cover"
 						/>
 					))}
 				</Stack>
@@ -93,6 +95,7 @@ const ImageSlider = ({ images }: { images: string[] }) => {
 						key={src}
 						w={100}
 						h={90}
+						objectFit="cover"
 						cursor="pointer"
 						onClick={() => onThumbClick(index)}
 						opacity={index === selectedIndex ? 1 : 0.2}
