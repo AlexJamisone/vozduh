@@ -11,7 +11,7 @@ const ProductCategory = () => {
 
 	return (
 		<Center pt={200}>
-			<Stack justifyContent="center">
+			<Stack justifyContent="center" flexWrap='wrap'>
 				{products?.map((product) => (
 					<ProductCard
 						key={product.id}

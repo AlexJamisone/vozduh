@@ -43,7 +43,7 @@ const ImageSlider = ({ images }: { images: string[] }) => {
 							alt={`${src}`}
 							src={`https://utfs.io/f/${src}`}
 							flex="0 0 100%"
-							w={['100%', 250, 300, 300]}
+							w={['100%', 250, 300, 499]}
 							h={[100, 300]}
 							objectFit="cover"
 						/>
