@@ -1,106 +1,97 @@
-import {
-	FormControl,
-	FormErrorMessage,
-	Progress,
-	useToast,
-} from '@chakra-ui/react';
-import { UploadDropzone } from '@uploadthing/react';
-import '@uploadthing/react/styles.css';
-import { motion } from 'framer-motion';
-import { useState } from 'react';
-import { useProductContext } from '~/context/productContext';
-import type { OurFileRouter } from '~/server/uploadthing';
+import { Icon, IconButton, Stack, Text, useToast } from '@chakra-ui/react';
+import Image from 'next/image';
+import { MdDelete } from 'react-icons/md';
+import { useCreateProduct } from '~/store/useCreateProduct';
+import { api } from '~/utils/api';
+import { UploadDropzone } from '~/utils/uploadthing';
 
-type ImageUploaderProps = {
-	endpoint: keyof OurFileRouter;
-};
-
-const ImageUploader = ({ endpoint }: ImageUploaderProps) => {
-	const { state, dispatch, errorProduct, isErrorProduct, resetProduct } =
-		useProductContext();
+function ImageItem({ f }: { f: string }) {
 	const toast = useToast();
-	const [progress, setProgress] = useState({
-		show: false,
-		value: 0,
-	});
-	const error =
-		isErrorProduct && errorProduct?.fieldErrors.image !== undefined;
+	const [image, set] = useCreateProduct((state) => [
+		state.image,
+		state.setImage,
+	]);
+	const { mutate: deletSinglImg, isLoading } =
+		api.product.deletSinglImg.useMutation({
+			onSuccess: (id) => {
+				toast({
+					description: 'Фото успешно удалено',
+					status: 'info',
+				});
+				set(image.filter((key) => key !== id));
+			},
+		});
 	return (
-		<FormControl
-			as={motion.div}
-			layout
-			isInvalid={error}
-			border={error ? '1px dashed' : undefined}
-			borderColor={error ? 'red.300' : undefined}
-		>
-			<UploadDropzone<OurFileRouter>
-				endpoint={endpoint}
-				onUploadProgress={(value) => {
-					setProgress({
-						show: true,
-						value,
-					});
-				}}
-				onUploadError={(error) => {
-					toast({
-						description: `Произошла ошибка: ${error.message}`,
-						status: 'error',
-						isClosable: true,
-						position: 'top-right',
-					});
-				}}
-				onClientUploadComplete={(res) => {
-					resetProduct();
-					setProgress({
-						show: false,
-						value: 0,
-					});
-					if (!res) throw new Error('Проблемы с загрузкой фото');
-					if (endpoint === 'imageUploader') {
-						dispatch({
-							type: 'SET_PRODUCT',
-							payload: {
-								...state.product,
-								image: [
-									...state.product.image,
-									...res.map(({ fileKey }) => fileKey),
-								],
-							},
-						});
-					} else {
-						dispatch({
-							type: 'SET_CATEGORY',
-							payload: {
-								...state.category,
-								image: res[0]?.fileKey ?? '',
-							},
-						});
-					}
-					toast({
-						description: 'Фото успешно загружено!',
-						status: 'success',
-						position: 'top-right',
-						isClosable: true,
-					});
-				}}
+		<Stack position="relative">
+			<Image
+				src={`https://utfs.io/f/${f}`}
+				width={100}
+				alt={`${f}`}
+				height={100}
+				quality={50}
 			/>
-			{progress.show && (
-				<Progress
-					as={motion.div}
-					isAnimated
-					initial={{ opacity: 0 }}
-					animate={{ opacity: 1 }}
-					value={progress.value}
-					hasStripe
-					colorScheme="telegram"
-					borderRadius="2xl"
-				/>
-			)}
-			<FormErrorMessage display="flex" justifyContent="center" mb={3}>
-				{errorProduct?.fieldErrors.image}
-			</FormErrorMessage>
-		</FormControl>
+			<IconButton
+				onClick={() => deletSinglImg(f)}
+				isLoading={isLoading}
+				icon={<Icon as={MdDelete} />}
+				size="xs"
+				colorScheme="red"
+				aria-label="delet-img-product"
+				isRound
+				position="absolute"
+				top={-3}
+				right={-3}
+			/>
+		</Stack>
 	);
-};
+}
 
-export default ImageUploader;
+export default function ImageUploader() {
+	const [image, set, error, reset] = useCreateProduct((state) => [
+		state.image,
+		state.setImage,
+		state.error,
+		state.reset,
+	]);
+	const isError =
+		error?.isError && error.path.fieldErrors.image !== undefined;
+	return (
+		<Stack>
+			{image.length < 5 && (
+				<Stack>
+					<UploadDropzone
+						endpoint="createProduct"
+						config={{ mode: 'auto' }}
+						onClientUploadComplete={(res) => {
+							if (error?.isError) {
+								reset();
+							}
+							const img = res.map(({ key }) => key);
+							set(image.length !== 0 ? [...image, ...img] : img);
+						}}
+						appearance={{
+							container: {
+								borderColor: isError ? 'red' : undefined,
+							},
+						}}
+					/>
+					{isError && (
+						<Text textColor="red.400">Загрузи изображение</Text>
+					)}
+				</Stack>
+			)}
+			{image.length !== 0 && (
+				<Stack
+					flexWrap="wrap"
+					direction="row"
+					justifyContent="center"
+					gap={4}
+				>
+					{image.map((key) => (
+						<ImageItem key={key} f={key} />
+					))}
+				</Stack>
+			)}
+		</Stack>
+	);
+}

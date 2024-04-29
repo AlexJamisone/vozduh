@@ -3,86 +3,60 @@ import {
 	ButtonGroup,
 	Icon,
 	IconButton,
+	Stack,
 	useToast,
 } from '@chakra-ui/react';
-import type { Size } from '@prisma/client';
-import { motion } from 'framer-motion';
-import { AiOutlineDelete } from 'react-icons/ai';
-import { useProductContext } from '~/context/productContext';
+import { MdDelete } from 'react-icons/md';
+import { useCreateSize } from '~/store/useCreateSize';
 import { api } from '~/utils/api';
 
-type Props = {
-	size: Size;
-};
-
-const AdminSizeButton = ({ size }: Props) => {
-	const { dispatch, state } = useProductContext();
-	const { mutate: deletSize, isLoading } = api.size.delete.useMutation();
-	const ctx = api.useContext();
+export default function AdminSizeButton() {
 	const toast = useToast();
-	const { id, value } = size;
+	const ctx = api.useContext();
+	const { data: sizes } = api.size.get.useQuery();
+	const { mutate: deletSize, isLoading } = api.size.delete.useMutation({
+		onSuccess: () => {
+			void ctx.size.invalidate();
+			toast({
+				description: 'Размер успешно удалён',
+				status: 'info',
+			});
+		},
+	});
+	const [setVal, setEdit, edit] = useCreateSize((state) => [
+		state.setValue,
+		state.setEdit,
+		state.edit,
+	]);
+	const handlEdit = (id: string, value: string) => {
+		setEdit({ id, is: true });
+		setVal(value);
+	};
 	return (
-		<ButtonGroup
-			isAttached
-			as={motion.div}
-			exit={{
-				opacity: 0,
-				transition: {
-					type: 'spring',
-					duration: 0.5,
-				},
-			}}
-			layout
+		<Stack
+			direction="row"
+			flexWrap="wrap"
+			justifyContent="center"
+			maxW="385px"
+			gap={3}
 		>
-			<Button
-				variant="outline"
-				size={['md']}
-				isActive={state.size.id === id}
-				onClick={() => {
-					dispatch({
-						type: 'SET_SIZE',
-						payload: {
-							id: state.size.id === id ? '' : id,
-							value: state.size.value === value ? '' : value,
-						},
-					});
-					dispatch({
-						type: 'SET_VIEW',
-						payload: {
-							...state.controlView,
-							editSize: state.size.id === id ? false : true,
-						},
-					});
-				}}
-			>
-				{value}
-			</Button>
-			<IconButton
-				isLoading={isLoading}
-				onClick={() =>
-					deletSize(
-						{ id },
-						{
-							onSuccess: () => {
-								void ctx.size.invalidate();
-								toast({
-									description: `Размер ${value} успешно удалён`,
-									isClosable: true,
-									duration: 2500,
-									position: 'top-right',
-									status: 'success',
-								});
-							},
-						}
-					)
-				}
-				colorScheme="red"
-				aria-label="remove"
-				size={['md']}
-				icon={<Icon as={AiOutlineDelete} />}
-			/>
-		</ButtonGroup>
+			{sizes?.map(({ id, value }) => (
+				<ButtonGroup key={id} isAttached size="sm" variant="outline">
+					<Button
+						onClick={() => handlEdit(id, value)}
+						isActive={edit.id === id}
+					>
+						{value}
+					</Button>
+					<IconButton
+						isLoading={isLoading}
+						aria-label="delet-size"
+						icon={<Icon as={MdDelete} />}
+						colorScheme="red"
+						onClick={() => deletSize({ id })}
+					/>
+				</ButtonGroup>
+			))}
+		</Stack>
 	);
-};
-
-export default AdminSizeButton;
+}

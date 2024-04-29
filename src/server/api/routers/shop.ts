@@ -1,18 +1,11 @@
-import { utapi } from 'uploadthing/server';
+import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import {
 	adminProcedure,
 	createTRPCRouter,
 	publicProcedure,
 } from '~/server/api/trpc';
-
-const shopInputs = z.object({
-	name: z.string().nonempty({ message: 'Введите название магазина' }),
-	fullAddress: z.string().nonempty({ message: 'Введите полный адрес' }),
-	phone: z.string().nonempty({ message: 'Введите телефон' }),
-	image: z.string().nonempty({ message: 'Загрузите картинку' }),
-	work_time: z.string().optional(),
-});
+import { utapi } from '~/server/uploadthing';
 
 export const shopRouter = createTRPCRouter({
 	get: publicProcedure.query(async ({ ctx }) => {
@@ -23,7 +16,19 @@ export const shopRouter = createTRPCRouter({
 		});
 	}),
 	create: adminProcedure
-		.input(shopInputs)
+		.input(
+			z.object({
+				name: z
+					.string()
+					.nonempty({ message: 'Введите название магазина' }),
+				fullAddress: z
+					.string()
+					.nonempty({ message: 'Введите полный адрес' }),
+				phone: z.string().nonempty({ message: 'Введите телефон' }),
+				image: z.string().nonempty({ message: 'Загрузите картинку' }),
+				work_time: z.string().optional(),
+			})
+		)
 		.mutation(async ({ ctx, input }) => {
 			const { fullAddress, image, name, phone, work_time } = input;
 			const create = await ctx.prisma.offlineShop.create({
@@ -36,27 +41,34 @@ export const shopRouter = createTRPCRouter({
 				},
 			});
 			if (!create)
-				return {
-					message: 'Проблемы с созданием',
-					success: false,
-				};
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'Что не так при создании магазина',
+				});
 			return {
 				message: `Оффлайе магазин ${name} успешно создан!`,
-				success: true,
 			};
 		}),
 	update: adminProcedure
 		.input(
 			z.object({
 				id: z.string(),
-				inputs: shopInputs,
+				name: z
+					.string()
+					.nonempty({ message: 'Введите название магазина' }),
+				fullAddress: z
+					.string()
+					.nonempty({ message: 'Введите полный адрес' }),
+				phone: z.string().nonempty({ message: 'Введите телефон' }),
+				image: z.string().nonempty({ message: 'Загрузите картинку' }),
+				work_time: z.string().optional(),
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
-			const { fullAddress, image, name, phone, work_time } = input.inputs;
+			const { fullAddress, image, name, phone, work_time, id } = input;
 			const update = await ctx.prisma.offlineShop.update({
 				where: {
-					id: input.id,
+					id,
 				},
 				data: {
 					fullAddress,
@@ -67,13 +79,12 @@ export const shopRouter = createTRPCRouter({
 				},
 			});
 			if (!update)
-				return {
-					message: 'Проблемы с обновлением!',
-					success: false,
-				};
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'Что то не так с обновлением магазина',
+				});
 			return {
 				message: `Оффлайн магазин успешно обновлен`,
-				success: true,
 			};
 		}),
 	delete: adminProcedure
@@ -90,5 +101,16 @@ export const shopRouter = createTRPCRouter({
 					id: input.id,
 				},
 			});
+		}),
+	deletImg: adminProcedure
+		.input(z.string())
+		.mutation(async ({ input: key }) => {
+			const del = await utapi.deleteFiles(key);
+			if (!del.success)
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'Проблема с удалением',
+				});
+			return del.success;
 		}),
 });

@@ -1,4 +1,3 @@
-import { Image } from '@chakra-ui/next-js';
 import {
 	Divider,
 	Icon,
@@ -8,84 +7,24 @@ import {
 	useMediaQuery,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import { AiFillDelete } from 'react-icons/ai';
+import Image from 'next/image';
 import {
-	MdOutlineKeyboardArrowLeft,
-	MdOutlineKeyboardArrowRight,
+	MdArrowBackIos,
+	MdDelete,
+	MdOutlineArrowForwardIos,
 } from 'react-icons/md';
-import { useCart } from '~/context/cartContext';
-import { CartItem } from '~/reducer/cartReducer';
+import { CartItem, useCart } from '~/store/useCart';
 
 type CartItemProps = {
 	item: CartItem;
 	index: number;
 };
-const CartItem = ({ item, index }: CartItemProps) => {
-	const { dispatchCart } = useCart();
+const CartItem = ({
+	item: { name, id, size, price, img, quantity, service },
+	index,
+}: CartItemProps) => {
 	const [isLowerThan400] = useMediaQuery('(max-width: 400px)');
-	const {
-		image: src,
-		name,
-		quantity,
-		price,
-		id,
-		size,
-		additionalOptions,
-	} = item;
-	const handlButton = (operation: 'minus' | 'plus' | 'remove') => {
-		return (
-			<IconButton
-				aria-label={operation}
-				colorScheme={operation === 'remove' ? 'red' : undefined}
-				size={operation === 'remove' ? 'md' : 'xs'}
-				variant="ghost"
-				icon={
-					<Icon
-						as={
-							operation === 'minus'
-								? MdOutlineKeyboardArrowLeft
-								: operation === 'plus'
-								? MdOutlineKeyboardArrowRight
-								: AiFillDelete
-						}
-					/>
-				}
-				onClick={() => {
-					if (
-						(quantity === 1 && operation === 'minus') ||
-						operation === 'remove'
-					) {
-						dispatchCart({
-							type: 'REMOVE',
-							payload: {
-								id,
-								sizeId: size.id,
-								additionalOptions,
-							},
-						});
-					} else {
-						if (operation === 'minus') {
-							dispatchCart({
-								type: 'UPDATE',
-								payload: {
-									...item,
-									quantity: quantity - 1,
-								},
-							});
-						} else {
-							dispatchCart({
-								type: 'UPDATE',
-								payload: {
-									...item,
-									quantity: quantity + 1,
-								},
-							});
-						}
-					}
-				}}
-			/>
-		);
-	};
+	const [remove, update] = useCart((state) => [state.remove, state.update]);
 	return (
 		<Stack
 			as={motion.div}
@@ -116,15 +55,17 @@ const CartItem = ({ item, index }: CartItemProps) => {
 					alt={name}
 					width={isLowerThan400 ? 39 : 50}
 					height={isLowerThan400 ? 39 : 50}
-					src={`https://utfs.io/f/${src}`}
-					objectFit="cover"
+					src={`https://utfs.io/f/${img}`}
+					style={{
+						objectFit: 'cover',
+					}}
 				/>
 				<Stack gap={0.5}>
 					<Text fontSize={['smaller', 'md']}>{name}</Text>
 					<Stack textAlign="center" fontSize="small">
-						<Text fontSize={['smaller']}>Размер: {size.value}</Text>
-						{additionalOptions?.map(
-							({ optionTitle, serviceTitle, price }, index) => (
+						<Text fontSize={['smaller']}>Размер: {size}</Text>
+						{service?.map(
+							({ optionTitle, price, title }, index) => (
 								<Stack
 									key={index + 1}
 									direction="row"
@@ -132,20 +73,44 @@ const CartItem = ({ item, index }: CartItemProps) => {
 									justifyContent="center"
 								>
 									<Text>
-										{serviceTitle} {optionTitle} · {price} ₽
+										{title} {optionTitle} · {price} ₽
 									</Text>
 								</Stack>
 							)
 						)}
 					</Stack>
 				</Stack>
-				<Stack direction="row">
-					{handlButton('minus')}
+				<Stack direction="row" alignItems="center">
+					<IconButton
+						aria-label="minus"
+						variant="ghost"
+						icon={<Icon as={MdArrowBackIos} />}
+						size={['xs', 'sm']}
+						onClick={() => {
+							if (quantity - 1 === 0) {
+								remove(id, size, service);
+								return;
+							}
+							update(id, size, quantity - 1, service);
+						}}
+					/>
 					<Text>{quantity}</Text>
-					{handlButton('plus')}
+					<IconButton
+						aria-label="plus"
+						icon={<Icon as={MdOutlineArrowForwardIos} />}
+						variant="ghost"
+						onClick={() => update(id, size, quantity + 1, service)}
+						size={['xs', 'sm']}
+					/>
 				</Stack>
 				<Text fontSize={['smaller', 'md']}>{price} ₽</Text>
-				{handlButton('remove')}
+				<IconButton
+					aria-label="remove"
+					icon={<Icon as={MdDelete} />}
+					colorScheme="red"
+					size={['xs', 'sm']}
+					onClick={() => remove(id, size, service)}
+				/>
 			</Stack>
 			<Divider />
 		</Stack>

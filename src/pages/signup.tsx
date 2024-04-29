@@ -6,11 +6,7 @@ import AnimataedLayout from '~/components/AnumationLayout';
 const SignUpPage = () => {
 	const { colorMode } = useColorMode();
 	return (
-		<AnimataedLayout
-			container={{
-				pt: 200,
-			}}
-		>
+		<AnimataedLayout>
 			<SignUp
 				appearance={{
 					baseTheme: colorMode === 'dark' ? dark : undefined,

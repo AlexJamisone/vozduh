@@ -12,13 +12,11 @@ const ProductCategory = () => {
 	return (
 		<Center pt={200}>
 			<Stack justifyContent="center">
-				{products?.map((product, index) => (
+				{products?.map((product) => (
 					<ProductCard
 						key={product.id}
 						product={product}
-						index={index}
 						role="USER"
-						image={<ProductCard.Image />}
 					/>
 				))}
 			</Stack>

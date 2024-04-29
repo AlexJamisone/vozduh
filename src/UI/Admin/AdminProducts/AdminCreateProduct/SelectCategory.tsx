@@ -1,42 +1,41 @@
 import { FormControl, FormErrorMessage, Select } from '@chakra-ui/react';
-import { useProductContext } from '~/context/productContext';
+import { useCreateProduct } from '~/store/useCreateProduct';
 import { api } from '~/utils/api';
 
 const SelectCategory = () => {
-	const { dispatch, state, isErrorProduct, errorProduct, resetProduct } =
-		useProductContext();
 	const { data: categorys } = api.categorys.get.useQuery();
+	const [category, set, error, reset] = useCreateProduct((state) => [
+		state.category,
+		state.setCategory,
+		state.error,
+		state.reset,
+	]);
 	if (!categorys) return null;
 	return (
 		<FormControl
 			isInvalid={
-				isErrorProduct &&
-				errorProduct?.fieldErrors.category !== undefined
+				error?.isError && error.path.fieldErrors.category !== undefined
 			}
 		>
 			<Select
 				placeholder="Выбери категорию"
 				onChange={(e) => {
-					resetProduct();
-					dispatch({
-						type: 'SET_PRODUCT',
-						payload: {
-							...state.product,
-							category: e.target.value,
-						},
-					});
+					if (error?.isError) {
+						reset();
+					}
+					set(e.target.value);
 				}}
-				value={state.product.category}
+				value={category}
 			>
 				{categorys?.map(({ id, title }) => (
-					<option key={id} value={title ?? ''}>
+					<option key={id} value={title}>
 						{title}
 					</option>
 				))}
 			</Select>
-			<FormErrorMessage>
-				{errorProduct?.fieldErrors.category}
-			</FormErrorMessage>
+			{error?.path.fieldErrors?.category?.map((err) => (
+				<FormErrorMessage key={err}>{err}</FormErrorMessage>
+			))}
 		</FormControl>
 	);
 };

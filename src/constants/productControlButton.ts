@@ -1,5 +1,6 @@
+import{v4 as uuid} from 'uuid'
 type ControllButton = {
-	id: number;
+	id: string;
 	value: string;
 	stateView: boolean;
 	stateEdit: boolean;
@@ -14,19 +15,19 @@ export const productControllButton = ({
 }): ControllButton[] => {
 	return [
 		{
-			id: 1,
+			id: uuid(),
 			value: 'Товар',
 			stateView: stateView[0] as boolean,
 			stateEdit: stateEdit[0] as boolean,
 		},
 		{
-			id: 2,
+			id: uuid(),
 			value: 'Размер',
 			stateView: stateView[1] as boolean,
 			stateEdit: stateEdit[1] as boolean,
 		},
 		{
-			id: 3,
+			id: uuid(),
 			value: 'Категорию',
 			stateView: stateView[2] as boolean,
 			stateEdit: stateEdit[2] as boolean,

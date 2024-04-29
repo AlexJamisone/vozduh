@@ -8,17 +8,13 @@ import {
 	useColorMode,
 } from '@chakra-ui/react';
 import { useAuth } from '@clerk/nextjs';
-import type { Role } from '@prisma/client';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 import { menu_link } from '~/constants/menu';
-import { counterElement } from '~/helpers/counterElement';
 import { api } from '~/utils/api';
 
 const Menu = () => {
 	const { data: role } = api.user.getRole.useQuery();
-	const { data: ordersIncome } = api.order.getIncomeOrder.useQuery();
-	const { data: favoritesCount } = api.favorites.countOfFavorites.useQuery();
 	const { query } = useRouter();
 	const { path: qpath } = query;
 	const { isSignedIn } = useAuth();
@@ -51,13 +47,8 @@ const Menu = () => {
 					w={['100%', 'unset', null]}
 					zIndex={100}
 				>
-					{menu_link(
-						role as Role,
-						role === 'ADMIN'
-							? ordersIncome
-							: (favoritesCount as number)
-					)?.map(
-						({ id, icon, path, title, name, income, target }) => (
+					{menu_link(role)?.map(
+						({ id, icon, path, title, name, target }) => (
 							<Stack key={id} position="relative">
 								<Tooltip label={title}>
 									<IconButton
@@ -77,14 +68,6 @@ const Menu = () => {
 										aria-label="menu-list"
 										rounded="full"
 										icon={<Icon as={icon} />}
-										{...(income?.is &&
-											counterElement(
-												income.value as number,
-												{
-													bottom: -3,
-													right: -5,
-												}
-											))}
 									/>
 								</Tooltip>
 							</Stack>

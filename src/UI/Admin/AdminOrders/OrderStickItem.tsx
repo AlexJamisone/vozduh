@@ -1,11 +1,9 @@
 import { Stack, Td, Text, Tr } from '@chakra-ui/react';
-import type { OrderItem, Product, ProductPriceHistory } from '@prisma/client';
+import type { OrderItem, Product } from '@prisma/client';
 
 type OrderStickItemProps = {
 	orderItem: OrderItem & {
-		product: Product & {
-			priceHistory: ProductPriceHistory[];
-		};
+		product: Product;
 	};
 };
 

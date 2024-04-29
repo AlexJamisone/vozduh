@@ -35,8 +35,6 @@ const UserAddress = () => {
 									'Вы можете хранить максимум 3 адреса; если вы хотите добавить новый, удалите старые.',
 								status: 'info',
 								duration: 7000,
-								isClosable: true,
-								position: 'top-right',
 							});
 						} else {
 							onToggle();

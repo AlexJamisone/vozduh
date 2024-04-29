@@ -30,56 +30,40 @@ model Address {
     firstName    String
     lastName     String
     contactPhone String
-    point        Point?
+    point        String
     archived     Boolean  @default(false)
     Order        Order[]
     createdAt    DateTime @default(now())
     updateAt     DateTime @updatedAt
 }
 
-model Point {
-    id              String  @id @default(cuid())
-    address         Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
-    addressId       String  @unique
-    name            String
-    work_time       String
-    phone           String?
-    email           String
-    type            String
-    region          String
-    city            String
-    longitude       Float
-    latitude        Float
-    addressName     String
-    addressFullName String
-}
 
 model Category {
     id      String    @id @default(cuid())
-    title   String    @unique
-    path    String
-    image   String
-    product Product[]
+        title   String    @unique
+        path    String  @unique
+        image   String
+        product Product[]
 }
 
 model Product {
     id                 String                @id @default(cuid())
-    name               String
-    description        String[]
-    image              String[]
-    archived           Boolean               @default(false)
-    comments           Comment[]
-    category           Category?             @relation(fields: [categoryTitle], references: [title])
-    categoryTitle      String?
-    orders             OrderItem[]
-    priceHistory       ProductPriceHistory[]
-    size               Size[]
-    favorites          Favorites[]
-    additionalServices AdditionalService[]
+        name               String
+        description        String?
+        image              String[]
+        archived           Boolean               @default(false)
+        comments           Comment[]
+        category           Category?             @relation(fields: [categoryTitle], references: [title])
+        categoryTitle      String?
+        orders             OrderItem[]
+        price Int
+        size               Size[]
+        favorites          Favorites[]
+        additionalServices AdditionalService[]
 }
 
 model AdditionalService {
-    id                       String                    @id @default(cuid())
+    id                       String                    @id 
     title                    String
     additionalServicesOption AdditionalServiceOption[]
     product                  Product                   @relation(fields: [productId], references: [id], onDelete: Cascade)
@@ -87,17 +71,17 @@ model AdditionalService {
 }
 
 model AdditionalServiceOption {
-    id                 String            @id @default(cuid())
+    id                 String            @id 
     name               String
-    price              String
+    price              Int
     additionalServices AdditionalService @relation(fields: [addServId], references: [id], onDelete: Cascade)
     addServId          String
 }
 
 model Size {
     id      String    @id @default(cuid())
-    value   String
-    product Product[]
+        value   String    @unique
+        product Product[]
 }
 
 model Favorites {
@@ -107,13 +91,6 @@ model Favorites {
     userId    String
 }
 
-model ProductPriceHistory {
-    id            String   @id @default(cuid())
-    product       Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
-    productId     String
-    price         Int
-    effectiveFrom DateTime @default(now())
-}
 
 model Order {
     id          String      @id @default(cuid())
@@ -128,7 +105,7 @@ model Order {
     viewed      Boolean     @default(false)
     isPayed     Boolean     @default(false)
     orderItem   OrderItem[]
-    totalSum    Float
+    total    Float
 }
 
 model OrderItem {
@@ -145,7 +122,7 @@ model OrderItem {
 model About {
     id        String   @id @default(cuid())
     title     String
-    content   String[]
+    content   String
     createdAt DateTime @default(now())
     updateAt  DateTime @updatedAt
 }
@@ -162,7 +139,7 @@ model Comment {
 model FAQ {
     id        String   @id @unique @default(cuid())
     title     String
-    content   String[]
+    content   String
     createdAt DateTime @default(now())
     updateAt  DateTime @updatedAt
 }

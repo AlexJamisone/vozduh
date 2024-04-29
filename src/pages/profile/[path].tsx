@@ -1,17 +1,34 @@
 import { Center } from '@chakra-ui/react';
+import { getAuth } from '@clerk/nextjs/server';
+import type { Role } from '@prisma/client';
+import type { GetServerSideProps, InferGetStaticPropsType } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import UserProfile from '~/UI/User/Profile/UserProfile';
 import UserFavorites from '~/UI/User/UserFavorites';
 import UserSettings from '~/UI/User/UserSettings';
-import { api } from '~/utils/api';
+import { prisma } from '~/server/db';
 
-const ProfileRouter = () => {
+export const getServerSideProps = (async ({ req }) => {
+	const { userId } = getAuth(req);
+	if (!userId) return { props: { role: null } };
+	const user = await prisma.user.findUnique({
+		where: { id: userId },
+		select: {
+			role: true,
+		},
+	});
+	return { props: { role: user?.role ?? null } };
+}) satisfies GetServerSideProps<{ role: Role | null }>;
+
+const ProfileRouter = ({
+	role,
+}: InferGetStaticPropsType<typeof getServerSideProps>) => {
 	const router = useRouter();
-	const { data: role } = api.user.getRole.useQuery();
 	const { path } = router.query;
 	useEffect(() => {
 		if (role !== 'USER') void router.push('/');
+        // eslint-disable-next-line
 	}, []);
 	const handlRouter = () => {
 		switch (path) {

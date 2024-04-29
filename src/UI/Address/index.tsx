@@ -1,19 +1,17 @@
 import { Stack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import { useCreateAddressContext } from '~/context/addressContext';
+import { useRouter } from 'next/router';
+import { useAddress } from '~/store/useAddress';
 import YandexMap from '../Maps/YandexMap';
 import AddressInputs from './AddressInputs';
 import AddressPointCard from './AddressPointCard';
 import AddressSelectCity from './AddressSelectCity';
 
-const CreateAddress = () => {
-	const { address } = useCreateAddressContext();
+const CreateAddress = ({ adrLen = 0 }: { adrLen?: number }) => {
+	const show = useAddress((state) => state.controller.showMap);
+	const route = useRouter();
 	return (
-		<Stack
-			direction="row"
-			justifyContent="center"
-			gap={address.map || address.point.isPointSelect ? 10 : undefined}
-		>
+		<Stack direction="row" justifyContent="center">
 			<Stack
 				w={300}
 				as={motion.div}
@@ -27,12 +25,14 @@ const CreateAddress = () => {
 					},
 				}}
 			>
-				<AddressInputs />
-				<AddressSelectCity />
+				<AddressInputs adrLen={adrLen} />
+				{adrLen === 0 && route.pathname === '/new-order' && (
+					<AddressSelectCity />
+				)}
 			</Stack>
 			<Stack gap={8} as={motion.div} layout>
 				<AddressPointCard />
-				<YandexMap width={400} height={200} />
+				{show && <YandexMap width={400} height={200} />}
 			</Stack>
 		</Stack>
 	);

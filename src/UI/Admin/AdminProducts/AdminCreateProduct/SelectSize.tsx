@@ -4,28 +4,28 @@ import {
 	FormLabel,
 	Stack,
 } from '@chakra-ui/react';
-import { useProductContext } from '~/context/productContext';
+import { useCreateProduct } from '~/store/useCreateProduct';
 import { api } from '~/utils/api';
 import SizeButton from './SizeButton';
 
 const SelectSize = () => {
 	const { data: sizes } = api.size.get.useQuery();
-	const { isErrorProduct, errorProduct } = useProductContext();
+	const error = useCreateProduct((state) => state.error);
 	return (
 		<FormControl
 			isInvalid={
-				isErrorProduct && errorProduct?.fieldErrors.size !== undefined
+				error?.isError && error?.path.fieldErrors?.size !== undefined
 			}
 		>
 			<FormLabel>Выбери размеры</FormLabel>
 			<Stack direction="row" justifyContent="center" flexWrap="wrap">
 				{sizes?.map((size) => (
-					<SizeButton key={size.id} size={size} />
+					<SizeButton key={size.id} value={size.value} />
 				))}
 			</Stack>
-			<FormErrorMessage display="flex" justifyContent="center">
-				{errorProduct?.fieldErrors.size}
-			</FormErrorMessage>
+			{error?.path.fieldErrors.size?.map((err) => (
+				<FormErrorMessage key={err}>{err}</FormErrorMessage>
+			))}
 		</FormControl>
 	);
 };

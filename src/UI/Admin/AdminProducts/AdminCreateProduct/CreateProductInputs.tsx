@@ -6,65 +6,53 @@ import {
 	Stack,
 	Textarea,
 } from '@chakra-ui/react';
-import type { ChangeEvent } from 'react';
+import type { FormEvent } from 'react';
 import { productCreate } from '~/constants/productCreate';
-import { useProductContext } from '~/context/productContext';
+import {
+	useCreateProduct,
+	type ProductInputValue,
+} from '~/store/useCreateProduct';
 
 const CreateProductInputs = () => {
-	const { dispatch, state, errorProduct, isErrorProduct, resetProduct } =
-		useProductContext();
-	const handlChange = (e: ChangeEvent<HTMLInputElement>) => {
-		resetProduct();
-		const { value, name } = e.target;
-		switch (name) {
-			case 'name':
-				dispatch({
-					type: 'SET_PRODUCT',
-					payload: { ...state.product, name: value },
-				});
-				break;
-			case 'description':
-				dispatch({
-					type: 'SET_PRODUCT',
-					payload: { ...state.product, description: value },
-				});
-				break;
-			case 'price':
-				dispatch({
-					type: 'SET_PRODUCT',
-					payload: {
-						...state.product,
-						price: value,
-					},
-				});
-				break;
-			default:
-				break;
+	const [input, set, error, reset] = useCreateProduct((state) => [
+		state.input,
+		state.setInputs,
+		state.error,
+		state.reset,
+	]);
+	function handlInput(e: FormEvent<HTMLInputElement>) {
+		if (error?.isError) {
+			reset();
 		}
-	};
+		const { value, name, type } = e.currentTarget;
+		set({
+			[name]: type === 'number' ? +value : value,
+		} as ProductInputValue);
+	}
 	return (
 		<Stack>
-			{productCreate(state.product).map(
-				({ label, name, placeholder, value, textarea }) => (
+			{productCreate.map(
+				({ label, name, placeholder, id, isTextarea, type }) => (
 					<FormControl
-						key={name}
+						key={id}
 						isInvalid={
-							isErrorProduct &&
-							errorProduct?.fieldErrors[name] !== undefined
+							error?.isError &&
+							error.path.fieldErrors?.[name] !== undefined
 						}
 					>
 						<FormLabel>{label}</FormLabel>
 						<Input
 							name={name}
-							type="text"
-							as={textarea ? Textarea : undefined}
-							value={value}
+							type={type}
+							value={input[name] === 0 ? '' : input[name]}
+							as={isTextarea ? Textarea : undefined}
+							height={isTextarea ? '160px' : undefined}
 							placeholder={placeholder}
-							onChange={handlChange}
+							onInput={handlInput}
 						/>
-						<FormErrorMessage>
-							{errorProduct?.fieldErrors[name]}
-						</FormErrorMessage>
+						{error?.path.fieldErrors?.[name]?.map((err) => (
+							<FormErrorMessage key={err}>{err}</FormErrorMessage>
+						))}
 					</FormControl>
 				)
 			)}

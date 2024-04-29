@@ -1,31 +1,89 @@
 import {
-	Button,
-	Heading,
+	Editable,
+	EditableInput,
+	EditablePreview,
+	EditableTextarea,
+	HStack,
 	Icon,
 	IconButton,
-	Input,
 	SkeletonText,
 	Stack,
-	Text,
-	Textarea,
+	useEditableControls,
 	useToast,
 } from '@chakra-ui/react';
-import { useReducer } from 'react';
-import { IoIosArrowBack } from 'react-icons/io';
-import { SlInfo } from 'react-icons/sl';
-import NoData from '~/components/NoData';
-import { aboutReducer, initialState } from '~/reducer/aboutReducer';
+import { FaCheck } from 'react-icons/fa6';
+import { RxCross2 } from 'react-icons/rx';
+import { useAbout } from '~/store/useAbout';
 import { api } from '~/utils/api';
 
+function EditableControls({
+	value,
+	id,
+	type,
+}: {
+	value: string;
+	id?: string;
+	type: 'title' | 'content';
+}) {
+	const ctx = api.useContext();
+	const clear = useAbout((state) => state.clear);
+	const toast = useToast();
+	const { isEditing, getSubmitButtonProps, getCancelButtonProps } =
+		useEditableControls();
+	const { mutate: set, isLoading } = api.about.setAbout.useMutation({
+		onSuccess: async (message) => {
+			await ctx.about.invalidate();
+			toast({
+				description: message,
+				status: !id ? 'success' : 'info',
+			});
+			clear();
+		},
+		onError: ({ data }) => {
+			if (data?.zodError) {
+				toast({
+					description:
+						'Поле не может быть пустым, изменения не сохранены',
+					status: 'error',
+				});
+			}
+		},
+	});
+	return (
+		<>
+			{isEditing && (
+				<Stack direction="row">
+					<IconButton
+						aria-label="confirm"
+						colorScheme="teal"
+						icon={<Icon as={FaCheck} />}
+						isLoading={isLoading}
+						size="sm"
+						{...getSubmitButtonProps({
+							onClick: () => set({ id, value, type }),
+						})}
+					/>
+					<IconButton
+						aria-label="cancel"
+						colorScheme="red"
+						icon={<Icon as={RxCross2} />}
+						size="sm"
+						{...getCancelButtonProps({ onClick: clear })}
+					/>
+				</Stack>
+			)}
+		</>
+	);
+}
 const AboutSection = () => {
 	const { data: role } = api.user.getRole.useQuery();
 	const { data: about, isLoading: isLoadingAbout } = api.about.get.useQuery();
-	const { mutate: createOrUpdate, isLoading } =
-		api.about.createOrUpdate.useMutation();
-	const ctx = api.useContext();
-	const toast = useToast();
-	const [state, dispatch] = useReducer(aboutReducer, initialState);
-	const { content, edit, title, id } = state;
+
+	const [setInput, input] = useAbout((state) => [
+		state.setInput,
+		state.input,
+	]);
+	const isAdmin = role === 'ADMIN';
 	if (isLoadingAbout)
 		return (
 			<Stack w={500}>
@@ -34,145 +92,49 @@ const AboutSection = () => {
 			</Stack>
 		);
 	return (
-		<Stack cursor={role === 'ADMIN' ? 'pointer' : 'default'} gap={'50px'}>
-			{!edit && (
-				<Heading
-					fontFamily="Jost, sans-serif"
-					textAlign="center"
-					border="2px solid"
-					rounded={'xl'}
-					p={3}
-					fontSize={[14, 16]}
-					onClick={
-						role === 'ADMIN'
-							? () => {
-									dispatch({
-										type: 'SET_ABOUT',
-										payload: {
-											id: about?.id ?? '',
-											content:
-												about?.content.join('\n\n') ??
-												'',
-											edit: true,
-											title: about?.title ?? '',
-										},
-									});
-							  }
-							: undefined
-					}
-				>
-					{about?.title ?? 'Пока нет название секции'}
-				</Heading>
-			)}
-			{edit && (
-				<Input
-					w={400}
-					placeholder="Название секции"
-					value={title}
-					onChange={(e) =>
-						dispatch({
-							type: 'SET_ABOUT',
-							payload: {
-								...state,
-								title: e.target.value,
-							},
-						})
-					}
-				/>
-			)}
-			{!edit && (
-				<Stack gap={5} alignItems="center">
-					{!about && <NoData icon={SlInfo} title="Нет контента" />}
-					{about?.content.map((content, index) => (
-						<Text
-							key={index}
-							maxW={400}
-							textAlign="center"
-							fontSize={[14, 16]}
-							onClick={
-								role === 'ADMIN'
-									? () => {
-											dispatch({
-												type: 'SET_ABOUT',
-												payload: {
-													id: about?.id ?? '',
-													content:
-														about?.content.join(
-															'\n\n'
-														) ?? '',
-													edit: true,
-													title: about?.title ?? '',
-												},
-											});
-									  }
-									: undefined
-							}
-						>
-							{content}
-						</Text>
-					))}
-				</Stack>
-			)}
-			{edit && (
-				<Textarea
-					h={150}
-					placeholder="Расскажи о своей компании"
-					value={content}
-					onChange={(e) =>
-						dispatch({
-							type: 'SET_ABOUT',
-							payload: {
-								...state,
-								content: e.target.value,
-							},
-						})
-					}
-				/>
-			)}
-			{edit && (
-				<Stack direction="row" justifyContent="flex-end">
-					<IconButton
-						aria-label="back"
-						icon={<Icon as={IoIosArrowBack} />}
-						onClick={() => dispatch({ type: 'CLEAR' })}
+		<Stack justifyContent="center" maxW={600} pb={100}>
+			<Editable
+				isPreviewFocusable={isAdmin}
+				defaultValue={about?.title}
+				placeholder="Заголовок (сейчас здесь пусто)"
+			>
+				<EditablePreview as="h1" fontSize="3xl" textAlign="center" />
+				<HStack>
+					<EditableInput
+						onChange={(e) => setInput({ title: e.target.value })}
+						value={about?.title ?? input.title}
 					/>
-					<Button
-						isLoading={isLoading}
-						colorScheme="telegram"
-						onClick={() =>
-							createOrUpdate(
-								{
-									title,
-									id: id.length !== 0 ? id : undefined,
-									content: content.split(/\n/g),
-								},
-								{
-									onSuccess: ({ message }) => {
-										void ctx.about.invalidate();
-										dispatch({ type: 'CLEAR' });
-										toast({
-											description: message,
-											status: 'success',
-											isClosable: true,
-											position: 'top-right',
-										});
-									},
-									onError: ({ message }) => {
-										toast({
-											description: message,
-											status: 'error',
-											isClosable: true,
-											position: 'top-right',
-										});
-									},
-								}
-							)
-						}
-					>
-						{!about ? 'Создать' : 'Обновить'}
-					</Button>
-				</Stack>
-			)}
+					{isAdmin && (
+						<EditableControls
+							value={input.title}
+							id={about?.id}
+							type="title"
+						/>
+					)}
+				</HStack>
+			</Editable>
+			<Editable
+				defaultValue={about?.content}
+				placeholder="Контент (сейчас здесь пусто)"
+				isPreviewFocusable={isAdmin}
+			>
+				<EditablePreview as="p" whiteSpace="pre-wrap" />
+				<HStack>
+					<EditableTextarea
+						height="120px"
+						w={500}
+						onChange={(e) => setInput({ content: e.target.value })}
+						value={about?.content ?? input.content}
+					/>
+					{isAdmin && (
+						<EditableControls
+							value={input.content}
+							id={about?.id}
+							type="content"
+						/>
+					)}
+				</HStack>
+			</Editable>
 		</Stack>
 	);
 };

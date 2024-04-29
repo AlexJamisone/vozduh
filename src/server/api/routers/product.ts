@@ -1,10 +1,10 @@
-import { utapi } from 'uploadthing/server';
 import { z } from 'zod';
 import {
 	adminProcedure,
 	createTRPCRouter,
 	publicProcedure,
 } from '~/server/api/trpc';
+import { utapi } from '~/server/uploadthing';
 
 export const productRouter = createTRPCRouter({
 	getProductByCategory: publicProcedure
@@ -24,11 +24,6 @@ export const productRouter = createTRPCRouter({
 					},
 				},
 				include: {
-					priceHistory: {
-						orderBy: {
-							effectiveFrom: 'desc',
-						},
-					},
 					size: true,
 					additionalServices: {
 						include: {
@@ -50,15 +45,18 @@ export const productRouter = createTRPCRouter({
 					id: input.id,
 				},
 				include: {
-					priceHistory: {
-						orderBy: {
-							effectiveFrom: 'desc',
-						},
-					},
 					size: true,
 					additionalServices: {
-						include: {
-							additionalServicesOption: true,
+						select: {
+							id: true,
+							title: true,
+							additionalServicesOption: {
+								select: {
+									id: true,
+									price: true,
+									name: true,
+								},
+							},
 						},
 					},
 				},
@@ -67,11 +65,6 @@ export const productRouter = createTRPCRouter({
 	getForAdmin: adminProcedure.query(async ({ ctx }) => {
 		return await ctx.prisma.product.findMany({
 			include: {
-				priceHistory: {
-					orderBy: {
-						effectiveFrom: 'desc',
-					},
-				},
 				size: true,
 				additionalServices: {
 					include: {
@@ -82,13 +75,10 @@ export const productRouter = createTRPCRouter({
 		});
 	}),
 	deletSinglImg: adminProcedure
-		.input(
-			z.object({
-				src: z.string(),
-			})
-		)
-		.mutation(async ({ input }) => {
-			return await utapi.deleteFiles(input.src);
+		.input(z.string())
+		.mutation(async ({ input: key }) => {
+			await utapi.deleteFiles(key);
+			return key;
 		}),
 	create: adminProcedure
 		.input(
@@ -96,12 +86,12 @@ export const productRouter = createTRPCRouter({
 				name: z.string().nonempty({
 					message: 'Пожалуйста, укажите название товара.',
 				}),
-				description: z.array(z.string()).min(1, {
+				description: z.string().min(1, {
 					message: 'Обязательно заполните описание товара',
 				}),
 				price: z
-					.string()
-					.nonempty({ message: 'Пожалуйста, укажите цену товара.' }),
+					.number()
+					.positive({ message: 'Пожалуйста, укажите цену товара.' }),
 				image: z
 					.array(
 						z
@@ -116,16 +106,18 @@ export const productRouter = createTRPCRouter({
 				service: z
 					.array(
 						z.object({
+							id: z.string(),
 							title: z.string().nonempty({
 								message: 'Укажи заголовок доп операции',
 							}),
 							additionalOptions: z
 								.array(
 									z.object({
+										id: z.string(),
 										name: z.string().nonempty({
 											message: 'Придумай имя доп опции',
 										}),
-										price: z.string().nonempty({
+										price: z.number().positive({
 											message: 'Установи цену доп опции',
 										}),
 									})
@@ -137,24 +129,19 @@ export const productRouter = createTRPCRouter({
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
-			const sizeId = input.size.map((id) => ({ id }));
-			return await ctx.prisma.product.create({
+			const product = await ctx.prisma.product.create({
 				data: {
 					name: input.name,
-					description: input.description.filter(Boolean),
+					description: input.description,
 					image: input.image,
-					priceHistory: {
-						create: {
-							price: Number(input.price),
-						},
-					},
+					price: input.price,
 					category: {
 						connect: {
 							title: input.category,
 						},
 					},
 					size: {
-						connect: sizeId,
+						connect: input.size.map((value) => ({ value })),
 					},
 					additionalServices: {
 						create: input.service?.map((service) => ({
@@ -164,15 +151,18 @@ export const productRouter = createTRPCRouter({
 										(option) => ({
 											name: option.name,
 											price: option.price,
+											id: option.id,
 										})
 									),
 								},
 							},
 							title: service.title,
+							id: service.id,
 						})),
 					},
 				},
 			});
+			return product.name;
 		}),
 	update: adminProcedure
 		.input(
@@ -181,12 +171,12 @@ export const productRouter = createTRPCRouter({
 				name: z.string().nonempty({
 					message: 'Пожалуйста, укажите название товара.',
 				}),
-				description: z.array(z.string()).min(1, {
+				description: z.string().min(1, {
 					message: 'Обязательно заполните описание товара',
 				}),
 				price: z
-					.string()
-					.nonempty({ message: 'Пожалуйста, укажите цену товара.' }),
+					.number()
+					.positive({ message: 'Пожалуйста, укажите цену товара.' }),
 				image: z
 					.array(
 						z
@@ -201,7 +191,7 @@ export const productRouter = createTRPCRouter({
 				service: z
 					.array(
 						z.object({
-							id: z.string().optional(),
+							id: z.string(),
 							title: z.string().nonempty({
 								message: 'Укажи название доп операции',
 							}),
@@ -212,7 +202,7 @@ export const productRouter = createTRPCRouter({
 										name: z.string().nonempty({
 											message: 'Придумай имя доп опции',
 										}),
-										price: z.string().nonempty({
+										price: z.number().positive({
 											message: 'Установи цену доп опции',
 										}),
 									})
@@ -224,172 +214,83 @@ export const productRouter = createTRPCRouter({
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
-			const sizeId = input.size.map((id) => ({ id }));
 			const existingServiceIds = input.service
 				?.filter((service) => service.id !== '')
 				.map((service) => service.id);
-			const prevPrice = await ctx.prisma.product.findUnique({
+			return await ctx.prisma.product.update({
 				where: {
 					id: input.producId,
 				},
-				include: {
-					priceHistory: {
-						orderBy: {
-							effectiveFrom: 'desc',
+				data: {
+					name: input.name,
+					description: input.description,
+					image: input.image,
+					category: {
+						connect: {
+							title: input.category,
 						},
+					},
+					price: input.price,
+					size: {
+						set: input.size.map((value) => ({ value })),
+					},
+					additionalServices: {
+						deleteMany: {
+							id: {
+								notIn: existingServiceIds as string[],
+							},
+						},
+						upsert: input.service?.map((service) => ({
+							where: {
+								id: service.id,
+							},
+							update: {
+								title: service.title,
+								additionalServicesOption: {
+									upsert: service.additionalOptions.map(
+										(option) => ({
+											where: {
+												id: option.id,
+											},
+											update: {
+												name: option.name,
+												price: option.price,
+											},
+											create: {
+												id: option.id,
+												name: option.name,
+												price: option.price,
+											},
+										})
+									),
+									deleteMany: {
+										id: {
+											notIn: service.additionalOptions
+												.filter(
+													(option) => option.id !== ''
+												)
+												.map((option) => option.id),
+										},
+									},
+								},
+							},
+							create: {
+								additionalServicesOption: {
+									create: service.additionalOptions.map(
+										(option) => ({
+											id: option.id,
+											name: option.name,
+											price: option.price,
+										})
+									),
+								},
+								title: service.title,
+								id: service.id,
+							},
+						})),
 					},
 				},
 			});
-			if (prevPrice?.priceHistory[0]?.price === Number(input.price)) {
-				return await ctx.prisma.product.update({
-					where: {
-						id: input.producId,
-					},
-					data: {
-						name: input.name,
-						description: input.description.filter(Boolean),
-						image: input.image,
-						category: {
-							connect: {
-								title: input.category,
-							},
-						},
-						size: {
-							set: sizeId,
-						},
-						additionalServices: {
-							deleteMany: {
-								id: {
-									notIn: existingServiceIds as string[],
-								},
-							},
-							upsert: input.service?.map((service) => ({
-								where: {
-									id: service.id,
-								},
-								update: {
-									title: service.title,
-									additionalServicesOption: {
-										upsert: service.additionalOptions.map(
-											(option) => ({
-												where: {
-													id: option.id,
-												},
-												update: {
-													name: option.name,
-													price: option.price,
-												},
-												create: {
-													name: option.name,
-													price: option.price,
-												},
-											})
-										),
-										deleteMany: {
-											id: {
-												notIn: service.additionalOptions
-													.filter(
-														(option) =>
-															option.id !== ''
-													)
-													.map((option) => option.id),
-											},
-										},
-									},
-								},
-								create: {
-									additionalServicesOption: {
-										create: service.additionalOptions.map(
-											(option) => ({
-												name: option.name,
-												price: option.price,
-											})
-										),
-									},
-									title: service.title,
-								},
-							})),
-						},
-					},
-				});
-			} else {
-				return await ctx.prisma.product.update({
-					where: {
-						id: input.producId,
-					},
-					data: {
-						name: input.name,
-						description: input.description.filter(Boolean),
-						image: input.image,
-						category: {
-							connect: {
-								title: input.category,
-							},
-						},
-						priceHistory: {
-							create: {
-								price: Number(input.price),
-							},
-						},
-						size: {
-							set: sizeId,
-						},
-						additionalServices: {
-							deleteMany: {
-								id: {
-									notIn: existingServiceIds as string[],
-								},
-							},
-							upsert: input.service?.map((service) => ({
-								where: {
-									id: service.id,
-								},
-								update: {
-									title: service.title,
-									additionalServicesOption: {
-										upsert: service.additionalOptions.map(
-											(option) => ({
-												where: {
-													id: option.id,
-												},
-												update: {
-													name: option.name,
-													price: option.price,
-												},
-												create: {
-													name: option.name,
-													price: option.price,
-												},
-											})
-										),
-										deleteMany: {
-											id: {
-												notIn: service.additionalOptions
-													.filter(
-														(option) =>
-															option.id !== ''
-													)
-													.map((option) => option.id),
-											},
-										},
-									},
-								},
-								create: {
-									additionalServicesOption: {
-										create: service.additionalOptions.map(
-											(option) => ({
-												name: option.name,
-												price: option.price,
-											})
-										),
-									},
-									title: service.title,
-								},
-							})),
-						},
-					},
-				});
-			}
 		}),
 	archive: adminProcedure
 		.input(

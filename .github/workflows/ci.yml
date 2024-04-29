@@ -17,6 +17,8 @@ env:
     CDEK_ID: '123123124'
     CDEK_SECRET: '123123'
     NEXT_PUBLIC_ANALISTIC_URL: '3213123'
+    BOT_HOSTER: '22'
+    BOT_DOMAIN: 'https://fake2.com'
 
 jobs:
     build:

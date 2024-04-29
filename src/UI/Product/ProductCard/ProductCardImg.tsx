@@ -1,11 +1,9 @@
-import { Image } from '@chakra-ui/next-js';
 import { Skeleton, Stack, useBreakpoint } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { useState } from 'react';
-import { useProductCardContext } from '~/context/productCardContext';
 
-const ProductCardImg = () => {
-	const { product } = useProductCardContext();
+const ProductCardImg = ({ images }: { images: string[] }) => {
 	const [isLoadedImg, setIsLoadedImg] = useState(false);
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
 	const point = useBreakpoint({ ssr: true });
@@ -17,21 +15,19 @@ const ProductCardImg = () => {
 			justifyContent="center"
 			alignItems="center"
 		>
-			{product.image.map((src, index) => (
+			{images.map((src, index) => (
 				<Skeleton
 					position="absolute"
 					key={src}
 					isLoaded={isLoadedImg}
 					onMouseEnter={() =>
 						setCurrentImageIndex(
-							(prevIndex) =>
-								(prevIndex + 1) % product.image.length
+							(prevIndex) => (prevIndex + 1) % images.length
 						)
 					}
 					onMouseLeave={() =>
 						setCurrentImageIndex(
-							(prevIndex) =>
-								(prevIndex - 1) % product.image.length
+							(prevIndex) => (prevIndex - 1) % images.length
 						)
 					}
 					as={motion.div}
@@ -45,12 +41,13 @@ const ProductCardImg = () => {
 					}}
 				>
 					<Image
-						borderRadius="2xl"
 						width={point === 'base' ? 130 : 260}
 						height={point === 'base' ? 100 : 270}
 						alt={`product:${src}`}
 						src={`https://utfs.io/f/${src}`}
-						objectFit="cover"
+						style={{
+							objectFit: 'cover',
+						}}
 						quality={100}
 						onLoadingComplete={() => setIsLoadedImg(true)}
 					/>

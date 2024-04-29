@@ -6,48 +6,37 @@ import { GoHeart } from 'react-icons/go';
 import { LiaRingSolid, LiaUserSolid } from 'react-icons/lia';
 import type { IconType } from 'react-icons/lib';
 import { SlSettings } from 'react-icons/sl';
+import { v4 as uuid } from 'uuid';
 
 type MenuActions = {
-	id: number;
+	id: string;
 	path: string;
 	icon: IconType;
 	title: string;
 	name: string;
-	income?: {
-		is: boolean;
-		value?: number;
-	};
 	target?: HTMLAttributeAnchorTarget;
 };
-
-export const menu_link = (
-	role: Role,
-	value?: number
-): MenuActions[] | undefined => {
+export const menu_link = (role: Role): MenuActions[] | undefined => {
 	switch (role) {
 		case 'ADMIN':
 			return [
 				{
-					id: 1,
+					id: uuid(),
 					path: '/admin/orders',
 					title: 'Заказы',
 					icon: FaRegRectangleList,
 					name: 'orders',
-					income: {
-						is: true,
-						value,
-					},
 				},
 				{
-					id: 2,
+					id: uuid(),
 					path: '/admin/products',
 					title: 'Товары',
 					icon: LiaRingSolid,
 					name: 'products',
 				},
 				{
-					id: 3,
-					path: process.env.NEXT_PUBLIC_ANALISTIC_URL as string,
+					id: uuid(),
+					path: 'https://analytics.umami.is/share/9lahb1FmsCgHDYXh/vozduh',
 					title: 'Посещения',
 					icon: AiOutlineLineChart,
 					name: 'some_ref',
@@ -57,25 +46,21 @@ export const menu_link = (
 		case 'USER':
 			return [
 				{
-					id: 4,
+					id: uuid(),
 					path: '/profile/main',
 					icon: LiaUserSolid,
 					title: 'Профиль',
 					name: 'main',
 				},
 				{
-					id: 5,
+					id: uuid(),
 					path: '/profile/favorites',
 					icon: GoHeart,
 					title: 'Избранное',
 					name: 'favorites',
-					income: {
-						is: true,
-						value,
-					},
 				},
 				{
-					id: 6,
+					id: uuid(),
 					path: '/profile/settings',
 					icon: SlSettings,
 					title: 'Настройки',

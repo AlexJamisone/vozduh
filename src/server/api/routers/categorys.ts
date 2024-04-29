@@ -1,93 +1,101 @@
-import { utapi } from 'uploadthing/server';
+import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import {
 	adminProcedure,
 	createTRPCRouter,
 	publicProcedure,
 } from '~/server/api/trpc';
-
-const categoryInput = z.object({
-	id: z.string(),
-	title: z
-		.string()
-		.trim()
-		.nonempty({ message: 'Укажите название категории' })
-		.refine(
-			(val) => val.charAt(0).toUpperCase() + val.slice(1).toLowerCase()
-		),
-	path: z
-		.string()
-		.trim()
-		.nonempty({ message: 'Укажите название пути' })
-		.refine((val) => val.toLowerCase())
-		.refine((value) => /^[a-zA-Z]+$/.test(value), {
-			message: 'Нужно использовать только английский',
-		}),
-	image: z.string().nonempty({ message: 'Загрузите картинку для категории' }),
-});
+import { utapi } from '~/server/uploadthing';
 
 export const categorysRouter = createTRPCRouter({
 	get: publicProcedure.query(async ({ ctx }) => {
 		return await ctx.prisma.category.findMany();
 	}),
 	create: adminProcedure
-		.input(categoryInput)
+		.input(
+			z.object({
+				title: z
+					.string()
+					.trim()
+					.min(1, { message: 'Укажите название категории' })
+					.transform(
+						(val) =>
+							val.charAt(0).toUpperCase() +
+							val.slice(1).toLowerCase()
+					),
+				path: z
+					.string()
+					.trim()
+					.min(1, { message: 'Укажите название пути' })
+					.refine((value) => /^[a-zA-Z]+$/.test(value), {
+						message: 'Нужно использовать только английский',
+					})
+					.transform((val) => val.toLowerCase()),
+				image: z
+					.string()
+					.min(1, { message: 'Загрузите картинку для категории' }),
+			})
+		)
 		.mutation(async ({ ctx, input }) => {
-			const check = await ctx.prisma.category.findUnique({
-				where: {
-					path: input.path,
-					title: input.title,
+			const { path, title, image } = input;
+			const create = await ctx.prisma.category.create({
+				data: {
+					title,
+					image,
+					path,
 				},
 			});
-			if (!check) {
-				await ctx.prisma.category.create({
-					data: {
-						title: input.title,
-						image: input.image,
-						path: input.path,
-					},
+			if (!create)
+				throw new TRPCError({
+					code: 'CONFLICT',
+					message: 'Упс, похоже такая категория уже существует!',
 				});
-				return {
-					message: `Категория "${input.title}" по пути "/${input.path}" успешно создана!`,
-					success: true,
-				};
-			} else {
-				return {
-					message: `Категория с таким названием/путём уже существует!`,
-					success: false,
-				};
-			}
+			return `Категория с названием ${title} успешно создана по пути /${path}`;
 		}),
 	update: adminProcedure
-		.input(categoryInput)
+		.input(
+			z.object({
+				id: z.string(),
+				title: z
+					.string()
+					.trim()
+					.min(1, { message: 'Укажите название категории' })
+					.transform(
+						(val) =>
+							val.charAt(0).toUpperCase() +
+							val.slice(1).toLowerCase()
+					),
+				path: z
+					.string()
+					.trim()
+					.min(1, { message: 'Укажите название пути' })
+					.refine((value) => /^[a-zA-Z]+$/.test(value), {
+						message: 'Нужно использовать только английский',
+					})
+					.transform((val) => val.toLowerCase()),
+				image: z
+					.string()
+					.min(1, { message: 'Загрузите картинку для категории' }),
+			})
+		)
 		.mutation(async ({ ctx, input }) => {
-			const check = await ctx.prisma.category.findUnique({
+			const { id, title, path, image } = input;
+			const update = await ctx.prisma.category.update({
 				where: {
-					path: input.path,
-					title: input.title,
+					id,
+				},
+				data: {
+					title,
+					path,
+					image,
 				},
 			});
-			if (!check) {
-				await ctx.prisma.category.update({
-					where: {
-						id: input.id,
-					},
-					data: {
-						image: input.image,
-						title: input.title,
-						path: input.path,
-					},
+			if (!update)
+				throw new TRPCError({
+					code: 'CONFLICT',
+					message: 'Упс, похоже категория уже существует',
 				});
-				return {
-					message: `Категория "${input.title}" по пути "/${input.path}" успешно обновленна!`,
-					success: true,
-				};
-			} else {
-				return {
-					message: `Категория с таким названием/путём уже существует!`,
-					success: false,
-				};
-			}
+			return `Категория успешно обновлена`;
 		}),
 	delete: adminProcedure
 		.input(
@@ -98,10 +106,22 @@ export const categorysRouter = createTRPCRouter({
 		)
 		.mutation(async ({ ctx, input }) => {
 			await utapi.deleteFiles(input.image);
-			return await ctx.prisma.category.delete({
+			await ctx.prisma.category.delete({
 				where: {
 					id: input.id,
 				},
 			});
+            return "Категория успешно удалена"
+		}),
+	deletImg: adminProcedure
+		.input(z.string())
+		.mutation(async ({ input: key }) => {
+			const del = await utapi.deleteFiles(key);
+			if (!del.success)
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'Проблема с удалением картинки',
+				});
+			return 'Картинка успешно удалена';
 		}),
 });

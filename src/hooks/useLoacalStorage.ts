@@ -31,6 +31,7 @@ export default function useLocalStorage<T extends ValueType>(
 		if (initial !== storedValue) {
 			setStoredValue(initial);
 		}
+        // eslint-disable-next-line
 	}, []);
 
 	return { value: storedValue, setValue };

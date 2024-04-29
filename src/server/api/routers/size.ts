@@ -1,3 +1,4 @@
+import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { adminProcedure, createTRPCRouter } from '~/server/api/trpc';
 
@@ -9,33 +10,19 @@ export const sizeRouter = createTRPCRouter({
 		);
 	}),
 	create: adminProcedure
-		.input(
-			z.object({
-				value: z.string().nonempty({ message: 'Нужно заполнить поле' }),
-			})
-		)
-		.mutation(async ({ ctx, input }) => {
-			const existing = await ctx.prisma.size.findFirst({
-				where: {
-					value: input.value,
+		.input(z.string().nonempty({ message: 'Нужно заполнить поле' }))
+		.mutation(async ({ ctx, input: value }) => {
+			const create = await ctx.prisma.size.create({
+				data: {
+					value,
 				},
 			});
-			if (!existing) {
-				await ctx.prisma.size.create({
-					data: {
-						value: input.value,
-					},
+			if (!create)
+				throw new TRPCError({
+					code: 'CONFLICT',
+					message: 'Размер уже существует',
 				});
-				return {
-					message: `Размер "${input.value}" успешно создан!`,
-					success: true,
-				};
-			} else {
-				return {
-					message: `Размер ${input.value} уже существует!`,
-					success: false,
-				};
-			}
+            return `Размер: ${value} создан!`
 		}),
 	update: adminProcedure
 		.input(
