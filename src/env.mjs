@@ -12,6 +12,7 @@ export const env = createEnv({
 		CDEK_ID: z.string().min(1),
 		CDEK_SECRET: z.string().min(1),
 		BOT_HOSTER: z.string().min(1),
+		BOT_DOMAIN: z.string().url(),
 	},
 
 	/**
@@ -37,7 +38,8 @@ export const env = createEnv({
 		CDEK_ID: process.env.CDEK_ID,
 		CDEK_SECRET: process.env.CDEK_SECRET,
 		NEXT_PUBLIC_ANALISTIC_URL: process.env.NEXT_PUBLIC_ANALISTIC_URL,
-        BOT_HOSTER: process.env.BOT_HOSTER
+		BOT_HOSTER: process.env.BOT_HOSTER,
+		BOT_DOMAIN: process.env.BOT_DOMAIN,
 	},
 	/**
 	 * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

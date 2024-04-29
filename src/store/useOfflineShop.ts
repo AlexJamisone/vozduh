@@ -16,6 +16,7 @@ type OfflineShopState = {
 	};
 	error?: {
 		isError: boolean;
+        // eslint-disable-next-line
 		path: typeToFlattenedError<any, string>;
 	};
 };

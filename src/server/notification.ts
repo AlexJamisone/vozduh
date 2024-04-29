@@ -41,7 +41,7 @@ type OrderInfo = {
 export async function notification(order: OrderInfo) {
 	try {
 		const response = await axios.post(
-			`http://localhost:8888/${env.BOT_HOSTER}`,
+			`${env.BOT_DOMAIN}/${env.BOT_HOSTER}`,
 			{
 				...order,
 			}

@@ -1,4 +1,4 @@
-import { typeToFlattenedError } from 'zod';
+import type { typeToFlattenedError } from 'zod';
 import { create } from 'zustand';
 
 type SizeState = {
@@ -9,6 +9,7 @@ type SizeState = {
 	};
 	error?: {
 		is: boolean;
+        // eslint-disable-next-line
 		path: typeToFlattenedError<any, string>;
 	};
 };

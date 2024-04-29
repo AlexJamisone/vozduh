@@ -22,7 +22,7 @@ export const ourFileRouter = {
 			await isAdmin(userId);
 			return { userId };
 		})
-		.onUploadComplete(async ({ metadata, file }) => {
+		.onUploadComplete(({ metadata, file }) => {
 			console.log('Upload complete for userId:', metadata.userId);
 
 			console.log('file url', file.url);
@@ -37,7 +37,7 @@ export const ourFileRouter = {
 			await isAdmin(userId);
 			return { userId };
 		})
-		.onUploadComplete(async ({ metadata, file }) => {
+		.onUploadComplete(({ metadata, file }) => {
 			console.log('Upload complete for userId:', metadata.userId);
 
 			console.log('file url', file.url);
@@ -52,7 +52,7 @@ export const ourFileRouter = {
 			await isAdmin(userId);
 			return { userId };
 		})
-		.onUploadComplete(async ({ metadata, file }) => {
+		.onUploadComplete(({ metadata, file }) => {
 			console.log('Upload complete for userId:', metadata.userId);
 
 			console.log('file url', file.url);

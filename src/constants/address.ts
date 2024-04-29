@@ -1,5 +1,5 @@
-import { HTMLInputTypeAttribute } from 'react';
-import { AddressInputName } from '~/store/useAddress';
+import type { HTMLInputTypeAttribute } from 'react';
+import type { AddressInputName } from '~/store/useAddress';
 import {v4 as uuid} from 'uuid'
 
 type AddressInputType = {

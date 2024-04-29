@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react';
 import type { FormEvent } from 'react';
 import { faq } from '~/constants/faq';
-import { FaqInputValue, useFaq } from '~/store/useFaq';
+import { type FaqInputValue, useFaq } from '~/store/useFaq';
 
 export default function FAQInputs() {
 	const [set, input, error, reset] = useFaq((state) => [

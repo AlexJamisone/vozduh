@@ -29,7 +29,7 @@ export default function ProductAction() {
 		});
 	const { mutate: update, isLoading: isUpdate } =
 		api.product.update.useMutation({
-			onSuccess: (name) => {
+			onSuccess: ({ name }) => {
 				void ctx.product.invalidate();
 				toast({
 					description: `Товар ${name} успешно создан`,

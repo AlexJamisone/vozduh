@@ -9,7 +9,7 @@ const OrderAction = () => {
 		onSuccess: (id) => {
 			void ctx.order.invalidate();
 			clear();
-			route.push(`/order/${id}`);
+			void route.push(`/order/${id}`);
 		},
 		onError: ({ data, message }) => {
 			if (data?.zodError) {

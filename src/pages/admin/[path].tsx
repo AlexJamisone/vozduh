@@ -1,6 +1,6 @@
 import { Center } from '@chakra-ui/react';
 import { getAuth } from '@clerk/nextjs/server';
-import { Role } from '@prisma/client';
+import type { Role } from '@prisma/client';
 import type { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
@@ -27,6 +27,7 @@ const AdminRouter = ({
 	const { path } = router.query;
 	useEffect(() => {
 		if (role !== 'ADMIN') void router.push('/');
+        // eslint-disable-next-line
 	}, []);
 	const handlRouter = () => {
 		switch (path) {

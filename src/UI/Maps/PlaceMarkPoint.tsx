@@ -1,5 +1,5 @@
 import { Placemark } from '@pbe/react-yandex-maps';
-import { FiltredPoint } from '~/server/api/routers/cdek';
+import type { FiltredPoint } from '~/server/api/routers/cdek';
 import { useAddress } from '~/store/useAddress';
 
 const PlacemarkPoint = ({ point }: { point: FiltredPoint }) => {

@@ -6,11 +6,11 @@ import {
 	Input,
 	Stack,
 } from '@chakra-ui/react';
-import { ChangeEvent } from 'react';
+import type { ChangeEvent } from 'react';
 import { categoryInputs } from '~/constants/categorys';
 import {
-	CategoryInputValue,
 	useCreateCategory,
+	type CategoryInputValue,
 } from '~/store/useCreateCategory';
 
 const CategoryInput = () => {

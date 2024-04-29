@@ -45,7 +45,9 @@ const OfflineShopCard = ({ shop, role, onToggle }: OfflineShopCardProps) => {
 		});
 	const ctx = api.useContext();
 	const toast = useToast();
-	function handlShop() {}
+	function handlShop() {
+		console.log('handl shop here');
+	}
 	return (
 		<Card
 			as={motion.div}

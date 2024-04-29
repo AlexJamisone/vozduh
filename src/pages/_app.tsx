@@ -13,14 +13,14 @@ import { toastOption } from '~/chakra/toastOption';
 import '~/styles/globals.css';
 import { api } from '~/utils/api';
 
-// <Script
-// async
-// src="https://analytics.umami.is/script.js"
-// data-website-id="d4197f8c-599f-450c-b08b-eb616dec96af"
-// />
 const MyApp: AppType = ({ Component, pageProps }) => {
 	return (
 		<ChakraProvider theme={theme} toastOptions={toastOption}>
+			<Script
+				async
+				src="https://analytics.umami.is/script.js"
+				data-website-id="d4197f8c-599f-450c-b08b-eb616dec96af"
+			/>
 			<ColorModeScript initialColorMode={'system'} />
 			<ClerkProvider localization={ruRU}>
 				<Head>

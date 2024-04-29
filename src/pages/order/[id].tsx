@@ -18,7 +18,7 @@ export default function Order() {
 		enabled: !!id,
 	});
 	if (isError) {
-		router.push('/404');
+		void router.push('/404');
 	}
 	return (
 		<AnimataedLayout pt={150}>

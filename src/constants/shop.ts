@@ -1,5 +1,5 @@
-import { OffilineInputName } from '~/store/useOfflineShop';
-import {v4 as uuid} from 'uuid'
+import { v4 as uuid } from 'uuid';
+import type { OffilineInputName } from '~/store/useOfflineShop';
 
 type ShopInputs = {
 	id: string;

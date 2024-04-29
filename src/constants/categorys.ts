@@ -1,4 +1,4 @@
-import { HTMLInputTypeAttribute } from 'react';
+import type { HTMLInputTypeAttribute } from 'react';
 import type { CategoryInputName } from '~/store/useCreateCategory';
 import {v4 as uuid} from 'uuid'
 

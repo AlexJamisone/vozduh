@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 import type { ChangeEvent } from 'react';
 import { IMaskInput } from 'react-imask';
 import { addressInput } from '~/constants/address';
-import { AddressInputValue, useAddress } from '~/store/useAddress';
+import { type AddressInputValue, useAddress } from '~/store/useAddress';
 
 const AddressInputs = ({ adrLen = 0 }: { adrLen?: number }) => {
 	const [input, error, set, reset] = useAddress((state) => [

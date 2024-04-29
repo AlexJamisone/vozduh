@@ -11,14 +11,14 @@ import {
 	TabPanel,
 	useToast,
 } from '@chakra-ui/react';
-import { FormEvent, useRef } from 'react';
+import { useRef, type FormEvent } from 'react';
 import { MdOutlineCancel } from 'react-icons/md';
 import { useCreateSize } from '~/store/useCreateSize';
 import { api } from '~/utils/api';
 import AdminSizeButton from './AdminSizeButton';
 
 export default function AdminSize() {
-	const [edit, value, setVal, clear, reset, error, setErr, id, setEdit] =
+	const [edit, value, setVal, clear, reset, error, setErr, id] =
 		useCreateSize((state) => [
 			state.edit.is,
 			state.value,
@@ -28,7 +28,6 @@ export default function AdminSize() {
 			state.error,
 			state.setError,
 			state.edit.id,
-			state.setEdit,
 		]);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const ctx = api.useContext();

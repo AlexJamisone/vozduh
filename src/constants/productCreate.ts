@@ -1,6 +1,6 @@
-import { HTMLInputTypeAttribute } from 'react';
+import type { HTMLInputTypeAttribute } from 'react';
 import { v4 as uuid } from 'uuid';
-import { ProductInputName } from '~/store/useCreateProduct';
+import type { ProductInputName } from '~/store/useCreateProduct';
 
 type ProdctCreate = {
 	id: string;

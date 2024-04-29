@@ -3,7 +3,7 @@ import {
 	getFromLocalStorage,
 	saveToLocalStorage,
 } from '~/helpers/getFromLocalStorage';
-import { Service } from './useProductDitails';
+import type { Service } from './useProductDitails';
 
 export type CartItem = {
 	id: string;

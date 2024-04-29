@@ -8,8 +8,8 @@ import {
 } from '@chakra-ui/react';
 import {
 	AddressSuggestions,
-	DaDataAddress,
-	DaDataSuggestion,
+	type DaDataAddress,
+	type DaDataSuggestion,
 } from 'react-dadata';
 import 'react-dadata/dist/react-dadata.css';
 import { env } from '~/env.mjs';

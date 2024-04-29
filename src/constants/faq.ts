@@ -1,4 +1,4 @@
-import { FaqInputName } from '~/store/useFaq';
+import type { FaqInputName } from '~/store/useFaq';
 import {v4 as uuid} from 'uuid'
 
 type FAQInput = {

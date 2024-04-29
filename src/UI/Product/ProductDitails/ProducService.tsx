@@ -1,5 +1,5 @@
 import { FormLabel, Select, Stack } from '@chakra-ui/react';
-import { ChangeEvent } from 'react';
+import type { ChangeEvent } from 'react';
 import { useProductDitails } from '~/store/useProductDitails';
 type ProducServiceProp = {
 	service: {

@@ -1,4 +1,4 @@
-import { HTMLInputTypeAttribute } from 'react';
+import type { HTMLInputTypeAttribute } from 'react';
 import { v4 as uuid } from 'uuid';
 import type { AboutInputName } from '~/store/useAbout';
 
