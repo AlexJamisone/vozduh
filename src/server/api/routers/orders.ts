@@ -7,12 +7,15 @@ import {
 	privetProcedure,
 	publicProcedure,
 } from '~/server/api/trpc';
+import { notification } from '~/server/notification';
 
 const cartItems = z.array(
 	z.object({
 		id: z.string(),
 		quantity: z.number(),
+		name: z.string(),
 		size: z.string(),
+		price: z.number(),
 		additionalServiceOption: z.array(z.string()).or(z.undefined()),
 	})
 );
@@ -239,8 +242,24 @@ export const ordersRouter = createTRPCRouter({
 						userId: ctx.userId,
 					},
 					select: {
+						orderNumber: true,
 						id: true,
 					},
+				});
+				await notification({
+					customer: `${firstName} ${lastName}`,
+					phone: contactPhone,
+					cdek: point ?? '',
+					comment,
+					orderNumber: create.orderNumber,
+					total,
+					product: cart.map((itm) => ({
+						price: itm.price,
+						title: itm.name,
+						size: itm.size,
+						quintity: itm.quantity,
+						service: itm.additionalServiceOption,
+					})),
 				});
 				return create.id;
 			}
@@ -265,9 +284,27 @@ export const ordersRouter = createTRPCRouter({
 					userId: ctx.userId,
 				},
 				select: {
+					orderNumber: true,
 					id: true,
+					address: true,
 				},
 			});
+			await notification({
+				customer: `${create.address.firstName} ${create.address.lastName}`,
+				phone: create.address.contactPhone,
+				cdek: create.address.point,
+				comment,
+				orderNumber: create.orderNumber,
+				total,
+				product: cart.map((itm) => ({
+					price: itm.price,
+					title: itm.name,
+					size: itm.size,
+					quintity: itm.quantity,
+					service: itm.additionalServiceOption,
+				})),
+			});
+
 			return create.id;
 		}),
 });

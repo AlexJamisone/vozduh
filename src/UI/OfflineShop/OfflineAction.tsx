@@ -69,7 +69,6 @@ export default function OfflineAction({ onClose }: { onClose: () => void }) {
         clear()
         onClose()
     }
-	// TODO NOW HERE
 	return (
 		<Stack direction='row'>
 			<Button
