@@ -53,7 +53,7 @@ model Product {
         image              String[]
         archived           Boolean               @default(false)
         comments           Comment[]
-        category           Category?             @relation(fields: [categoryTitle], references: [title])
+        category           Category?             @relation(fields: [categoryTitle], references: [title], onDelete: SetNull)
         categoryTitle      String?
         orders             OrderItem[]
         price Int
