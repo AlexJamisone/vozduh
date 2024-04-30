@@ -34,7 +34,7 @@ const ImageSlider = ({ images }: { images: string[] }) => {
 	}, [emblaApi, onSelect]);
 
 	return (
-		<Stack w="100%">
+		<Stack>
 			<Stack ref={emblaRef} overflow="hidden" position="relative">
 				<Stack direction="row">
 					{images.map((src, index) => (
@@ -42,10 +42,10 @@ const ImageSlider = ({ images }: { images: string[] }) => {
 							key={index}
 							alt={`${src}`}
 							src={`https://utfs.io/f/${src}`}
+							w={500}
+							h={500}
 							flex="0 0 100%"
-							w={['100%', 250, 300, 499]}
-							h={[100, 300]}
-							objectFit="cover"
+							objectFit="contain"
 						/>
 					))}
 				</Stack>
@@ -53,6 +53,7 @@ const ImageSlider = ({ images }: { images: string[] }) => {
 					position="absolute"
 					variant="ghost"
 					aria-label="prev"
+					colorScheme="blackAlpha"
 					icon={
 						<Icon
 							as={MdOutlineKeyboardArrowLeft}

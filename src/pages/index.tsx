@@ -1,12 +1,29 @@
-import { Center, Stack, useColorMode } from '@chakra-ui/react';
+import { Button, Center, Stack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import Category from '~/UI/Category';
+import HeroHeading from '~/components/HeroHeding';
 import { api } from '~/utils/api';
 
-export default function Home() {
+import type { GetStaticProps, InferGetStaticPropsType } from 'next';
+import Ring from '~/UI/3D';
+import { prisma } from '~/server/db';
+
+export const getStaticProps = (async () => {
+	const res = await prisma.category.findMany({
+		select: {
+			title: true,
+		},
+	});
+	const categorys = res.flatMap((i) => i.title);
+	return { props: { categorys } };
+}) satisfies GetStaticProps<{
+	categorys: string[];
+}>;
+
+export default function Home({
+	categorys,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
 	api.user.get.useQuery();
-	const { colorMode } = useColorMode();
 	return (
 		<Stack
 			as={motion.main}
@@ -15,20 +32,15 @@ export default function Home() {
 			pb={75}
 		>
 			<Center as="section" h="100vh" position="relative">
-				<Image
-					alt="main"
-					src={
-						colorMode === 'dark'
-							? '/assets/darkbg.jpg'
-							: '/assets/bg.jpg'
-					}
-					fill
-					quality={100}
-					style={{
-						objectFit: 'cover',
-						userSelect: 'none',
-					}}
-				/>
+				<Stack direction="row">
+					<Stack justifyContent="center">
+						<HeroHeading categorys={categorys} />
+						<Button variant="outline" colorScheme="blue">
+							Смотреть колекции
+						</Button>
+					</Stack>
+					<Ring />
+				</Stack>
 			</Center>
 			<Category />
 		</Stack>
