@@ -1,29 +1,15 @@
-import {
-	Highlight,
-	Stack,
-	Text,
-	type StackProps,
-	type TextProps,
-} from '@chakra-ui/react';
+import { Highlight, Stack, Text } from '@chakra-ui/react';
 
 type HighlightPhraseProps = {
 	title: string;
 	text: string;
-	textProps?: TextProps;
-	containerProps?: StackProps;
 };
 
-const HighlightPhrase = ({
-	text,
-	title,
-	textProps,
-	containerProps,
-}: HighlightPhraseProps) => {
+const HighlightPhrase = ({ text, title }: HighlightPhraseProps) => {
 	return (
 		<Stack
 			direction="row"
 			alignItems="center"
-			{...containerProps}
 			textAlign="left"
 			fontSize="small"
 		>
@@ -38,9 +24,7 @@ const HighlightPhrase = ({
 			>
 				{title}
 			</Highlight>
-			<Text fontWeight={600} {...textProps}>
-				{text}
-			</Text>
+			<Text fontWeight={600}>{text}</Text>
 		</Stack>
 	);
 };
