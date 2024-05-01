@@ -1,4 +1,4 @@
-import { Skeleton, Stack, useBreakpoint } from '@chakra-ui/react';
+import { Skeleton, Stack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -17,8 +17,8 @@ const ProductCardImg = ({ images }: { images: string[] }) => {
 			{images.map((src, index) => (
 				<Skeleton
 					position="absolute"
-                    width='100%'
-                    height='100%'
+					width="100%"
+					height="100%"
 					key={src}
 					isLoaded={isLoadedImg}
 					onMouseEnter={() =>

@@ -1,13 +1,12 @@
-// @ts-nocheck
 import { useMediaQuery } from '@chakra-ui/react';
-import { Float, Mesh, MeshTransmissionMaterial } from '@react-three/drei';
-import { MeshProps, useLoader } from '@react-three/fiber';
+import { Float, MeshTransmissionMaterial } from '@react-three/drei';
+import { useLoader, type MeshProps } from '@react-three/fiber';
 import { useMotionValue, useSpring } from 'framer-motion';
 import { motion } from 'framer-motion-3d';
 import { useEffect, useRef } from 'react';
+import type { Object3D, Object3DEventMap } from 'three';
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
-
 export default function Model() {
 	const material = useLoader(MTLLoader, '/1.mtl');
 	const obj = useLoader(OBJLoader, '/1.obj', (loader) => {
@@ -17,17 +16,17 @@ export default function Model() {
 	return (
 		<group scale={0.2}>
 			{obj.children.slice(2, 3).map((mesh, i) => (
-				<Mesh data={mesh} key={i} />
+				<MeshCompoent data={mesh} key={i} />
 			))}
 		</group>
 	);
 }
-function Mesh(props: { data: MeshProps }) {
+function MeshCompoent(props: { data: Object3D<Object3DEventMap> }) {
 	const [less500] = useMediaQuery('(max-width: 500px)', {
 		ssr: true,
 		fallback: false,
 	});
-	const ref = useRef<Mesh>(null!);
+	const ref = useRef<MeshProps>(null);
 	const option = {
 		damping: 20,
 	};
@@ -44,11 +43,15 @@ function Mesh(props: { data: MeshProps }) {
 		mouse.y.set(y);
 	}
 	useEffect(() => {
-		ref.current.geometry.center();
+		if (ref.current) {
+			ref.current?.geometry?.center();
+		}
+		// eslint-disable-next-line
 	}, []);
 	useEffect(() => {
 		window.addEventListener('mousemove', manageMouseMove);
 		return () => window.removeEventListener('mousemove', manageMouseMove);
+		// eslint-disable-next-line
 	}, []);
 	return (
 		<Float
