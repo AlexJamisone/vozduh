@@ -50,7 +50,6 @@ function Mesh(props: { data: MeshProps }) {
 		window.addEventListener('mousemove', manageMouseMove);
 		return () => window.removeEventListener('mousemove', manageMouseMove);
 	}, []);
-	console.log(props.data.name);
 	return (
 		<Float
 			scale={0.5}
