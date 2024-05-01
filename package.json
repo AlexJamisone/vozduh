@@ -42,6 +42,7 @@
 		"easy-react-text-loop": "^1.0.2",
 		"embla-carousel-react": "^8.0.0-rc11",
 		"framer-motion": "^10.12.18",
+		"framer-motion-3d": "^11.1.7",
 		"leva": "^0.9.35",
 		"next": "^13.4.2",
 		"pusher": "^5.1.3",

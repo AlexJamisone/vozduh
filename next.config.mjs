@@ -31,7 +31,7 @@ const config = {
 	experimental: {
 		esmExternals: false,
 	},
-	transpilePackages: ['three'],
+	transpilePackages: ['three', 'framer-motion-3d'],
 };
 
 export default config;

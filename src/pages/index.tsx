@@ -1,4 +1,4 @@
-import { Button, Center, Stack } from '@chakra-ui/react';
+import { Button, Stack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import Category from '~/UI/Category';
 import HeroHeading from '~/components/HeroHeding';
@@ -24,6 +24,12 @@ export default function Home({
 	categorys,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
 	api.user.get.useQuery();
+	function handlScroll(id: string) {
+		const el = document.getElementById(id);
+		if (el) {
+			el.scrollIntoView({ behavior: 'smooth' });
+		}
+	}
 	return (
 		<Stack
 			as={motion.main}
@@ -31,17 +37,29 @@ export default function Home({
 			gap={0}
 			pb={75}
 		>
-			<Center as="section" h="100vh" position="relative">
-				<Stack direction="row">
-					<Stack justifyContent="center">
+			<Stack
+				as="section"
+				h="100vh"
+				position="relative"
+				justifyContent="center"
+			>
+				<Stack direction={['row']} justifyContent={['start']}>
+					<Ring />
+					<Stack px={10} gap={3} mt={['150px', 0]} maxW={600}>
 						<HeroHeading categorys={categorys} />
-						<Button variant="outline" colorScheme="blue">
+						<Button
+							variant="outline"
+							colorScheme="blue"
+							onClick={() => handlScroll('collection')}
+							zIndex={20}
+							width="100%"
+							size={['sm', 'md']}
+						>
 							Смотреть колекции
 						</Button>
 					</Stack>
-					<Ring />
 				</Stack>
-			</Center>
+			</Stack>
 			<Category />
 		</Stack>
 	);

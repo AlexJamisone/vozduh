@@ -15,9 +15,8 @@ export default function Ring() {
 		setIsClient(true);
 	}, []);
 	if (!isClent) return null;
-
 	return (
-		<Box w={600} h={500} onScroll={(e) => e.preventDefault()}>
+		<Box w="100%" h="100vh" position="absolute" top={[-20, 0]} left={[0]}>
 			<Suspense fallback={<Spinner />}>
 				<Canvas onChange={(e) => e.preventDefault()}>
 					<spotLight

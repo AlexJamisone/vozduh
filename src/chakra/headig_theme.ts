@@ -5,7 +5,7 @@ export const headeing_theme = defineStyleConfig({
 		fontFamily: `"Geologica", sans-serif`,
 		textColor: 'blackAlpha.800',
 		fontWeight: 600,
-		fontSize: ['2xl', '4xl'],
+		fontSize: ['xl', '4xl'],
 		_dark: {
 			textColor: 'whiteAlpha.700',
 		},
