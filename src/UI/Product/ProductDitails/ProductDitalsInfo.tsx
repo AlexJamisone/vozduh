@@ -16,12 +16,10 @@ const ProductDitalsInfo = () => {
 	if (!product) return null;
 	return (
 		<Stack
-			w={['100%', '50%']}
 			alignItems="center"
 			textAlign="center"
-			gap={5}
-			maxW={[null, 350]}
 			px={[5, null]}
+			width={['100%', 'fit-content']}
 		>
 			<Text fontSize="4xl" as="h1">
 				{product.name}
@@ -81,7 +79,7 @@ const ProductDitalsInfo = () => {
 				}}
 			/>
 			<Stack>
-				<Text whiteSpace="pre-wrap">{product.description}</Text>
+				<Text variant="description">{product.description}</Text>
 			</Stack>
 		</Stack>
 	);

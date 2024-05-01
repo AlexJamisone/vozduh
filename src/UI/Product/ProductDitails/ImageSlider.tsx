@@ -34,7 +34,7 @@ const ImageSlider = ({ images }: { images: string[] }) => {
 	}, [emblaApi, onSelect]);
 
 	return (
-		<Stack>
+		<Stack gap={3}>
 			<Stack ref={emblaRef} overflow="hidden" position="relative">
 				<Stack direction="row">
 					{images.map((src, index) => (

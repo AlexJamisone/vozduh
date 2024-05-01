@@ -108,7 +108,7 @@ const ProductCard = ({ product, role }: ProductCardProps) => {
 					<Stack gap={5} alignItems="center">
 						<Text>{product.name}</Text>
 						{role === 'ADMIN' && <Tag>{product.categoryTitle}</Tag>}
-						<Text>{product.price} ₽</Text>
+						<Text>{product.price.toLocaleString('ru-RU')} ₽</Text>
 					</Stack>
 					{role === 'ADMIN' && (
 						<IconButton

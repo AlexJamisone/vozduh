@@ -15,9 +15,9 @@ const ProductDitails = () => {
 		<Stack
 			direction={['column', 'row']}
 			justifyContent="center"
-			gap={[0, 24]}
-			pb={24}
 			as={motion.div}
+			px={[10, 20]}
+			pb={[20, 10]}
 			initial={{ opacity: 0 }}
 			animate={{
 				opacity: 1,
