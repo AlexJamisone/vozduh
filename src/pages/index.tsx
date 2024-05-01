@@ -37,6 +37,7 @@ export default function Home({
 			gap={0}
 			pb={75}
 		>
+			<Ring />
 			<Stack
 				as="section"
 				h="100vh"
@@ -44,7 +45,6 @@ export default function Home({
 				justifyContent="center"
 			>
 				<Stack direction={['row']} justifyContent={['start']}>
-					<Ring />
 					<Stack px={10} gap={3} mt={['150px', 0]} maxW={600}>
 						<HeroHeading categorys={categorys} />
 						<Button
@@ -55,7 +55,7 @@ export default function Home({
 							width="100%"
 							size={['sm', 'md']}
 						>
-							Смотреть колекции
+							Смотреть коллекции
 						</Button>
 					</Stack>
 				</Stack>

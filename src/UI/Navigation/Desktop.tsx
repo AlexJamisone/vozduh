@@ -56,8 +56,10 @@ const Desktop = () => {
 								<Link
 									_hover={{
 										textDecoration: 'none',
+										textColor: 'blue.500',
 									}}
 									href={src}
+									transition="color .2s ease-in-out"
 								>
 									{title}
 								</Link>
