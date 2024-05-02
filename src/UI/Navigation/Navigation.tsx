@@ -4,7 +4,9 @@ import Desktop from './Desktop';
 import Mobile from './Mobile';
 
 const Navigation = () => {
-	const [isLowerThan1150] = useMediaQuery(['(max-width: 1150px)']);
+	const [isLowerThan1150] = useMediaQuery(['(max-width: 1150px)'], {
+		ssr: true,
+	});
 	const [showBg, setShowBg] = useState(false);
 
 	useEffect(() => {
