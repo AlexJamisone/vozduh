@@ -12,6 +12,7 @@ const Category = () => {
 			position="relative"
 			justifyContent="center"
 			id="collection"
+			gap={7}
 		>
 			{categorys?.map((cat, index) => (
 				<CategoryCard key={cat.id} category={cat} index={index} />
