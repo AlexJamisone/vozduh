@@ -3,7 +3,6 @@ import {
 	Drawer,
 	DrawerBody,
 	DrawerCloseButton,
-	DrawerContent,
 	DrawerHeader,
 	DrawerOverlay,
 	Icon,
@@ -15,11 +14,11 @@ import {
 import { useAuth } from '@clerk/nextjs';
 import { AnimatePresence, motion } from 'framer-motion';
 import { HiOutlineMenu } from 'react-icons/hi';
+import DrawerContentComponent from '~/components/DrawerContentComponent';
 import ThemeButton from '~/components/ThemeButton';
 import UserBtn from '~/components/UserBtn';
 import { nav } from '~/constants/nav';
-import Curve from './Curve';
-import { menuSlider, slide } from './animation';
+import { slide } from './animation';
 
 export default function MobileDrawer() {
 	const { onToggle, isOpen, onClose } = useDisclosure();
@@ -35,18 +34,7 @@ export default function MobileDrawer() {
 			<AnimatePresence mode="wait">
 				<Drawer isOpen={isOpen} onClose={onClose}>
 					<DrawerOverlay />
-					<DrawerContent
-						as={motion.section}
-						position="fixed"
-						top={0}
-						right={0}
-						height="100vh"
-						variants={menuSlider}
-						animate="enter"
-						exit="exit"
-						initial="initial"
-					>
-						<Curve />
+					<DrawerContentComponent>
 						<DrawerHeader>
 							<Stack
 								direction="row"
@@ -98,7 +86,7 @@ export default function MobileDrawer() {
 									)
 							)}
 						</DrawerBody>
-					</DrawerContent>
+					</DrawerContentComponent>
 				</Drawer>
 			</AnimatePresence>
 		</>

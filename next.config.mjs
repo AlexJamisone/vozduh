@@ -27,7 +27,6 @@ const config = {
 	images: {
 		domains: ['placehold.co', 'utfs.io'],
 	},
-	swcMinify: true,
 	experimental: {
 		esmExternals: false,
 	},

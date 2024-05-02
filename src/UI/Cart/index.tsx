@@ -4,19 +4,17 @@ import {
 	Drawer,
 	DrawerBody,
 	DrawerCloseButton,
-	DrawerContent,
 	DrawerFooter,
 	DrawerHeader,
-	DrawerOverlay,
 	Icon,
 	IconButton,
-	Stack,
 	useDisclosure,
 } from '@chakra-ui/react';
 import { AnimatePresence } from 'framer-motion';
 import { useRef } from 'react';
 import { PiShoppingCartSimpleLight } from 'react-icons/pi';
 import { RiWindyFill } from 'react-icons/ri';
+import DrawerContentComponent from '~/components/DrawerContentComponent';
 import NoData from '~/components/NoData';
 import TotalSum from '~/components/TotalSum';
 import { counterElement } from '~/helpers/counterElement';
@@ -29,17 +27,15 @@ const Cart = () => {
 	const cart = useCart();
 	return (
 		<>
-			<Stack position="relative">
-				<IconButton
-					ref={btnRef}
-					variant="outline"
-					aria-label="cart"
-					icon={<Icon as={PiShoppingCartSimpleLight} />}
-					onClick={onToggle}
-					position="relative"
-					{...counterElement(cart.items.length)}
-				/>
-			</Stack>
+			<IconButton
+				ref={btnRef}
+				variant="outline"
+				aria-label="cart"
+				icon={<Icon as={PiShoppingCartSimpleLight} />}
+				onClick={onToggle}
+				position="relative"
+				{...counterElement(cart.items.length)}
+			/>
 			<Drawer
 				isOpen={isOpen}
 				onClose={onClose}
@@ -47,8 +43,7 @@ const Cart = () => {
 				placement="right"
 				size={['xs', 'md']}
 			>
-				<DrawerOverlay />
-				<DrawerContent>
+				<DrawerContentComponent>
 					<DrawerHeader textAlign="center">Корзина</DrawerHeader>
 					<DrawerCloseButton />
 					<DrawerBody px={[1, null]}>
@@ -86,7 +81,7 @@ const Cart = () => {
 							</Button>
 						</DrawerFooter>
 					)}
-				</DrawerContent>
+				</DrawerContentComponent>
 			</Drawer>
 		</>
 	);
