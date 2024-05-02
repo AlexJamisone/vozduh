@@ -6,6 +6,7 @@ import { api } from '~/utils/api';
 
 import type { GetStaticProps, InferGetStaticPropsType } from 'next';
 import Ring from '~/UI/3D';
+import Footer from '~/UI/Footer';
 import { prisma } from '~/server/db';
 
 export const getStaticProps = (async () => {
@@ -31,12 +32,7 @@ export default function Home({
 		}
 	}
 	return (
-		<Stack
-			as={motion.main}
-			initial={{ backgroundColor: 'Menu' }}
-			gap={0}
-			pb={75}
-		>
+		<Stack as={motion.main} initial={{ backgroundColor: 'Menu' }} gap={0}>
 			<Ring />
 			<Stack
 				as="section"
@@ -61,6 +57,7 @@ export default function Home({
 				</Stack>
 			</Stack>
 			<Category />
+			<Footer />
 		</Stack>
 	);
 }

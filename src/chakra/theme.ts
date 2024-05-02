@@ -12,4 +12,5 @@ const components = {
 	Text: descriptionTheme,
 };
 
-export const theme = extendTheme({ config, components });
+const theme = extendTheme({ config, components });
+export { theme };

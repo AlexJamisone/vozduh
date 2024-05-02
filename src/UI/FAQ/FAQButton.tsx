@@ -1,14 +1,27 @@
 import { Link } from '@chakra-ui/next-js';
-import { Center, Stack } from '@chakra-ui/react';
-import { motion } from 'framer-motion';
+import { Center } from '@chakra-ui/react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 const FAQButton = () => {
+	const { scrollYProgress } = useScroll();
+	const scroll = useTransform(scrollYProgress, [0, 1], [40, 55]);
 	return (
-		<Stack
-			position="fixed"
-			left={[10, 20]}
-			bottom={[29, 10]}
-			as={motion.div}
+		<motion.div
+			style={{
+				bottom: scroll,
+				position: 'fixed',
+				left: 40,
+
+				boxShadow:
+					'rgba(0, 0, 0, 0.1) 0px 0px 0px 1px,rgba(0, 0, 0, 0.2) 0px 5px 10px,rgba(0, 0, 0, 0.4) 0px 15px 40px',
+				borderRadius: '50px',
+				width: '65px',
+				height: '65px',
+				cursor: 'pointer',
+				zIndex: 99,
+				textAlign: 'center',
+				backgroundColor: 'Menu',
+			}}
 			initial={{
 				opacity: 0,
 			}}
@@ -26,16 +39,6 @@ const FAQButton = () => {
 					duration: 0.3,
 				},
 			}}
-			bg="Menu"
-			boxShadow="dark-lg"
-			rounded="full"
-			w={[55, 75]}
-			h={[55, 75]}
-			cursor="pointer"
-			align="center"
-			alignItems="center"
-			justifyContent="center"
-			zIndex={99}
 		>
 			<Center
 				_hover={{
@@ -50,7 +53,7 @@ const FAQButton = () => {
 			>
 				F.A.Q.
 			</Center>
-		</Stack>
+		</motion.div>
 	);
 };
 

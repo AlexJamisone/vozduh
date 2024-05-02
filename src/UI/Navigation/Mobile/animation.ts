@@ -31,11 +31,11 @@ export const slide: Variants = {
 	initial: {
 		x: '80px',
 	},
-	enter: (i) => ({
+	enter: (i: number) => ({
 		x: '0px',
 		transition: transition(i),
 	}),
-	exit: (i) => ({
+	exit: (i: number) => ({
 		x: '80px',
 		transition: transition(i),
 	}),

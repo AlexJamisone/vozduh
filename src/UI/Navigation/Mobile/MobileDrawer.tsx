@@ -73,13 +73,10 @@ export default function MobileDrawer() {
 										<Stack
 											as={motion.div}
 											variants={slide}
+											key={src}
 											custom={index}
 										>
-											<Link
-												href={src}
-												key={src}
-												onClick={onClose}
-											>
+											<Link href={src} onClick={onClose}>
 												{title}
 											</Link>
 										</Stack>

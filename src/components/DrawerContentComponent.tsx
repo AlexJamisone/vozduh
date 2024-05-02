@@ -1,6 +1,6 @@
 import { DrawerContent } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 import Curve from '~/UI/Navigation/Mobile/Curve';
 import { menuSlider } from '~/UI/Navigation/Mobile/animation';
 
