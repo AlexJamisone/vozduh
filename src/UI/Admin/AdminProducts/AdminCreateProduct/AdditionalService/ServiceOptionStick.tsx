@@ -14,7 +14,6 @@ export default function ServiceOptionStick({
 }) {
 	const setOption = useAdditionalService((state) => state.setOption);
 	const removeOption = useAdditionalService((state) => state.removeOption);
-	console.log(option.price);
 	return (
 		<Stack direction="row">
 			<Input
