@@ -47,6 +47,7 @@ const OfflineShopCard = ({ shop, role, onToggle }: OfflineShopCardProps) => {
 	const toast = useToast();
 	function handlShop() {
 		console.log('handl shop here');
+		console.log('todo');
 	}
 	return (
 		<Card
@@ -72,6 +73,8 @@ const OfflineShopCard = ({ shop, role, onToggle }: OfflineShopCardProps) => {
 			rounded="2xl"
 			p={3}
 			onClick={handlShop}
+			align="center"
+			maxW={300}
 		>
 			<CardHeader
 				as={Stack}
@@ -114,6 +117,7 @@ const OfflineShopCard = ({ shop, role, onToggle }: OfflineShopCardProps) => {
 				flexDirection="column"
 				textAlign="left"
 				alignItems="flex-start"
+				justifyContent="center"
 				gap={3}
 				fontSize="sm"
 			>

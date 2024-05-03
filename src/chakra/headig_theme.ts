@@ -7,7 +7,7 @@ export const headeing_theme = defineStyleConfig({
 		fontWeight: 600,
 		fontSize: ['xl', '4xl'],
 		_dark: {
-			textColor: 'whiteAlpha.700',
+			textColor: 'whiteAlpha.900',
 		},
 	},
 });

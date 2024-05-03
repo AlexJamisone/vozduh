@@ -17,7 +17,7 @@ const ProductDitails = () => {
 			justifyContent="center"
 			as={motion.div}
 			px={[10, 20]}
-			pb={[20, 10]}
+			pb={[20, 75]}
 			initial={{ opacity: 0 }}
 			animate={{
 				opacity: 1,

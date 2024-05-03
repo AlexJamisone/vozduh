@@ -1,4 +1,4 @@
-import { Stack, Text, VStack } from '@chakra-ui/react';
+import { Heading, Stack, Text, VStack } from '@chakra-ui/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 import { useProductDitails } from '~/store/useProductDitails';
@@ -21,10 +21,11 @@ const ProductDitalsInfo = () => {
 			px={[5, null]}
 			width={['100%', 'fit-content']}
 		>
-			<Text fontSize="4xl" as="h1">
+			<Heading fontSize="4xl" as="h1">
 				{product.name}
-			</Text>
+			</Heading>
 			<VStack>
+				<Text fontWeight={600}>Размеры</Text>
 				<Stack
 					direction="row"
 					flexWrap="wrap"
@@ -68,7 +69,7 @@ const ProductDitalsInfo = () => {
 				))}
 			</Stack>
 			<Text fontSize="2xl" fontWeight={600}>
-				{product.price} ₽
+				{product.price.toLocaleString('ru-RU')} ₽
 			</Text>
 			<ProductDitalsAction
 				item={{
