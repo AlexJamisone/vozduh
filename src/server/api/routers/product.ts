@@ -117,7 +117,7 @@ export const productRouter = createTRPCRouter({
 										name: z.string().nonempty({
 											message: 'Придумай имя доп опции',
 										}),
-										price: z.number().positive({
+										price: z.number().nonnegative({
 											message: 'Установи цену доп опции',
 										}),
 									})
@@ -202,7 +202,7 @@ export const productRouter = createTRPCRouter({
 										name: z.string().nonempty({
 											message: 'Придумай имя доп опции',
 										}),
-										price: z.number().positive({
+										price: z.number().nonnegative({
 											message: 'Установи цену доп опции',
 										}),
 									})
