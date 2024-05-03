@@ -95,7 +95,7 @@ const ProductCard = ({ product, role }: ProductCardProps) => {
 				onClick={role === 'ADMIN' ? handlClickOnCard : undefined}
 				as={role === 'USER' || !role ? Link : undefined}
 				href={`/product/${product.id}`}
-				size={['sm', null, null, 'md']}
+				size={['md']}
 				fontWeight={600}
 				textAlign="center"
 				rounded="2xl"
