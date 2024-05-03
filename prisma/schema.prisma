@@ -60,6 +60,7 @@ model Product {
         size               Size[]
         favorites          Favorites[]
         additionalServices AdditionalService[]
+        createdAt DateTime? @default(now())
 }
 
 model AdditionalService {
