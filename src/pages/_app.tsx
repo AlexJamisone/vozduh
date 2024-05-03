@@ -21,7 +21,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
 				src="https://analytics.umami.is/script.js"
 				data-website-id="d4197f8c-599f-450c-b08b-eb616dec96af"
 			/>
-			<ColorModeScript initialColorMode={'system'} />
+			<ColorModeScript />
 			<ClerkProvider localization={ruRU}>
 				<Head>
 					<title>Vozduh | Украшения из серебра</title>

@@ -2,38 +2,31 @@ import { Button, Stack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import Category from '~/UI/Category';
 import HeroHeading from '~/components/HeroHeding';
-import { api } from '~/utils/api';
 
+import type { Category as CategoryType } from '@prisma/client';
 import type { GetStaticProps, InferGetStaticPropsType } from 'next';
 import Ring from '~/UI/3D';
 import Footer from '~/UI/Footer';
+import { handlScroll } from '~/helpers/handlScroll';
 import { prisma } from '~/server/db';
 
 export const getStaticProps = (async () => {
-	const res = await prisma.category.findMany({
+	const categorys = await prisma.category.findMany({
 		select: {
 			title: true,
+			id: true,
+			image: true,
+			path: true,
 		},
 	});
-	const categorys = res.flatMap((i) => i.title);
 	return { props: { categorys } };
 }) satisfies GetStaticProps<{
-	categorys: string[];
+	categorys: CategoryType[];
 }>;
 
 export default function Home({
 	categorys,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
-	api.user.get.useQuery();
-	function handlScroll(id: string) {
-		const el = document.getElementById(id);
-		if (el) {
-			el.scrollIntoView({
-				behavior: 'smooth',
-				block: 'nearest',
-			});
-		}
-	}
 	return (
 		<Stack as={motion.main} initial={{ backgroundColor: 'Menu' }} gap={0}>
 			<Ring />
@@ -45,7 +38,9 @@ export default function Home({
 			>
 				<Stack direction={['row']} justifyContent={['start']}>
 					<Stack px={10} gap={3} mt={['150px', 0]} maxW={600}>
-						<HeroHeading categorys={categorys} />
+						<HeroHeading
+							categorys={categorys.map((c) => c.title)}
+						/>
 						<Button
 							variant="outline"
 							colorScheme="blue"
@@ -59,7 +54,7 @@ export default function Home({
 					</Stack>
 				</Stack>
 			</Stack>
-			<Category />
+			<Category categorys={categorys} />
 			<Footer />
 		</Stack>
 	);

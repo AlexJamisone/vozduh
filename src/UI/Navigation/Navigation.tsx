@@ -6,6 +6,7 @@ import Mobile from './Mobile';
 const Navigation = () => {
 	const [isLowerThan1150] = useMediaQuery(['(max-width: 1150px)'], {
 		ssr: true,
+		fallback: true,
 	});
 	const [showBg, setShowBg] = useState(false);
 

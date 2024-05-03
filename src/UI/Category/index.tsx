@@ -1,9 +1,8 @@
 import { Center } from '@chakra-ui/react';
-import { api } from '~/utils/api';
 import CategoryCard from './CategoryCard';
+import type { Category } from '@prisma/client';
 
-const Category = () => {
-	const { data: categorys } = api.categorys.get.useQuery();
+const Category = ({categorys}: {categorys: Category[]}) => {
 	return (
 		<Center
 			w="100%"
