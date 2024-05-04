@@ -25,7 +25,29 @@ const MyApp: AppType = ({ Component, pageProps }) => {
 			<ClerkProvider localization={ruRU}>
 				<Head>
 					<title>Vozduh | Украшения из серебра</title>
-					<link rel="icon" href="/favicon.ico" />
+					<link
+						rel="icon"
+						type="image/svg+xml"
+						href="/favicon/favicon.svg"
+					/>
+					<link
+						rel="icon"
+						type="image/png"
+						href="/favicon/favicon.png"
+					/>
+					<link
+						rel="apple-touch-icon"
+						sizes="180x180"
+						href="/favicon/apple-touch-icon.png"
+					/>
+					<link rel="manifest" href="/favicon/site.webmanifest" />
+					<link
+						rel="mask-icon"
+						href="/favicon/safari-pinned-tab.svg"
+						color="#5bbad5"
+					/>
+					<meta name="msapplication-TileColor" content="#00aba9" />
+					<meta name="theme-color" content="#ffffff" />
 				</Head>
 				<Navigation />
 				<Menu />
