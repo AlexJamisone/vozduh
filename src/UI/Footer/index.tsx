@@ -1,22 +1,28 @@
-import { Box, Stack, useColorMode } from '@chakra-ui/react';
+import { Stack, useColorMode, useMediaQuery } from '@chakra-ui/react';
+import FooterCercl from './FooterCercl';
 import FooterInfo from './FooterInfo';
 import SocialMedia from './SocilMedia';
 import { noice_animation } from './animation';
 
 export default function Footer() {
 	const animation = `${noice_animation} infinite 1s steps(2)`;
+	const [isLessThen480] = useMediaQuery('(max-width: 480px)', {
+		ssr: true,
+		fallback: true,
+	});
+
 	const { colorMode } = useColorMode();
 	const isDark = colorMode === 'dark';
 	return (
 		<Stack
 			as="footer"
-			p={10}
+			p={[5, 10]}
 			direction="row"
 			justifyContent="space-between"
 			alignItems="center"
 			position="relative"
 			overflow="hidden"
-			roundedTop="50px"
+			roundedTop={[null, '50px']}
 			height={[250, 175]}
 			boxShadow={isDark ? undefined : 'dark-lg'}
 			_after={{
@@ -33,15 +39,15 @@ export default function Footer() {
 				animation: isDark ? animation : undefined,
 			}}
 		>
-			<Box
-				border="0.5px solid"
-				width="67px"
-				height="67px"
-				rounded="full"
-				borderColor="whiteAlpha.500"
-			/>
+			{!isLessThen480 && <FooterCercl />}
+			{isLessThen480 && (
+				<Stack justifyContent="space-between" height="100%">
+					<FooterCercl />
+					<FooterInfo />
+				</Stack>
+			)}
 			<SocialMedia />
-			<FooterInfo />
+			{!isLessThen480 && <FooterInfo />}
 		</Stack>
 	);
 }

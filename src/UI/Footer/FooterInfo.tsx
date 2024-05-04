@@ -5,10 +5,15 @@ dayjs().format();
 
 export default function FooterInfo() {
 	return (
-		<Stack>
-			<Text variant="description">Vozduh©️ {dayjs().get('year')}</Text>
-			<Text variant="description">
-				Made by <Link href="https://t.me/alexjamison">alexjamison</Link>
+		<Stack order={[2, 3]}>
+			<Text variant="description" fontSize={['small', null]}>
+				Vozduh©️ {dayjs().get('year')}
+			</Text>
+			<Text variant="description" fontSize={['small', null]}>
+				Made by{' '}
+				<Link href="https://t.me/alexjamison" target="_blank">
+					alexjamison
+				</Link>
 			</Text>
 		</Stack>
 	);

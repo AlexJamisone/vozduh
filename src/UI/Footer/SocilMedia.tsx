@@ -6,7 +6,7 @@ import FooterStar from './FooterStar';
 
 export default function SocialMedia() {
 	return (
-		<Stack alignItems="center">
+		<Stack alignItems={['flex-end', 'center']} order={[3, 2]}>
 			<Stack direction={['column', 'row']} gap={5} alignItems="flex-end">
 				{social.map(({ id, color, icon, url, title }) => (
 					<Stack as={motion.div} key={id} position="relative">

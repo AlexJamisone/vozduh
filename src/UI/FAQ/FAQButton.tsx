@@ -1,16 +1,24 @@
 import { Link } from '@chakra-ui/next-js';
-import { Center } from '@chakra-ui/react';
+import { Center, useMediaQuery } from '@chakra-ui/react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
 const FAQButton = () => {
 	const { scrollYProgress } = useScroll();
-	const scroll = useTransform(scrollYProgress, [0, 1], [40, 55]);
+	const [isLessThen480] = useMediaQuery('(max-width: 480px)', {
+		ssr: true,
+		fallback: true,
+	});
+	const scroll = useTransform(
+		scrollYProgress,
+		[0, 1],
+		[isLessThen480 ? 20 : 40, isLessThen480 ? 164 : 55]
+	);
 	return (
 		<motion.div
 			style={{
 				bottom: scroll,
 				position: 'fixed',
-				left: 40,
+				left: isLessThen480 ? 21 : 40,
 
 				boxShadow:
 					'rgba(0, 0, 0, 0.1) 0px 0px 0px 1px,rgba(0, 0, 0, 0.2) 0px 5px 10px,rgba(0, 0, 0, 0.4) 0px 15px 40px',
