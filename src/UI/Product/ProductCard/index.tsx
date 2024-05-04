@@ -95,10 +95,11 @@ const ProductCard = ({ product, role }: ProductCardProps) => {
 				onClick={role === 'ADMIN' ? handlClickOnCard : undefined}
 				as={role === 'USER' || !role ? Link : undefined}
 				href={`/product/${product.id}`}
-				size={['md']}
 				fontWeight={600}
 				textAlign="center"
+				width={300}
 				rounded="2xl"
+				align="center"
 			>
 				{product.archived && <Overlay />}
 				<CardHeader position="relative">

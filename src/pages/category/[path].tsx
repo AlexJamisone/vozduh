@@ -1,6 +1,7 @@
-import { Center, Stack } from '@chakra-ui/react';
+import { Stack } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import ProductCard from '~/UI/Product/ProductCard';
+import AnimataedLayout from '~/components/AnumationLayout';
 import { api } from '~/utils/api';
 
 const ProductCategory = () => {
@@ -10,7 +11,7 @@ const ProductCategory = () => {
 	});
 
 	return (
-		<Center pt={200}>
+		<AnimataedLayout>
 			<Stack
 				justifyContent="center"
 				direction="row"
@@ -25,7 +26,7 @@ const ProductCategory = () => {
 					/>
 				))}
 			</Stack>
-		</Center>
+		</AnimataedLayout>
 	);
 };
 

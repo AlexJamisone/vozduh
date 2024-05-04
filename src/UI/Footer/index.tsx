@@ -1,4 +1,5 @@
 import { Stack, useColorMode, useMediaQuery } from '@chakra-ui/react';
+import { useAuth } from '@clerk/nextjs';
 import FooterCercl from './FooterCercl';
 import FooterInfo from './FooterInfo';
 import SocialMedia from './SocilMedia';
@@ -6,6 +7,7 @@ import { noice_animation } from './animation';
 
 export default function Footer() {
 	const animation = `${noice_animation} infinite 1s steps(2)`;
+	const { isSignedIn } = useAuth();
 	const [isLessThen480] = useMediaQuery('(max-width: 480px)', {
 		ssr: true,
 		fallback: true,
@@ -17,13 +19,14 @@ export default function Footer() {
 		<Stack
 			as="footer"
 			p={[5, 10]}
+			pb={[isSignedIn ? 90 : 5]}
 			direction="row"
 			justifyContent="space-between"
 			alignItems="center"
 			position="relative"
 			overflow="hidden"
 			roundedTop={[null, '50px']}
-			height={[250, 175]}
+			height={[isSignedIn ? 300 : 250, 175]}
 			boxShadow={isDark ? undefined : 'dark-lg'}
 			_after={{
 				content: `""`,

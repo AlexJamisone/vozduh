@@ -1,9 +1,11 @@
 import { Link } from '@chakra-ui/next-js';
 import { Center, useMediaQuery } from '@chakra-ui/react';
+import { useAuth } from '@clerk/nextjs';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
 const FAQButton = () => {
 	const { scrollYProgress } = useScroll();
+	const { isSignedIn } = useAuth();
 	const [isLessThen480] = useMediaQuery('(max-width: 480px)', {
 		ssr: true,
 		fallback: true,
@@ -11,7 +13,7 @@ const FAQButton = () => {
 	const scroll = useTransform(
 		scrollYProgress,
 		[0, 1],
-		[isLessThen480 ? 20 : 40, isLessThen480 ? 164 : 55]
+		[isLessThen480 ? 20 : 40, isLessThen480 ? (isSignedIn ? 215 : 164) : 55]
 	);
 	return (
 		<motion.div

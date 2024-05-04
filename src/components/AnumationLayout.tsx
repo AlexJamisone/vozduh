@@ -1,11 +1,14 @@
 import { Center, type CenterProps } from '@chakra-ui/react';
+import { useAuth } from '@clerk/nextjs';
 import { motion } from 'framer-motion';
 
 const AnimataedLayout = ({ children, ...props }: CenterProps) => {
+	const { isSignedIn } = useAuth();
 	return (
 		<Center
 			as={motion.div}
-            pt={150}
+			pt={[110, 150]}
+			pb={[isSignedIn ? 70 : 20]}
 			initial={{
 				opacity: 0,
 				y: -100,
