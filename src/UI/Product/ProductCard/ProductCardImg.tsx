@@ -1,4 +1,4 @@
-import { Skeleton, Stack } from '@chakra-ui/react';
+import { Skeleton, Stack, useMediaQuery } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -6,9 +6,13 @@ import { useState } from 'react';
 const ProductCardImg = ({ images }: { images: string[] }) => {
 	const [isLoadedImg, setIsLoadedImg] = useState(false);
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
+	const [isLessThen480] = useMediaQuery('(max-width: 480px)', {
+		ssr: true,
+		fallback: true,
+	});
 	return (
 		<Stack
-			w={[130, 260]}
+			w={[200, 260]}
 			h={[100, 270]}
 			position="relative"
 			justifyContent="center"
@@ -46,7 +50,7 @@ const ProductCardImg = ({ images }: { images: string[] }) => {
 						alt={`product:${src}`}
 						src={`https://utfs.io/f/${src}`}
 						style={{
-							objectFit: 'contain',
+							objectFit: isLessThen480 ? 'cover' : 'contain',
 						}}
 						quality={100}
 						onLoadingComplete={() => setIsLoadedImg(true)}
